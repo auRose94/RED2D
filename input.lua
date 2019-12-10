@@ -1,9 +1,13 @@
 
 local input = {}
 
-local joysticks = love.joystick.getJoysticks()
+input.joysticks = {}
+for i, j in pairs(love.joystick.getJoysticks()) do
+	if j:isGamepad() then
+		table.insert(input.joysticks, j)
+	end
+end
 input.players = {}
-input.joysticks = joysticks
 
 _G.playerOneKeyboardMouse = true
 _G.playerOneUseController = true
@@ -58,7 +62,7 @@ function InputController:getJoystick()
 	elseif self.player == 1 then
 		index = nil
 	end
-	if index > #joysticks and not playerOneKeyboardMouse then
+	if index > #input.joysticks and not playerOneKeyboardMouse then
 		return nil
 	end
 	return index
@@ -161,8 +165,8 @@ function InputController:getJoystickValue()
 	-- Update if joystick
 	local value = 0
 	local joy = self.joystick
-	if joy and joy.index <= #joysticks then
-		local joystick = joysticks[joy.index]
+	if joy and joy.index <= #input.joysticks then
+		local joystick = input.joysticks[joy.index]
 		if joystick then
 			local button = joy.button
 			local axis = joy.axis

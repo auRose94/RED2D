@@ -21,10 +21,12 @@ function GUISystem:getName()
 end
 
 function GUISystem:update(dt)
-	for i = 1, #self.elements do
-		local element = self.elements[i]
-		if element.update then
-			element:update(dt)
+	if self.enabled then
+		for i = 1, #self.elements do
+			local element = self.elements[i]
+			if element.update then
+				element:update(dt)
+			end
 		end
 	end
 end
@@ -43,8 +45,7 @@ function GUISystem:getTransform()
 end
 
 function GUISystem:drawElements()
-	if self.enabled and self.show and #self.elements > 0 then
-		local parent = self.parent
+	if self.show and #self.elements > 0 then
 		local camera = self.parent.level.camera
 		local transform = self:getTransform()
 		love.graphics.push()

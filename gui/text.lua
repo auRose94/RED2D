@@ -16,18 +16,20 @@ function GUIText:init(parent, text)
 end
 
 function GUIText:draw()
-	local opacity = self.opacity
-	local camera = self.system.parent.level.camera
-	local width = math.max(0, self.width)
-	local textColor = self.textColor
-	local limit = width / self.textSize
-	local transform = self:getTransform()
-	love.graphics.replaceTransform(camera:getTransform() * transform)
+	if self.show then
+		local opacity = self.opacity
+		local camera = self.system.parent.level.camera
+		local width = math.max(0, self.width)
+		local textColor = self.textColor
+		local limit = width / self.textSize
+		local transform = self:getTransform()
+		love.graphics.replaceTransform(camera:getTransform() * transform)
 
-	love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
-	love.graphics.printf(self.text, 0, 0, limit, self.align, 0, self.textSize)
+		love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
+		love.graphics.printf(self.text, 0, 0, limit, self.align, 0, self.textSize)
 
-	GUIElement.draw(self)
+		GUIElement.draw(self)
+	end
 end
 
 return GUIText

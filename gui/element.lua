@@ -26,6 +26,14 @@ function GUIElement:init(parent)
 	self.opacity = 0.7
 end
 
+function GUIElement:isActive()
+	return GUIElement.currentlyActive == self
+end
+
+function GUIElement:makeActive()
+	GUIElement.currentlyActive = self
+end
+
 function GUIElement:getTransform()
 	local transform = self.parent:getTransform()
 	transform:rotate(self.r)
@@ -40,7 +48,7 @@ function GUIElement:update(dt)
 		end
 		for i = 1, #self.elements do
 			local element = self.elements[i]
-			if element.enabled and element.update then
+			if (element.enabled or element:isActive()) and element.update then
 				element:update(dt)
 			end
 		end
@@ -95,7 +103,7 @@ function GUIElement:getInnerArea()
 end
 
 function GUIElement:draw()
-	if self and self.enabled and self.show then
+	if self and self.show then
 		local transform = self:getTransform()
 		local camera = self.system.parent.level.camera
 		local lx, ly, bx, by = self:getClipping()
@@ -105,7 +113,7 @@ function GUIElement:draw()
 			love.graphics.push()
 			for i = 1, #self.elements do
 				local element = self.elements[i]
-				if element and element.enabled and element.show and element.draw then
+				if element and element.show and element.draw then
 					if not lcx and not lcy and not lcw and not lch then
 						love.graphics.setScissor(lx, ly, bx, by)
 					else

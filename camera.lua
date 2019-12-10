@@ -127,7 +127,14 @@ function CameraClass:update(dt)
 	if self.followTarget then
 		local target = self.followTarget
 		local ox, oy = self:getOffset()
-		local tX, tY = target.transform:transformPoint(-ox, -oy)
+		
+		local targetTransform = love.math.newTransform()
+		if target.parent then
+			targetTransform = target.parent:getTransform()
+		end
+		targetTransform = targetTransform * love.math.newTransform(target.x, target.y, target.r, target.sx, target.sy, target.ox, target.oy)
+
+		local tX, tY = targetTransform:transformPoint(-ox, -oy)
 		local cx = math.lerp(self.x, tX, self.cameraSpeed * dt)
 		local cy = math.lerp(self.y, tY, self.cameraSpeed * dt)
 		local cr = math.angleLerp(self.r, target.r, self.rotSpeed * dt)

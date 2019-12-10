@@ -17,7 +17,6 @@ function InventoryClass:init(parent, entity)
 	self.moveTarget = nil
 	self.tradeTraget = nil
 	self.pickUpDistance = 128
-	self.window = InventoryWindow(parent, self)
 	self.entity = entity
 	self.entity = entity or nil
 	self.pickup = false
@@ -50,10 +49,6 @@ function InventoryClass:getBoundingBox()
 	local tx, ty = cx-(scale), cy-(scale)
 	local bx, by = cx+(scale), cy+(scale)
 	return tx, ty, bx, by
-end
-
-function InventoryClass:toggleInventory()
-	self.window:toggleWindow()
 end
 
 function InventoryClass:findIndex(item)

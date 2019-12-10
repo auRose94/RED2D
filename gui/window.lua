@@ -10,6 +10,10 @@ function GUIWindow:init(parent, title, x, y, width, height)
 	self.y = y or 0
 	self.width = width or 300
 	self.height = height or 450
+	self.minWidth = 300
+	self.maxWidth = 1000
+	self.minHeight = 32
+	self.maxHeight = 1000
 	self.show = true
 	self.enabled = true
 	self.offX = -350
@@ -37,7 +41,7 @@ end
 
 function GUIWindow:update(dt)
 	GUIElement.update(self, dt)
-	if self.show then
+	if self.enabled then
 		local camera = self.system.parent.level.camera
 		local mouseX, mouseY = camera:mousePosition()
 		local transform = self.parent:getTransform()
@@ -110,8 +114,14 @@ function GUIWindow:update(dt)
 			self.resizeOffsetY = nil
 		end
 
-		self.width = math.max(300, self.width)
-		self.height = math.max(topBarHeight, self.height)
+		self.width = math.max(self.minWidth, self.width)
+		if self.maxWidth then 
+			self.width = math.min(self.width, self.maxWidth)
+		end
+		self.height = math.max(self.minHeight, topBarHeight, self.height)
+		if self.maxHeight then
+			self.height = math.min(self.height, self.maxHeight)
+		end
 
 	end
 end
@@ -122,7 +132,7 @@ function GUIWindow:getClipping()
 end
 
 function GUIWindow:draw()
-	if self.enabled and self.show then
+	if self.show then
 		local camera = self.system.parent.level.camera
 		local transform = self:getTransform()
 		local width = self.width
@@ -139,9 +149,9 @@ function GUIWindow:draw()
 		love.graphics.replaceTransform(camera:getTransform() * transform)
 
 		--Top bar
-		local moveColor = Colors.pansy
+		local moveColor = Colors.red 
 		if self.moveHover and not self.closeHover then
-			moveColor = Colors.red
+			moveColor = Colors.pansy
 		end
 		love.graphics.setColor(moveColor[1], moveColor[2], moveColor[3], opacity)
 		love.graphics.rectangle('fill', 0, -topBarHeight, width, topBarHeight)

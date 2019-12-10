@@ -82,7 +82,7 @@ end
 
 function GUIImage:update(dt)
 	GUIElement.update(self, dt)
-	if self.onClickFunc then
+	if self.onClickFunc and self.enabled then
 		local camera = self.system.parent.level.camera
 		local mouseX, mouseY = camera:mousePosition()
 		local width = math.max(0, self.sx * self.width)
@@ -104,33 +104,35 @@ function GUIImage:update(dt)
 end
 
 function GUIImage:draw()
-	local opacity = self.opacity
-	local imageColor = self.imageColor
-	local backgroundColor = self.backgroundColor
-	local rot = self.r
-	local transform = self:getTransform()
-	local camera = self.system.parent.level.camera
-
-	love.graphics.replaceTransform(camera:getTransform() * transform)
+	if self.show then
+		local opacity = self.opacity
+		local imageColor = self.imageColor
+		local backgroundColor = self.backgroundColor
+		local rot = self.r
+		local transform = self:getTransform()
+		local camera = self.system.parent.level.camera
 	
-	if self.hover then
-		if self.lastSelect then
-			imageColor = self.imagePressColor
-			backgroundColor = self.imagePressColor
-		else
-			imageColor = self.imageHighlightColor
-			backgroundColor = self.backgroundHighlightColor
+		love.graphics.replaceTransform(camera:getTransform() * transform)
+		
+		if self.hover then
+			if self.lastSelect then
+				imageColor = self.imagePressColor
+				backgroundColor = self.imagePressColor
+			else
+				imageColor = self.imageHighlightColor
+				backgroundColor = self.backgroundHighlightColor
+			end
 		end
+		love.graphics.setColor(imageColor[1], imageColor[2], imageColor[3], opacity)
+		love.graphics.draw(
+			self.srcTexture, 
+			self:getQuad(), 
+			0, 0, 
+			rot,
+			self.sx,
+			self.sy)
+	
 	end
-	love.graphics.setColor(imageColor[1], imageColor[2], imageColor[3], opacity)
-	love.graphics.draw(
-		self.srcTexture, 
-		self:getQuad(), 
-		0, 0, 
-		rot,
-		self.sx,
-		self.sy)
-
 	GUIElement.draw(self)
 end
 

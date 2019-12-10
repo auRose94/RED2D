@@ -66,16 +66,14 @@ end
 
 function GUIScroll:update(dt)
 	GUIElement.update(self, dt)
-	if self.show then
-		local areaX, areaY, areaW, areaH = self:getInnerArea()
+	if self.enabled then
+		local _, _, areaW, areaH = self:getInnerArea()
 		local camera = self.system.parent.level.camera
 		local mouseX, mouseY = camera:mousePosition()
 		local transform = self.parent:getTransform()
 		local rmouseX, rmouseY = transform:inverseTransformPoint(mouseX, mouseY)
 		local width = self.width
 		local height = self.height
-		local x = self.x
-		local y = self.y
 		local buttonSize = 16
 		local transform = self.parent:getTransform()
 
@@ -120,7 +118,7 @@ function GUIScroll:getClipping()
 end
 
 function GUIScroll:draw()
-	if self.enabled and self.show then
+	if self.show then
 		local camera = self.system.parent.level.camera
 		local transform = GUIElement.getTransform(self)
 		local width = math.max(0, self.width)

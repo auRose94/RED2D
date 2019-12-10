@@ -24,6 +24,7 @@ function BodyComponent:init(parent, data)
 	self.knockOutSpeed = 1500
 	self.topSpeed = 600
 	self.rotSpeed = 40
+	self.speedSkew = 0.125
 	self.health = 10
 	self.maxHealth = 10
 	self.lastStanding = love.timer.getTime()
@@ -246,6 +247,19 @@ function BodyComponent:update(dt)
 	local lvx, lvy = physComp:getLocalVector(vx, vy)
 	local speed = math.dist(0, 0, vx, vy)
 	local now = love.timer.getTime()
+
+	local maxSpeed = self.topSpeed
+	local skewXMultiplier = maxSpeed / (maxSpeed - math.abs(lvx))
+	local skewYMultiplier = maxSpeed / (maxSpeed - math.abs(lvy))
+	local xSkew = (skewXMultiplier-1)*self.direction
+	local ySkew = (skewYMultiplier-1)
+	if math.abs(xSkew) > self.speedSkew then
+		xSkew = math.min(math.abs(xSkew), self.speedSkew)*self.direction
+	end
+	if math.abs(ySkew) > self.speedSkew then
+		ySkew = math.min(math.abs(ySkew), self.speedSkew)*(math.sign(lvy)*self.direction)
+	end
+	self:setSkew(xSkew, ySkew)
 
 	local standing = false
 	local knockedOut = false

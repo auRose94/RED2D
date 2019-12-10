@@ -1,6 +1,8 @@
 local GUIElement = require ".gui.element"
 local GUIButton = inheritsFrom(GUIElement)
 
+GUIButton.currentlyActive = nil
+
 function GUIButton:init(parent, text)
 	GUIElement.init(self, parent)
 	self.text = text
@@ -9,76 +11,91 @@ function GUIButton:init(parent, text)
 	self.textSize = 0.5
 	self.width = 32
 	self.height = 32
-	self.borderSize = 2
+	self.borderSize = 1
 
 	self.boxHighlightColor = Colors.pansy
 	self.boxPressColor = Colors.brown  
 	self.boxColor = Colors.red
 	self.lineColor = Colors.eggplant
 	self.textColor = Colors.white
+	self.activeColor = Colors.magenta
+	self.disabledColor = Colors.brown
 end
 
 function GUIButton:update(dt)
 	GUIElement.update(self, dt)
-	local camera = self.system.parent.level.camera
-	local mouseX, mouseY = camera:mousePosition()
-	local width = math.max(0, self.width)
-	local height = math.max(0, self.height)
-	local centerX = self.x + (width/2)
-	local centerY = self.y + (height/2)
-	local transform = self.parent:getTransform()
-	local cx, cy = transform:transformPoint(centerX, centerY)
-	local shape = love.physics.newRectangleShape(cx, cy, width, height, camera.r)
-	self.hover = shape:testPoint(0, 0, 0, mouseX, mouseY)
-
-	local lastLeftSelect = self.lastLeftSelect
-	local lastRightSelect = self.lastRightSelect
-	self.lastLeftSelect = self:getGUISelectControl()
-	self.lastRightSelect = self:getGUISecondaryControl()
+	if self.enabled or self:isActive() then
+		local camera = self.system.parent.level.camera
+		local mouseX, mouseY = camera:mousePosition()
+		local width = math.max(0, self.width)
+		local height = math.max(0, self.height)
+		local centerX = self.x + (width/2)
+		local centerY = self.y + (height/2)
+		local transform = self.parent:getTransform()
+		local cx, cy = transform:transformPoint(centerX, centerY)
+		local shape = love.physics.newRectangleShape(cx, cy, width, height, camera.r)
+		self.hover = shape:testPoint(0, 0, 0, mouseX, mouseY)
 	
-	if self.hover and lastLeftSelect and not self.lastLeftSelect then
-		if self.onLeftClickFunc then
-			self.onLeftClickFunc()
+		local lastLeftSelect = self.lastLeftSelect
+		local lastRightSelect = self.lastRightSelect
+		self.lastLeftSelect = self:getGUISelectControl()
+		self.lastRightSelect = self:getGUISecondaryControl()
+		
+		if self.hover and lastLeftSelect and not self.lastLeftSelect then
+			if self.onLeftClickFunc then
+				self:makeActive()
+				self.onLeftClickFunc()
+			end
 		end
-	end
-
-	if self.hover and lastRightSelect and not self.lastRightSelect then
-		if self.onRightClickFunc then
-			self.onRightClickFunc()
+	
+		if self.hover and lastRightSelect and not self.lastRightSelect then
+			if self.onRightClickFunc then
+				self:makeActive()
+				self.onRightClickFunc()
+			end
 		end
 	end
 end
 
 function GUIButton:draw()
-	local opacity = self.opacity
-	local width = math.max(0, self.width)
-	local height = math.max(0, self.height)
-	local boxColor = self.boxColor
-	local lineColor = self.lineColor
-	local textColor = self.textColor
-	local limit = width/self.textSize
-	local transform = self:getTransform()
-	local camera = self.system.parent.level.camera
-
-	love.graphics.replaceTransform(camera:getTransform() * transform)
-	
-	if self.hover and (self.onRightClickFunc or self.onLeftClickFunc) then
-		if self.lastSelect then
-			boxColor = self.boxPressColor
-		else
-			boxColor = self.boxHighlightColor
+	if self.show then
+		local opacity = self.opacity
+		local width = math.max(0, self.width)
+		local height = math.max(0, self.height)
+		local boxColor = self.boxColor
+		if self:isActive() then
+			boxColor = self.activeColor
+			opacity = math.max(math.sin(love.timer.getTime()*5), 0.75)
 		end
-	end
-	love.graphics.setColor(boxColor[1], boxColor[2], boxColor[3], opacity)
-	love.graphics.rectangle('fill', 0, 0, width, height)
-	if self.borderSize > 0 then
-		love.graphics.setColor(lineColor[1], lineColor[2], lineColor[3], opacity)
-		love.graphics.setLineWidth(self.borderSize)
-		love.graphics.rectangle('line', 0, 0, width, height)
-	end
-	if self.text then
-		love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
-		love.graphics.printf(self.text, 0, -2, limit, "center", 0, self.textSize)
+		if not self.enabled then
+			boxColor = self.disabledColor
+		end
+		local lineColor = self.lineColor
+		local textColor = self.textColor
+		local limit = width/self.textSize
+		local transform = self:getTransform()
+		local camera = self.system.parent.level.camera
+
+		love.graphics.replaceTransform(camera:getTransform() * transform)
+		
+		if self.enabled and self.hover and (self.onRightClickFunc or self.onLeftClickFunc) then
+			if self.lastSelect then
+				boxColor = self.boxPressColor
+			else
+				boxColor = self.boxHighlightColor
+			end
+		end
+		love.graphics.setColor(boxColor[1], boxColor[2], boxColor[3], opacity)
+		love.graphics.rectangle('fill', 0, 0, width, height)
+		if self.borderSize > 0 then
+			love.graphics.setColor(lineColor[1], lineColor[2], lineColor[3], opacity)
+			love.graphics.setLineWidth(self.borderSize)
+			love.graphics.rectangle('line', 0, 0, width, height)
+		end
+		if self.text then
+			love.graphics.setColor(textColor[1], textColor[2], textColor[3], opacity)
+			love.graphics.printf(self.text, 0, -2, limit, "center", 0, self.textSize)
+		end
 	end
 
 	GUIElement.draw(self)

@@ -1,6 +1,7 @@
 local ComponentClass = require "component"
 local PhysicsComponent = require "comp-physics"
 local InventoryClass = require "comp-inventory"
+local StatusWindow = require "comp-status-window"
 local HeadComponent = require "comp-head"
 local BodyComponent = require "comp-body"
 local HeadRedData = require "head-red"
@@ -26,9 +27,11 @@ function PlayerComponent:init(parent, playerIndex, joystickIndex)
 	local headComp = HeadComponent(headParent, HeadRedData)
 	self.headComp = headComp
 
-	self.joystickIndex = joystickIndex or 0
+	self.joystickIndex = joystickIndex or 1
 	self.playerIndex = playerIndex or 1
 	self:registerControls()
+
+	self.statusWindow = StatusWindow(parent)
 end
 
 function PlayerComponent:registerControls()
@@ -173,7 +176,7 @@ function PlayerComponent:update(dt)
 	local fire2 = self.fire2Control
 
 	if inv:pressed() then
-		inventory:toggleInventory()
+		self.statusWindow:toggleWindow()
 	end
 
 	inventory.pickup = interact:pressed()

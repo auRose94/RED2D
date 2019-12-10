@@ -7,14 +7,15 @@ local GUIText = require ".gui.text"
 local GUIButton = require ".gui.button"
 local GUIScroll = require ".gui.scroll"
 local InventoryClass = require "comp-inventory"
-local PlayerComponent = require "comp-player"
 local StatusWindow = inheritsFrom(GUISystem)
 
 function StatusWindow:init(parent)
 	GUISystem.init(self, parent)
 	self.inventory = parent:getComponent(InventoryClass)
-	self.player = parent:getComponent(PlayerComponent)
+	self.player = parent:getComponent(PlayerComponent or require "comp-player")
 	local window = GUIWindow(self, "Status")
+	window.maxWidth = 600
+	window.maxHeight = nil
 
 	local statusButton = GUIButton(window, "Status")
 	statusButton.width = 100
@@ -62,14 +63,16 @@ function StatusWindow:init(parent)
 	self.roots.status = statusRoot
 	self.roots.inventory = inventoryRoot
 	self.roots.quests = questsRoot
+	self:changeTo("status", statusButton)
 end
 
 function StatusWindow:changeTo(mode, button)
 	local last = self.currentRoot
 	last.enabled = false
-	local lastButton = self.currentButton
+	local lastButton = self.currentButton or self.statusButton
 	lastButton.enabled = true
 	self.currentButton = button
+	self.currentButton:makeActive()
 	self.currentButton.enabled = false
 	self.currentRoot = self.roots[mode] or last
 	self.currentRoot.enabled = true

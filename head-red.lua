@@ -14,7 +14,7 @@ local h = 9
 
 function NewQuad(x, y, z)
 	z = z or 0
-	return { image, love.graphics.NewQuad(x, y, w, h, tw, th), z }
+	return { image, love.graphics.newQuad(x, y, w, h, tw, th), z }
 end
 
 module.right = {
