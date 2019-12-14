@@ -60,7 +60,7 @@ function ItemClass:init(parent, data)
 		self.density = data.density or 1
 		self.friction = data.friction or 0.1
 		self.restitution = data.restitution or 0
-		self.catagory = data.catagory or {2}
+		self.category = data.category or {2}
 		self.mask = data.mask or {3}
 		self:createBody()
 	end
@@ -95,8 +95,8 @@ function ItemClass:createBody()
 	self.physBody = PhysicsComponent(self.parent, "dynamic")
 
 	self.fixture = self.physBody:newFixture(self.shape, self.density)
-	if #self.catagory > 0 then
-		self.fixture:setCategory(unpack(self.catagory))
+	if #self.category > 0 then
+		self.fixture:setCategory(unpack(self.category))
 	end
 	if #self.mask > 0 then
 		self.fixture:setMask(unpack(self.mask))

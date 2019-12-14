@@ -15,7 +15,7 @@ function InventoryClass:init(parent, entity)
 	self.maxWeight = 100
 	self.open = false
 	self.moveTarget = nil
-	self.tradeTraget = nil
+	self.tradeTarget = nil
 	self.pickUpDistance = 128
 	self.entity = entity
 	self.entity = entity or nil
@@ -27,7 +27,7 @@ function InventoryClass:setTargetInventory(inv)
 end
 
 function InventoryClass:setTradeInventory(inv)
-	self.tradeTraget = inv
+	self.tradeTarget = inv
 end
 
 function InventoryClass:getWeight()

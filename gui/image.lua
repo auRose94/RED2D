@@ -1,10 +1,12 @@
 local GUIElement = require ".gui.element"
 local GUIImage = inheritsFrom(GUIElement)
 
-function GUIImage:init(parent, path, flags)
-	GUIElement.init(self, parent)
-	self.show = true
-	self.enabled = true
+function GUIImage:init(...)
+	GUIElement.init(self, ...)
+	local flags = self:getArgument("flags", "")
+	local path = self:getArgument("path", "")
+	self.hide = self:getArgument("show", false)
+	self.enabled = self:getArgument("enabled", true)
 	if type(path) == "string" then
 		self.path = path
 		self.srcTexture = love.graphics.newImage(path, flags or {
@@ -25,16 +27,16 @@ function GUIImage:init(parent, path, flags)
 	self.srcRect = { self.srcX, self.srcY, self.srcWidth, self.srcHeight }
 	self.srcQuad = love.graphics.newQuad(self.srcX, self.srcY, self.srcWidth, self.srcHeight, self.srcTexture:getWidth(), self.srcTexture:getHeight())
 
-	self.r = 0
+	self.r = self:getArgument("r", 0)
 
-	self.imageHighlightColor = Colors.lightBlue
-	self.imagePressColor = Colors.black  
-	self.imageColor = Colors.white
+	self.imageHighlightColor = self:getArgument("imageHighlightColor", Colors.lightBlue)
+	self.imagePressColor = self:getArgument("imagePressColor", Colors.black)
+	self.imageColor = self:getArgument("imageColor", Colors.white)
 
-	self.backgroundHighlightColor = Colors.gray
-	self.backgroundPressColor = Colors.white  
-	self.backgroundColor = Colors.white
-	self.background = false
+	self.backgroundHighlightColor = self:getArgument("backgroundHighlightColor", Colors.gray)
+	self.backgroundPressColor = self:getArgument("backgroundPressColor", Colors.white)
+	self.backgroundColor = self:getArgument("backgroundColor", Colors.white)
+	self.background = self:getArgument("background", 0)
 end
 
 function GUIImage:setRect(rectOrX, y, w, h)
@@ -60,7 +62,7 @@ function GUIImage:setRect(rectOrX, y, w, h)
 end
 
 function GUIImage:getGUISelectControl()
-	local state = 
+	local state =
 		love.mouse.isDown(1) or
 		love.keyboard.isDown("kpenter") or
 		love.keyboard.isDown("return")
@@ -94,28 +96,28 @@ function GUIImage:update(dt)
 		local shape = love.physics.newRectangleShape(cx, cy, width, height, camera.r)
 		self.hover = shape:testPoint(0, 0, 0, mouseX, mouseY)
 
-		local lastSelect = self.lastSelect
-		self.lastSelect = self:getGUISelectControl()
+		local click = self:getGUISelectControl()
 		
-		if self.hover and lastSelect and not self.lastSelect then
+		if self.hover and click:pressed() then
 			self.onClickFunc()
 		end
 	end
 end
 
 function GUIImage:draw()
-	if self.show then
+	if not self.hide then
 		local opacity = self.opacity
 		local imageColor = self.imageColor
 		local backgroundColor = self.backgroundColor
 		local rot = self.r
 		local transform = self:getTransform()
 		local camera = self.system.parent.level.camera
+		local click = self:getGUISelectControl()
 	
 		love.graphics.replaceTransform(camera:getTransform() * transform)
 		
 		if self.hover then
-			if self.lastSelect then
+			if click:pressed() then
 				imageColor = self.imagePressColor
 				backgroundColor = self.imagePressColor
 			else
@@ -125,9 +127,9 @@ function GUIImage:draw()
 		end
 		love.graphics.setColor(imageColor[1], imageColor[2], imageColor[3], opacity)
 		love.graphics.draw(
-			self.srcTexture, 
-			self:getQuad(), 
-			0, 0, 
+			self.srcTexture,
+			self:getQuad(),
+			0, 0,
 			rot,
 			self.sx,
 			self.sy)
@@ -139,7 +141,7 @@ end
 function GUIImage:onClick(func)
 	if func ~= nil and type(self.onClickFunc) == "function" then
 		local old = self.onClickFunc
-		self.onClickFunc = function() 
+		self.onClickFunc = function()
 			old()
 			func()
 		end

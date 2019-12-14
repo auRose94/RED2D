@@ -5,9 +5,10 @@ local testScaling = false
 
 function GUISystem:init(parent)
 	ComponentClass.init(self, parent)
+	self.player = parent:getComponent(PlayerComponent or require "comp-player")
 	self.elements = {}
 	self.enabled = true
-	self.show = true
+	self.hide = false
 	local camera = parent.level.camera
 	camera:newLayer(3, function ()
 		if self and self.drawElements then
@@ -45,19 +46,28 @@ function GUISystem:getTransform()
 end
 
 function GUISystem:drawElements()
-	if self.show and #self.elements > 0 then
+	if not self.hide and #self.elements > 0 then
 		local camera = self.parent.level.camera
 		local transform = self:getTransform()
 		love.graphics.push()
 		love.graphics.replaceTransform(camera:getTransform() * transform)
 		for i = 1, #self.elements do
 			local element = self.elements[i]
-			if element and element.show and element.draw then
+			if element and not element.hide and element.draw then
 				element:draw()
 			end
 		end
 		love.graphics.pop()
 	end
+end
+
+function GUISystem:addElement(element)
+	local GUIElement = _G.GUIElement or require "gui.element"
+	assert(type(element) == "table", "Argument needs to be table")
+	assert(element:isa(GUIElement), "Needs to inherit GUIElement or be one")
+	table.insert(self.elements, element)
+	element.system = self
+	element.parent = self
 end
 
 return GUISystem

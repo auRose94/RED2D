@@ -1,6 +1,6 @@
 local WeaponTypes = {
-	balistic = {
-		name = "Balistic",
+	ballistic = {
+		name = "Ballistic",
 		primary = function(self)
 		end
 	},

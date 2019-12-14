@@ -37,9 +37,9 @@ function ComponentClass:setSkew(...)
 	self.parent:setSkew(...)
 end
 
-function ComponentClass:getScew()
+function ComponentClass:getSkew()
 	assert(self.parent, "No parent")
-	return self.parent:getScew()
+	return self.parent:getSkew()
 end
 
 function ComponentClass:setOrigin(...)

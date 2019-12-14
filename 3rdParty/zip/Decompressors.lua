@@ -9,9 +9,9 @@ Decompressors.__type = "Decompressors"
 --[[
 	01: shrunk
 	02: reduced with compression factor 1
-	03: reduced with compression factor 2 
-	04: reduced with compression factor 3 
-	05: reduced with compression factor 4 
+	03: reduced with compression factor 2
+	04: reduced with compression factor 3
+	05: reduced with compression factor 4
 	06: imploded
 	07: reserved
 	09: enhanced deflated
@@ -23,7 +23,7 @@ Decompressors.__type = "Decompressors"
 	15-17: reserved
 	18: compressed using IBM TERSE
 	19: IBM LZ77 z
-	98: PPMd version I, Rev 1 
+	98: PPMd version I, Rev 1
 ]]
 
 Decompressors[0] = function (CompressedData)

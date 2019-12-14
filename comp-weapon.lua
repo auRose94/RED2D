@@ -24,7 +24,7 @@ function WeaponClass:init(parent, data)
 end
 
 function WeaponClass:equip(entity)
-	if entity and not self:isEquiped() then
+	if entity and not self:isEquipped() then
 		local hands = entity:getWeaponMounts()
 		local hand = entity.parent
 		local handIndex = nil
@@ -53,7 +53,7 @@ end
 function WeaponClass:unequip()
 	local entity = self.entity
 	local parent = self.parent
-	if entity and self:isEquiped() then
+	if entity and self:isEquipped() then
 		parent:removeComponent(self)
 		parent:destroy()
 		entity.weapons[self.handIndex] = nil
@@ -67,7 +67,7 @@ function WeaponClass:isPlayer()
 	return self.entity and isa(self.entity, PlayerComponent)
 end
 
-function WeaponClass:isEquiped()
+function WeaponClass:isEquipped()
 	return self.entity ~= nil and self.entity.weapon == self
 end
 

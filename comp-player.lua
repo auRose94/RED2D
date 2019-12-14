@@ -105,6 +105,51 @@ function PlayerComponent:registerControls()
 			button = "a"
 		}
 	}, joystickIndex)
+	self.guiPrimary = input.createInput(playerIndex, {
+		name = "GUI Left Click",
+		keyboard = {
+			key = "e",
+			altKey = "kp0"
+		},
+		mouse = {
+			button = 1
+		},
+		joystick = {
+			button = "a"
+		}
+	})
+	self.guiSecondary = input.createInput(playerIndex, {
+		name = "GUI Right Click",
+		keyboard = {
+			key = "q",
+			altKey = "kp."
+		},
+		mouse = {
+			button = 2
+		},
+		joystick = {
+			button = "x"
+		}
+	})
+	self.backControl = input.createInput(playerIndex, {
+		name = "Back",
+		keyboard = {
+			key = "backspace"
+		},
+		joystick = {
+			button = "b"
+		}
+	})
+	self.reloadControl = input.createInput(playerIndex, {
+		name = "Reload",
+		keyboard = {
+			key = "r",
+			altKey = "/"
+		},
+		joystick = {
+			button = "x"
+		}
+	})
 	self.aimControl = input.createInput(playerIndex, {
 		name = "Aim",
 		mouse = {
@@ -142,13 +187,13 @@ function PlayerComponent:getAimNormal(invertY)
 	local aim = self.aimDirControl
 	if aim:held() then
 		-- Joystick
-		local rdirX, rdirY = unpack(aim.value)
+		local rDirX, rDirY = unpack(aim.value)
 		local width, height = love.graphics.getPixelDimensions()
-		rdirX, rdirY = rdirX*(width/4), rdirY*(height/4)
+		rDirX, rDirY = rDirX*(width/4), rDirY*(height/4)
 		if invertY then
-			rdirY = -rdirY
+			rDirY = -rDirY
 		end
-		return rdirX, rdirY
+		return rDirX, rDirY
 	else
 		-- Mouse
 		local camera = self.parent.level.camera

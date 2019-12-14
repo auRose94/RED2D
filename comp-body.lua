@@ -35,8 +35,8 @@ function BodyComponent:init(parent, data)
 	self.currentNormalY = -1
 	self.baseName = "default"
 
-	self.physComp = 
-		parent:getComponent(PhysicsComponent) or 
+	self.physComp =
+		parent:getComponent(PhysicsComponent) or
 		PhysicsComponent(parent, "dynamic")
 
 	self.physComp:setFixedRotation(true)
@@ -78,8 +78,8 @@ function BodyComponent:getWeaponMounts()
 end
 
 function IsTexturePair(table)
-	if	type(table) == "table" and 
-			type(table[1]) == "userdata" and 
+	if	type(table) == "table" and
+			type(table[1]) == "userdata" and
 			type(table[2]) == "userdata" then
 		return true
 	end
@@ -395,7 +395,7 @@ function BodyComponent:update(dt)
 		aimAngle = self:getAim(false, unpack(faceTable.center))
 		local partSize = 360/rotations
 		rotIndex = math.abs(math.floor(math.deg(aimAngle+math.pi)/partSize))+1
-		if 	(self.leftAim and self:getLeftWeapon()) and 
+		if 	(self.leftAim and self:getLeftWeapon()) and
 				(self.rightAim and self:getRightWeapon()) then
 			leftPoint = faceTable.arms.left.points[rotIndex]
 			rightPoint = faceTable.arms.right.points[rotIndex]
@@ -418,14 +418,14 @@ function BodyComponent:update(dt)
 		end
 	end
 
-	local rhsx, rhsy = self.rightHand:getScale()
-	local lhsx, lhsy = self.leftHand:getScale()
+	local rightHandScaleX, rightHandScaleY = self.rightHand:getScale()
+	local leftHandScaleX, leftHandScaleY = self.leftHand:getScale()
 	if self.direction > 0 then
-		self.leftHand:setScale(lhsx, math.abs(lhsy))
-		self.rightHand:setScale(rhsx, math.abs(rhsy))
+		self.leftHand:setScale(leftHandScaleX, math.abs(leftHandScaleY))
+		self.rightHand:setScale(rightHandScaleX, math.abs(rightHandScaleY))
 	elseif self.direction < 0 then
-		self.leftHand:setScale(lhsx, -math.abs(lhsy))
-		self.rightHand:setScale(rhsx, -math.abs(rhsy))
+		self.leftHand:setScale(leftHandScaleX, -math.abs(leftHandScaleY))
+		self.rightHand:setScale(rightHandScaleX, -math.abs(rightHandScaleY))
 	end
 
 	self.leftHand:setRotation(leftAim)

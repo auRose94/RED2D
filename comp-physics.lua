@@ -116,7 +116,7 @@ function PhysicsComponent:newFixture(shape, density)
 	if shape.isa and shape:isa(ShapeComponent) then
 		return FixtureComponent(self.parent, shape, density)
 	end
-	return love.physics.newFixture(self.body, shape, density) 
+	return love.physics.newFixture(self.body, shape, density)
 end
 
 function PhysicsComponent:update(dt)

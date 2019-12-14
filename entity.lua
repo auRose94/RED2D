@@ -129,7 +129,7 @@ function EntityClass:setSkew(...)
 	self.touched = true
 end
 
-function EntityClass:getScew()
+function EntityClass:getSkew()
 	return self.kx, self.ky
 end
 

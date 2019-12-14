@@ -52,8 +52,8 @@ function TileMapClass:loadLevel(location)
 							data.density)
 						fixture:setFriction(data.friction)
 						fixture:setRestitution(data.restitution)
-						if #data.catagory > 0 then
-							fixture:setCategory(unpack(data.catagory))
+						if #data.category > 0 then
+							fixture:setCategory(unpack(data.category))
 						end
 						if #data.mask > 0 then
 							fixture:setMask(unpack(data.mask))
@@ -91,7 +91,7 @@ function TileMapClass:registerTile(key, data)
 		density = data.density or 1,
 		friction = data.friction or 0.25,
 		restitution = data.restitution or 0,
-		catagory = data.catagory or {1},
+		category = data.category or {1},
 		mask = data.mask or {}
 	}
 end

@@ -24,7 +24,7 @@ Released: 2018-04-15
 * Fixed love.graphics.setCanvas failing randomly.
 * Fixed love.graphics.clear(colortable) when no Canvas is active.
 * Fixed stencil and depth support on older phones.
-* Fixed love.event.quit causing crashes and other unexpected behaviour if a Canvas is active.
+* Fixed love.event.quit causing crashes and other unexpected behavior if a Canvas is active.
 * Fixed Fixture:getShape crashing when returning a ChainShape.
 * Fixed love.joystick.loadJoystickMappings outputting a deprecation warning about love.filesystem.isFile.
 * Fixed Source:queue to show the correct argument name in the error message when an invalid data parameter is given.
@@ -152,7 +152,7 @@ Released: 2018-04-01
   * Changed the 'vsync' field of love.window.setMode and t.window in love.conf. It's now an integer with 0 disabling vsync.
   * Changed the audio playback APIs drastically.
   * Changed enet to no longer set the 'enet' global, again matching luasocket.
-  * Changed Source seeking behaviour, all kinds of Sources now behave similarly when seeking past the boundaries.
+  * Changed Source seeking behavior, all kinds of Sources now behave similarly when seeking past the boundaries.
   * Changed love.timer.step, it now returns dt.
   * Changed love.run and love.errhand to return a function for their main loop, which gets called until love quits.
 
@@ -248,7 +248,7 @@ Released: 2016-10-31
 
   * Improved performance of Channel methods by roughly 2x in many cases.
   * Improved performance of Shader:send when small numbers of arguments are given.
-  
+
   * Updated love.filesystem.mount to accept a DroppedFile as the first parameter.
   * Updated Shader:send to do type and argument checking based on the specified uniform variable's information instead of the arguments to the function.
   * Updated Shader:send to accept a flat table for matrix uniforms.
@@ -590,7 +590,7 @@ LOVE 0.9.1 [Baby Inspector]
   * Fixed love.graphics.reset causing crashes when called in between love.graphics.push/pop.
   * Fixed tab characters ("\t") to display properly with love.graphics.print.
   * Fixed love.graphics.isCreated to return false when love.window.setMode fails completely.
-  * Fixed love.window.setMode to not destroy OpenGL resources before checking whether a fullsceren size is supported.
+  * Fixed love.window.setMode to not destroy OpenGL resources before checking whether a fullscreen size is supported.
   * Fixed World:getBodyList and World:getJointList causing hard crashes.
   * Fixed loading BC4 compressed textures.
   * Fixed SoundData objects being initialized with garbage values.
@@ -701,7 +701,7 @@ LOVE 0.9.0 [Baby Inspector]
   * Added love.joystick.getJoystick.
   * Added joystick connect and disconnect events.
   * Added joystickaxis and joystickhat events.
-  * Added unified Gamepad API for joysticks which have a similar layout to the Xbox controller.
+  * Added unified Gamepad API for joysticks which have a similar layout to the XBox controller.
   * Added joystick vibration support, works with most common gamepads.
   * OPTIONAL: Added support for Game Music Emu.
 
@@ -975,7 +975,7 @@ LOVE 0.7.1 [Game Slave]
   * Fixed playback of mp3s with arbitrary sample rates.
   * Fixed handling of negative indices in love.joystick.
   * Fixed toggleFullscreen.
-  * Fixed unexpected behaviour with hash tables to love.graphics.line.
+  * Fixed unexpected behavior with hash tables to love.graphics.line.
   * Fixed mouse coordinates being capped after setMode.
   * Fixed setFont's error handling on a non-existant file.
   * Fixed issue where Windows builds would hard crash on Lua errors
@@ -1090,7 +1090,7 @@ LOVE 0.6.0 [Jiggly Juice]
   * Added love.filesystem.setIdentity().
   * Added OpenAL dependency.
 
-  * Fixed love.fileystem problems with internal \0 in strings.
+  * Fixed love.filesystem problems with internal \0 in strings.
   * Fixed love.filesystem.mkdir/remove not working when write directory not set.
   * Fixed position of Window.
 
@@ -1134,7 +1134,7 @@ LOVE 0.5.0 [Salted Nuts]
   * Added love.graphics.screenshot() (.bmp only).
   * Added default size (12) to font-related functions.
   * Added love.graphics.setFont( filename, size )
-  * Added love.graphics.setLineStippe and related functions.
+  * Added love.graphics.setLineStip and related functions.
   * Added love.graphics.setPointSize and related functions.
 
   * Changed love.filesystem.read() to accept file name.

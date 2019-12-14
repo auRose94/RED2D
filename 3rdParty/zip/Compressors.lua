@@ -10,9 +10,9 @@ Compressors.__type = "Compressors"
 	00: no compression
 	01: shrunk
 	02: reduced with compression factor 1
-	03: reduced with compression factor 2 
-	04: reduced with compression factor 3 
-	05: reduced with compression factor 4 
+	03: reduced with compression factor 2
+	04: reduced with compression factor 3
+	05: reduced with compression factor 4
 	06: imploded
 	07: reserved
 	08: deflated

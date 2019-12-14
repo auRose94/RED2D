@@ -58,12 +58,12 @@ function CameraClass:setTransformOffset(xOrArray, y)
 	local ax, ay = self:getOffset(2)
 	local ox, oy = transform:transformPoint(ax, ay)
 	if type(xOrArray) == "number" then
-		EntityModel.setPosition(self, 
-		xOrArray - ox, 
+		EntityModel.setPosition(self,
+		xOrArray - ox,
 		y - oy)
 	elseif type(xOrArray) == "table" then
-		EntityModel.setPosition(self, 
-			xOrArray[1] - ox, 
+		EntityModel.setPosition(self,
+			xOrArray[1] - ox,
 			xOrArray[2] - oy)
 	end
 end

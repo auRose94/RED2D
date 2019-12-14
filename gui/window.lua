@@ -1,26 +1,24 @@
 local GUIElement = require ".gui.element"
 local GUIWindow = inheritsFrom(GUIElement)
 
-function GUIWindow:init(parent, title, x, y, width, height)
-	GUIElement.init(self, parent)
-	assert(title)
-	self.title = title
-	self.auxTitle = ""
-	self.x = x or 0
-	self.y = y or 0
-	self.width = width or 300
-	self.height = height or 450
-	self.minWidth = 300
-	self.maxWidth = 1000
-	self.minHeight = 32
-	self.maxHeight = 1000
-	self.show = true
-	self.enabled = true
-	self.offX = -350
-	self.offY = -250
-	self.buttonSize = 26
-	self.textSize = 32
-	self.lastSelect = false
+function GUIWindow:init(...)
+	GUIElement.init(self, ...)
+	self.title = self:getArgument("title", "")
+	self.auxTitle = self:getArgument("auxTitle", "")
+	self.x = self:getArgument("x", 0)
+	self.y = self:getArgument("y", 0)
+	self.width = self:getArgument("width", 300)
+	self.height = self:getArgument("height", 450)
+	self.minWidth = self:getArgument("minWidth", 300)
+	self.maxWidth = self:getArgument("maxWidth", 1000)
+	self.minHeight = self:getArgument("minHeight", 32)
+	self.maxHeight = self:getArgument("maxHeight", 1000)
+	self.hide = self:getArgument("hide", false)
+	self.enabled = self:getArgument("enabled", true)
+	self.offX = self:getArgument("offX", -350)
+	self.offY = self:getArgument("offY", -250)
+	self.buttonSize = self:getArgument("buttonSize", 26)
+	self.textSize = self:getArgument("textSize", 32)
 	self.mouseOffsetX = nil
 	self.mouseOffsetY = nil
 	self.resizeOffsetX = nil
@@ -30,7 +28,7 @@ end
 function GUIWindow:toggleWindow()
 	self.mouseOffsetX = nil
 	self.mouseOffsetY = nil
-	self.show = not self.show
+	self.hide = not self.hide
 end
 
 function GUIWindow:getTransform()
@@ -41,11 +39,11 @@ end
 
 function GUIWindow:update(dt)
 	GUIElement.update(self, dt)
-	if self.enabled then
+	if self.enabled and self.system then
 		local camera = self.system.parent.level.camera
 		local mouseX, mouseY = camera:mousePosition()
 		local transform = self.parent:getTransform()
-		local rmouseX, rmouseY = transform:inverseTransformPoint(mouseX, mouseY)
+		local rMouseX, rMouseY = transform:inverseTransformPoint(mouseX, mouseY)
 		local width = self.width
 		local height = self.height
 		local x = self.x + self.offX
@@ -64,11 +62,10 @@ function GUIWindow:update(dt)
 		self.closeHover = closeShape:testPoint(0, 0, 0, mouseX, mouseY)
 
 		-- Select State
-		local lastSelect = self.lastSelect
-		self.lastSelect = self:getGUISelectControl()
+		local click = self:getGUISelectControl()
 
 		-- On Button Close
-		if self.closeHover and not lastSelect and self.lastSelect then
+		if self.closeHover and click:pressed() then
 			self:toggleWindow()
 		end
 
@@ -81,15 +78,15 @@ function GUIWindow:update(dt)
 			self.moveHover = moveShape:testPoint(0, 0, 0, mouseX, mouseY)
 		end
 
-		if self.moveHover and not lastSelect and self.lastSelect then
-			self.mouseOffsetX = x - rmouseX
-			self.mouseOffsetY = y - rmouseY
+		if self.moveHover and click:pressed() then
+			self.mouseOffsetX = x - rMouseX
+			self.mouseOffsetY = y - rMouseY
 		end
 		if (self.mouseOffsetX ~= nil or self.mouseOffsetY ~= nil) then
-			self.offX = (self.mouseOffsetX + rmouseX)
-			self.offY = (self.mouseOffsetY + rmouseY)
+			self.offX = (self.mouseOffsetX + rMouseX)
+			self.offY = (self.mouseOffsetY + rMouseY)
 		end
-		if lastSelect and not self.lastSelect and (self.mouseOffsetX ~= nil or self.mouseOffsetY ~= nil) then
+		if click:released() and (self.mouseOffsetX ~= nil or self.mouseOffsetY ~= nil) then
 			self.mouseOffsetX = nil
 			self.mouseOffsetY = nil
 		end
@@ -101,21 +98,21 @@ function GUIWindow:update(dt)
 		local resizeShape = love.physics.newRectangleShape(rx, ry, resizeSize, resizeSize, camera.r)
 		self.resizeHover = resizeShape:testPoint(0, 0, 0, mouseX, mouseY)
 
-		if self.resizeHover and not lastSelect and self.lastSelect then
-			self.resizeOffsetX = width - x - rmouseX
-			self.resizeOffsetY = height - y - rmouseY
+		if self.resizeHover and click:pressed() then
+			self.resizeOffsetX = width - x - rMouseX
+			self.resizeOffsetY = height - y - rMouseY
 		end
-		if (self.resizeOffsetX ~= nil or self.resizeOffsetY ~= nil) then
-			self.width = x + (self.resizeOffsetX + rmouseX)
-			self.height = y + (self.resizeOffsetY + rmouseY)
+		if self.resizeOffsetX ~= nil or self.resizeOffsetY ~= nil then
+			self.width = x + (self.resizeOffsetX + rMouseX)
+			self.height = y + (self.resizeOffsetY + rMouseY)
 		end
-		if lastSelect and not self.lastSelect and (self.resizeOffsetX ~= nil or self.resizeOffsetY ~= nil) then
+		if click:released() and (self.resizeOffsetX ~= nil or self.resizeOffsetY ~= nil) then
 			self.resizeOffsetX = nil
 			self.resizeOffsetY = nil
 		end
 
 		self.width = math.max(self.minWidth, self.width)
-		if self.maxWidth then 
+		if self.maxWidth then
 			self.width = math.min(self.width, self.maxWidth)
 		end
 		self.height = math.max(self.minHeight, topBarHeight, self.height)
@@ -132,7 +129,7 @@ function GUIWindow:getClipping()
 end
 
 function GUIWindow:draw()
-	if self.show then
+	if not self.hide and self.system then
 		local camera = self.system.parent.level.camera
 		local transform = self:getTransform()
 		local width = self.width
@@ -149,7 +146,7 @@ function GUIWindow:draw()
 		love.graphics.replaceTransform(camera:getTransform() * transform)
 
 		--Top bar
-		local moveColor = Colors.red 
+		local moveColor = Colors.red
 		if self.moveHover and not self.closeHover then
 			moveColor = Colors.pansy
 		end
@@ -166,7 +163,7 @@ function GUIWindow:draw()
 
 		--Close
 		local closeColor = Colors.brown
-		if self.closeHover then 
+		if self.closeHover then
 			closeColor = Colors.red
 		end
 		love.graphics.setColor(closeColor[1], closeColor[2], closeColor[3], opacity)
@@ -185,7 +182,7 @@ function GUIWindow:draw()
 
 		--Resize
 		local resizeColor = Colors.brown
-		if self.resizeHover then 
+		if self.resizeHover then
 			resizeColor = Colors.red
 		end
 		love.graphics.setColor(resizeColor[1], resizeColor[2], resizeColor[3], opacity)

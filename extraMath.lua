@@ -68,12 +68,12 @@ end
 function module.normalize(x,y) local l=(x*x+y*y)^.5 if l==0 then return 0,0,0 else return x/l,y/l,l end end
 
 
--- Returns 'n' rounded to the nearest 'deci'th (defaulting whole numbers).
-function module.round(n, deci) deci = 10^(deci or 0) return math.floor(n*deci+.5)/deci end
+-- Returns 'n' rounded to the nearest decimals (defaulting whole numbers).
+function module.round(n, decimal) decimal = 10^(decimal or 0) return math.floor(n*decimal+.5)/decimal end
 
 
 -- Randomly returns either -1 or 1.
-function module.rsign() return love.math.random(2) == 2 and 1 or -1 end
+function module.rSign() return love.math.random(2) == 2 and 1 or -1 end
 
 
 -- Returns 1 if number is positive, -1 if it's negative, or 0 if it's 0.
@@ -81,7 +81,7 @@ function module.sign(n) return n>0 and 1 or n<0 and -1 or 0 end
 
 
 -- Gives a precise random decimal number given a minimum and maximum
-function module.prandom(min, max) return love.math.random() * (max - min) + min end
+function module.pRandom(min, max) return love.math.random() * (max - min) + min end
 
 
 -- Checks if two line segments intersect. Line segments are given in form of ({x,y},{x,y}, {x,y},{x,y}).

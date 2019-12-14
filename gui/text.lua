@@ -1,22 +1,20 @@
 local GUIElement = require ".gui.element"
 local GUIText = inheritsFrom(GUIElement)
 
-function GUIText:init(parent, text)
-	GUIElement.init(self, parent)
-	self.text = text
-	self.show = true
-	self.enabled = true
-	self.textSize = 0.5
-	self.width = 32
-	self.height = 32
-	self.align = "left"
-	self.opacity = 1
+function GUIText:init(...)
+	GUIElement.init(self, ...)
+	self.text = self:getArgument("text", "")
+	self.textSize = self:getArgument("textSize", 0.5)
+	self.width = self:getArgument("width", 32)
+	self.height = self:getArgument("height", 32)
+	self.align = self:getArgument("align", "left")
+	self.opacity = self:getArgument("opacity", 1)
 
-	self.textColor = Colors.white
+	self.textColor = self:getArgument("textColor", Colors.white)
 end
 
 function GUIText:draw()
-	if self.show then
+	if not self.hide then
 		local opacity = self.opacity
 		local camera = self.system.parent.level.camera
 		local width = math.max(0, self.width)

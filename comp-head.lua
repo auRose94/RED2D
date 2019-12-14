@@ -33,8 +33,8 @@ function HeadComponent:init(parent, data)
 end
 
 function IsTexturePair(table)
-	if	type(table) == "table" and 
-			type(table[1]) == "userdata" and 
+	if	type(table) == "table" and
+			type(table[1]) == "userdata" and
 			type(table[2]) == "userdata" then
 		return true
 	end
@@ -79,7 +79,7 @@ function HeadComponent:loadFaceData(data)
 
 	-- Left Eyes
 	assert(type(left.eyes) == "table", "Missing eyes for left")
-	assert(IsRotation(left.eyes.rotations), "Left eye rotations needs to be a table of rects")
+	assert(IsRotation(left.eyes.rotations), "Left eye rotations needs to be a table of rect")
 	assert(IsTexturePair(left.eyes.dead), "Left eye dead needs to be a rect")
 	assert(IsTexturePair(left.eyes.happy), "Left eye happy needs to be a rect")
 	assert(IsTexturePair(left.eyes.heart), "Left eye heart needs to be a rect")
@@ -103,7 +103,7 @@ function HeadComponent:loadFaceData(data)
 
 	-- Right Eyes
 	assert(type(right.eyes) == "table", "Missing eyes for right")
-	assert(IsRotation(right.eyes.rotations), "Right eye rotations needs to be a table of rects")
+	assert(IsRotation(right.eyes.rotations), "Right eye rotations needs to be a table of rect")
 	assert(IsTexturePair(right.eyes.dead), "Right eye dead needs to be a rect")
 	assert(IsTexturePair(right.eyes.happy), "Right eye happy needs to be a rect")
 	assert(IsTexturePair(right.eyes.heart), "Right eye heart needs to be a rect")
@@ -140,14 +140,14 @@ function HeadComponent:lookAt(...)
 end
 
 function HeadComponent:getAim(invertY)
-	local rdirX, rdirY = self.lookX, self.lookY
+	local rDirX, rDirY = self.lookX, self.lookY
 	local width, height = love.graphics.getPixelDimensions()
 	local dirMag = 300
-	rdirX, rdirY = rdirX*dirMag, rdirY*dirMag
+	rDirX, rDirY = rDirX*dirMag, rDirY*dirMag
 	if invertY then
-		rdirY = -rdirY
+		rDirY = -rDirY
 	end
-	return math.angle(0, 0, rdirX, -rdirY)
+	return math.angle(0, 0, rDirX, -rDirY)
 end
 
 function HeadComponent:update(dt)
@@ -156,11 +156,11 @@ function HeadComponent:update(dt)
 
 	local blinkChange = false
 	local mouthChange = false
-	local emotion = 
-		not self.dead and 
+	local emotion =
+		not self.dead and
 		(self.like or self.heart or self.sad or self.hurt or self.mad)
-	local looking = 
-		not emotion and 
+	local looking =
+		not emotion and
 		(self.lookX ~= self.lookY and self.lookX ~= 0)
 
 	if self.talking then
@@ -220,7 +220,7 @@ function HeadComponent:update(dt)
 		end
 
 		-- Mouth
-		if self.talking then 
+		if self.talking then
 			local change = math.floor(math.cos(now*10)) ~= 0
 			if change then
 				if mouth == faceTable.mouth.close then

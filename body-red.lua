@@ -45,33 +45,33 @@ function module.createPhysics(self)
 end
 
 function NewBase(x, y)
-	return { 
-		baseImage, 
-		love.graphics.newQuad(x, y, 16, 16, baseImage:getPixelDimensions()), 
-		0 
+	return {
+		baseImage,
+		love.graphics.newQuad(x, y, 16, 16, baseImage:getPixelDimensions()),
+		0
 	}
 end
 
 function NewTopArm(x, y)
-	return { 
-		topImage, 
-		love.graphics.newQuad(x, y, 16, 16, topImage:getPixelDimensions()), 
+	return {
+		topImage,
+		love.graphics.newQuad(x, y, 16, 16, topImage:getPixelDimensions()),
 		1
 	}
 end
 
 function NewBottomArm(x, y)
-	return { 
-		bottomImage, 
-		love.graphics.newQuad(x, y, 16, 16, bottomImage:getPixelDimensions()), 
+	return {
+		bottomImage,
+		love.graphics.newQuad(x, y, 16, 16, bottomImage:getPixelDimensions()),
 		-1
 	}
 end
 
 function NewLeg(x, y)
-	return { 
-		legsImage, 
-		love.graphics.newQuad(x, y, 16, 16, legsImage:getPixelDimensions()), 
+	return {
+		legsImage,
+		love.graphics.newQuad(x, y, 16, 16, legsImage:getPixelDimensions()),
 		0
 	}
 end

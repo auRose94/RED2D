@@ -1,6 +1,9 @@
 
 local module = {}
 
+module.defaultMaxDepth = 1
+module.arrayNewlineMin = 4
+
 function module.isStringTable(tableData)
 	assert(type(tableData) == "table", "Needs to be table")
 	for i, v in pairs(tableData) do
@@ -11,19 +14,24 @@ function module.isStringTable(tableData)
 	return false
 end
 
-function module.stringifyArray(array, depth, newLine)
+function module.stringifyArray(array, depth, newLine, maxDepth)
+	maxDepth = maxDepth or module.defaultMaxDepth
 	assert(type(array) == "table", "Needs to be table")
 	local line = "{ "
 	for i, value in pairs(array) do
-		if newLine and #array > 3 then
+		if newLine and #array > module.arrayNewlineMin then
 			line = line.."\n"
 			line = line..string.rep("\t", depth)
 		end
 		if type(value) == "table" then
-			if module.isStringTable(value) then
-				line = line..module.stringify(value, depth+1, newLine)
+			if depth <= maxDepth then
+				if module.isStringTable(value) then
+					line = line..module.stringify(value, depth+1, newLine)
+				else
+					line = line..module.stringifyArray(value, depth, newLine)
+				end
 			else
-				line = line..module.stringifyArray(value, depth, newLine)
+				line = line.."{--[[Table depth exceeded]]--}"
 			end
 		elseif type(value) == "string" then
 			line = line.."\""..value.."\""
@@ -44,7 +52,7 @@ function module.stringifyArray(array, depth, newLine)
 			line = line..", "
 		end
 	end
-	if newLine and #array > 3 then
+	if newLine and #array > module.arrayNewlineMin then
 		line = line.."\n"
 		line = line..string.rep("\t", depth-1)
 	end
@@ -52,7 +60,8 @@ function module.stringifyArray(array, depth, newLine)
 	return line
 end
 
-function module.stringify(tableData, depth, newLine)
+function module.stringify(tableData, depth, newLine, maxDepth)
+	maxDepth = maxDepth or module.defaultMaxDepth
 	assert(type(tableData) == "table", "Needs to be table")
 	depth = depth or 1
 	if not module.isStringTable(tableData) then
@@ -72,7 +81,11 @@ function module.stringify(tableData, depth, newLine)
 		end
 		line = line.."] = "
 		if type(item) == "table" then
-			line = line..module.stringify(item, depth+1, newLine)
+			if depth <= maxDepth then
+				line = line..module.stringify(item, depth+1, newLine)
+			else
+				line = line.."{--[[Table depth exceeded]]--}"
+			end
 		elseif type(item) == "string" then
 			line = line.."\""..item.."\""
 		elseif type(item) == "function" then
@@ -126,9 +139,9 @@ end
 
 function module.convert2HEX(...)
 	local hexadecimal = '#'
-	local rgba = { ... }
-	for key = 1, #rgba do
-		local value = rgba[key]
+	local chanels = { ... }
+	for key = 1, #chanels do
+		local value = chanels[key]
 		local hex = ''
 
 		while(value > 0)do
@@ -147,10 +160,20 @@ function module.convert2HEX(...)
 	return hexadecimal
 end
 
+function module.clone(t)
+	assert(type(t) == "table", "argument not a table")
+  local t2 = {}
+  for k,v in pairs(t) do
+    t2[k] = v
+  end
+  return t2
+end
+
 for key,value in pairs(module) do
 	if type(value) == "function" and _G[key] == nil then
 		_G[key] = value
 	end
 end
+
 
 return module

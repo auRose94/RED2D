@@ -1,25 +1,33 @@
 local GUIElement = require ".gui.element"
 local GUIButton = inheritsFrom(GUIElement)
 
-GUIButton.currentlyActive = nil
+function GUIButton:init(...)
+	GUIElement.init(self, ...)
+	self.text = self:getArgument("text", "")
+	self.hide = self:getArgument("hide", false)
+	self.enabled = self:getArgument("enabled", true)
+	self.textSize = self:getArgument("textSize", 0.5)
+	self.width = self:getArgument("width", 32)
+	self.height = self:getArgument("height", 32)
+	self.borderSize = self:getArgument("borderSize", 1)
 
-function GUIButton:init(parent, text)
-	GUIElement.init(self, parent)
-	self.text = text
-	self.show = true
-	self.enabled = true
-	self.textSize = 0.5
-	self.width = 32
-	self.height = 32
-	self.borderSize = 1
+	self.boxHighlightColor = self:getArgument("boxHighlightColor", Colors.pansy)
+	self.boxPressColor = self:getArgument("boxPressColor", Colors.brown)
+	self.boxColor = self:getArgument("boxColor", Colors.red)
+	self.lineColor = self:getArgument("lineColor", Colors.eggplant)
+	self.textColor = self:getArgument("textColor", Colors.white)
+	self.activeColor = self:getArgument("activeColor", Colors.magenta)
+	self.disabledColor = self:getArgument("disabledColor", Colors.brown)
 
-	self.boxHighlightColor = Colors.pansy
-	self.boxPressColor = Colors.brown  
-	self.boxColor = Colors.red
-	self.lineColor = Colors.eggplant
-	self.textColor = Colors.white
-	self.activeColor = Colors.magenta
-	self.disabledColor = Colors.brown
+	local onLeftClickFunc = self:getArgument("onLeftClick", nil)
+	if onLeftClickFunc then
+		self:onLeftClick(onLeftClickFunc)
+	end
+
+	local onRightClickFunc = self:getArgument("onRightClick", nil)
+	if onRightClickFunc then
+		self:onLeftClick(onRightClickFunc)
+	end
 end
 
 function GUIButton:update(dt)
@@ -35,20 +43,15 @@ function GUIButton:update(dt)
 		local cx, cy = transform:transformPoint(centerX, centerY)
 		local shape = love.physics.newRectangleShape(cx, cy, width, height, camera.r)
 		self.hover = shape:testPoint(0, 0, 0, mouseX, mouseY)
-	
-		local lastLeftSelect = self.lastLeftSelect
-		local lastRightSelect = self.lastRightSelect
-		self.lastLeftSelect = self:getGUISelectControl()
-		self.lastRightSelect = self:getGUISecondaryControl()
 		
-		if self.hover and lastLeftSelect and not self.lastLeftSelect then
+		if self.hover and self:getGUISelectControl():pressed() then
 			if self.onLeftClickFunc then
 				self:makeActive()
 				self.onLeftClickFunc()
 			end
 		end
 	
-		if self.hover and lastRightSelect and not self.lastRightSelect then
+		if self.hover and self:getGUISecondaryControl():pressed() then
 			if self.onRightClickFunc then
 				self:makeActive()
 				self.onRightClickFunc()
@@ -58,7 +61,7 @@ function GUIButton:update(dt)
 end
 
 function GUIButton:draw()
-	if self.show then
+	if not self.hide then
 		local opacity = self.opacity
 		local width = math.max(0, self.width)
 		local height = math.max(0, self.height)
@@ -77,9 +80,9 @@ function GUIButton:draw()
 		local camera = self.system.parent.level.camera
 
 		love.graphics.replaceTransform(camera:getTransform() * transform)
-		
+
 		if self.enabled and self.hover and (self.onRightClickFunc or self.onLeftClickFunc) then
-			if self.lastSelect then
+			if self:getGUISelectControl():pressed() or self:getGUISecondaryControl():pressed() then
 				boxColor = self.boxPressColor
 			else
 				boxColor = self.boxHighlightColor
@@ -104,9 +107,9 @@ end
 function GUIButton:onRightClick(func)
 	if func ~= nil and type(self.onClickFunc) == "function" then
 		local old = self.onRightClickFunc
-		self.onRightClickFunc = function() 
-			old()
-			func()
+		self.onRightClickFunc = function()
+			old(self)
+			func(self)
 		end
 	else
 		self.onRightClickFunc = func
@@ -116,9 +119,9 @@ end
 function GUIButton:onLeftClick(func)
 	if func ~= nil and type(self.onClickFunc) == "function" then
 		local old = self.onLeftClickFunc
-		self.onLeftClickFunc = function() 
-			old()
-			func()
+		self.onLeftClickFunc = function()
+			old(self)
+			func(self)
 		end
 	else
 		self.onLeftClickFunc = func

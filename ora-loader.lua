@@ -15,7 +15,7 @@ function GetLastModified(fileName)
 end
 
 function OraLoader:init(fileName)
-	assert(type(fileName) == "string", 
+	assert(type(fileName) == "string",
 		"missing fileName! "..type(fileName).." given!")
 	self.layers = {}
 	self:load(fileName)

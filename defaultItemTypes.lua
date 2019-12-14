@@ -107,7 +107,7 @@ local ItemTypes = {
 			{1, 26, 29, 18},
 			{1, 46, 29, 18}
 		},
-		["typeID"] = "balistic",
+		["typeID"] = "ballistic",
 		["crosshairType"] = 0,
 		["crosshairFrames"] = {
 			{35, 1, 3, 2}, -- Top

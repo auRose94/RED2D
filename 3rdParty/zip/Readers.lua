@@ -22,8 +22,8 @@ Readers[0x02014b50] = function (self)
 		centralFileData.BitFlags = self:ReadBits(16)
 		--[[
 			Bit 00: encrypted file
-			Bit 01: compression option 
-			Bit 02: compression option 
+			Bit 01: compression option
+			Bit 02: compression option
 			Bit 03: data descriptor
 			Bit 04: enhanced deflation
 			Bit 05: compressed patched data
@@ -96,8 +96,8 @@ Readers[0x04034b50] = function (self)
 		--[[
 			General purpose bit flag:
 			Bit 00: encrypted file
-			Bit 01: compression option 
-			Bit 02: compression option 
+			Bit 01: compression option
+			Bit 02: compression option
 			Bit 03: data descriptor
 			Bit 04: enhanced deflation
 			Bit 05: compressed patched data

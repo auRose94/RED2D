@@ -24,7 +24,7 @@ module.right = {
 	eyes = {
 		rotations = {
 			NewQuad(0, 0, 1),
-			NewQuad(17, 0, 1), 
+			NewQuad(17, 0, 1),
 			NewQuad(34, 0, 1),
 			NewQuad(51, 0, 1),
 			NewQuad(68, 0, 1),
@@ -55,7 +55,7 @@ module.left = {
 	eyes = {
 		rotations = {
 			NewQuad(0, 10, 1),
-			NewQuad(17, 10, 1), 
+			NewQuad(17, 10, 1),
 			NewQuad(34, 10, 1),
 			NewQuad(51, 10, 1),
 			NewQuad(68, 10, 1),

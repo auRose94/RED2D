@@ -73,25 +73,25 @@ end
 
 --[[
 	0 - MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)
-	1 - Amiga 
+	1 - Amiga
 	2 - OpenVMS
-	3 - UNIX 
+	3 - UNIX
 	4 - VM/CMS
 	5 - Atari ST
 	6 - OS/2 H.P.F.S.
-	7 - Macintosh 
+	7 - Macintosh
 	8 - Z-System
-	9 - CP/M 
+	9 - CP/M
 	10 - Windows NTFS
-	11 - MVS (OS/390 - Z/OS) 
+	11 - MVS (OS/390 - Z/OS)
 	12 - VSE
-	13 - Acorn Risc 
+	13 - Acorn Risc
 	14 - VFAT
-	15 - alternate MVS 
+	15 - alternate MVS
 	16 - BeOS
-	17 - Tandem 
+	17 - Tandem
 	18 - OS/400
-	19 - OS/X (Darwin) 
+	19 - OS/X (Darwin)
 	20 - 255: unused
 ]]
 function File:SetVersion(Version)
@@ -152,30 +152,30 @@ end
 	Note:  Bits 1 and 2 are undefined if the compression
 			method is any other.
 
-	Bit 3: If this bit is set, the fields crc-32, compressed 
-			size and uncompressed size are set to zero in the 
-			local header.  The correct values are put in the 
+	Bit 3: If this bit is set, the fields crc-32, compressed
+			size and uncompressed size are set to zero in the
+			local header.  The correct values are put in the
 			data descriptor immediately following the compressed
-			data.  (Note: PKZIP version 2.04g for DOS only 
-			recognizes this bit for method 8 compression, newer 
-			versions of PKZIP recognize this bit for any 
+			data.  (Note: PKZIP version 2.04g for DOS only
+			recognizes this bit for method 8 compression, newer
+			versions of PKZIP recognize this bit for any
 			compression method.)
 
 	Bit 4: Reserved for use with method 8, for enhanced
-			deflating. 
+			deflating.
 
-	Bit 5: If this bit is set, this indicates that the file is 
-			compressed patched data.  (Note: Requires PKZIP 
+	Bit 5: If this bit is set, this indicates that the file is
+			compressed patched data.  (Note: Requires PKZIP
 			version 2.70 or greater)
 
 	Bit 6: Strong encryption.  If this bit is set, you MUST
 			set the version needed to extract value to at least
 			50 and you MUST also set bit 0.  If AES encryption
-			is used, the version needed to extract value MUST 
+			is used, the version needed to extract value MUST
 			be at least 51. See the section describing the Strong
-			Encryption Specification for details.  Refer to the 
-			section in this document entitled "Incorporating PKWARE 
-			Proprietary Technology into Your Product" for more 
+			Encryption Specification for details.  Refer to the
+			section in this document entitled "Incorporating PKWARE
+			Proprietary Technology into Your Product" for more
 			information.
 
 	Bit 7: Currently unused.
@@ -192,12 +192,12 @@ end
 
 	Bit 12: Reserved by PKWARE for enhanced compression.
 
-	Bit 13: Set when encrypting the Central Directory to indicate 
+	Bit 13: Set when encrypting the Central Directory to indicate
 			 selected data values in the Local Header are masked to
-			 hide their actual values.  See the section describing 
+			 hide their actual values.  See the section describing
 			 the Strong Encryption Specification for details.  Refer
-			 to the section in this document entitled "Incorporating 
-			 PKWARE Proprietary Technology into Your Product" for 
+			 to the section in this document entitled "Incorporating
+			 PKWARE Proprietary Technology into Your Product" for
 			 more information.
 
 	Bit 14: Reserved by PKWARE.

@@ -21,7 +21,7 @@ function InputController:init(player)
 end
 
 function InputController:isKeyboardMouse()
-	return self.keyboard and (self.mouse or self.touch) 
+	return self.keyboard and (self.mouse or self.touch)
 end
 
 function InputController:isJoystick()
@@ -120,7 +120,7 @@ function InputController:getMouseValue()
 		end
 		-- if mouse button
 		if mouse.button then
-			value = love.mouse.isDown(mouse.button)
+			value = InputController.convert(love.mouse.isDown(mouse.button))
 		end
 	end
 	return value
@@ -153,11 +153,7 @@ function InputController:getKeyboardValue()
 			value = love.keyboard.isDown(key, unpack(alts))
 		end
 	end
-	if value == true or value == 1 then
-		return 1
-	elseif value == false or value == 0 then
-		return 0
-	end
+	value = InputController.convert(value)
 	return value
 end
 
@@ -180,18 +176,14 @@ function InputController:getJoystickValue()
 				elseif type(button) == "string" then
 					value = joystick:isGamepadDown(button)
 				end
-				if value == true or value == 1 then
-					return 1
-				elseif value == false or value == 0 then
-					return 0
-				end
+				value = InputController.convert(value)
 			end
 
 			if axis then
 				-- if table of axises or single axis
 				if type(axis) == "table" and #axis == 2 then
-					local ax, ay = 
-						joystick:getGamepadAxis(axis[1]), 
+					local ax, ay =
+						joystick:getGamepadAxis(axis[1]),
 						joystick:getGamepadAxis(axis[2])
 					if type(axisMin) == "number" then
 						local dist = math.dist(0, 0, ax, ay)
@@ -260,6 +252,14 @@ function InputController:update(dt)
 	return self.value
 end
 
+function InputController.convert(value)
+	if value == true or value == 1 then
+		return 1
+	elseif value == false or value == 0 then
+		return 0
+	end
+end
+
 function InputController:boolean()
 	if self.value == false or self.value == 0 then
 		return false
@@ -297,7 +297,7 @@ function InputController:held()
 		end
 		return changed
 	elseif vType == "table" and (
-				lvType == "number" or 
+				lvType == "number" or
 				self.lastValue == nil
 			) then
 		return true
@@ -315,7 +315,7 @@ function InputController:changed()
 		end
 		return false
 	elseif type(self.value) == "table" and (
-				type(self.lastValue) == "number" or 
+				type(self.lastValue) == "number" or
 				self.lastValue == nil
 			) then
 		return true
