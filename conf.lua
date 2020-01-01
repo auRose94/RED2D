@@ -4,11 +4,18 @@ require "colors"
 require "utility"
 
 local paths = love.filesystem.getRequirePath()
-paths = paths..";lua_modules/share/lua/5.3/?.lua"
-paths = paths..";lua_modules/share/lua/5.3/?/init.lua"
+paths = paths..";lua_modules/share/lua/5.1/?.lua"
+paths = paths..";lua_modules/share/lua/5.1/?/init.lua"
 love.filesystem.setRequirePath(paths)
+local cPath = love.filesystem.getCRequirePath( )
+cPath = cPath..";3rdParty/build/??"
+love.filesystem.setCRequirePath(cPath)
 
 _G.debugDrawPhysics = false
+_G.showDebugTools = true
+_G.showGUIDemo = true
+_G.showFPS = true
+
 
 function love.conf(t)
 	t.identity = "RED2D"								-- The name of the save directory (string)

@@ -1,4 +1,4 @@
-
+local imgui = require "imgui"
 local input = {}
 
 input.joysticks = {}
@@ -17,7 +17,7 @@ local InputController = inheritsFrom()
 function InputController:init(player)
 	self.player = player
 	self.value = 0
-	self.lastValue  = 0
+	self.lastValue = 0
 end
 
 function InputController:isKeyboardMouse()
@@ -94,7 +94,7 @@ function InputController:getTouchValue()
 			local first = touches[1]
 			local x, y = love.touch.getPosition(first)
 			local pressure = love.touch.getPressure(first)
-			value = { x, y, pressure }
+			value = {x, y, pressure}
 			if pressureMin ~= nil then
 				if pressureMin > pressure then
 					value = 0
@@ -110,17 +110,19 @@ function InputController:getMouseValue()
 	local value = 0
 	local mouse = self.mouse
 	if mouse then
-		-- if mouse axis
-		if mouse.axis == 1 or mouse.axis == "x" then
-			value = love.mouse.getX()
-		elseif mouse.axis == 2 or mouse.axis == "y" then
-			value = love.mouse.getY()
-		elseif mouse.axis == "xy" then
-			value = { love.mouse.getPosition() }
-		end
-		-- if mouse button
-		if mouse.button then
-			value = InputController.convert(love.mouse.isDown(mouse.button))
+		if not imgui.GetWantCaptureMouse() then
+			-- if mouse axis
+			if mouse.axis == 1 or mouse.axis == "x" then
+				value = love.mouse.getX()
+			elseif mouse.axis == 2 or mouse.axis == "y" then
+				value = love.mouse.getY()
+			elseif mouse.axis == "xy" then
+				value = {love.mouse.getPosition()}
+			end
+			-- if mouse button
+			if mouse.button then
+				value = InputController.convert(love.mouse.isDown(mouse.button))
+			end
 		end
 	end
 	return value
@@ -131,26 +133,28 @@ function InputController:getKeyboardValue()
 	local value = 0
 	local keyboard = self.keyboard
 	if keyboard then
-		local alts = {}
-		-- scancode overides key
-		if keyboard.scancode then
-			local scancode = keyboard.scancode
-			local altScancode = keyboard.altScancode
-			if type(altScancode) == "table" then
-				alts = altScancode
-			elseif type(altScancode) == "string" then
-				alts = { altScancode }
+		if not imgui.GetWantCaptureKeyboard() and not imgui.GetWantTextInput() then
+			local alts = {}
+			-- scancode overides key
+			if keyboard.scancode then
+				local scancode = keyboard.scancode
+				local altScancode = keyboard.altScancode
+				if type(altScancode) == "table" then
+					alts = altScancode
+				elseif type(altScancode) == "string" then
+					alts = {altScancode}
+				end
+				value = love.keyboard.isScancodeDown(scancode, unpack(alts))
+			elseif keyboard.key then
+				local key = keyboard.key
+				local altKey = keyboard.altKey
+				if type(altKey) == "table" then
+					alts = altKey
+				elseif type(altKey) == "string" then
+					alts = {altKey}
+				end
+				value = love.keyboard.isDown(key, unpack(alts))
 			end
-			value = love.keyboard.isScancodeDown(scancode, unpack(alts))
-		elseif keyboard.key then
-			local key = keyboard.key
-			local altKey = keyboard.altKey
-			if type(altKey) == "table" then
-				alts = altKey
-			elseif type(altKey) == "string" then
-				alts = { altKey }
-			end
-			value = love.keyboard.isDown(key, unpack(alts))
 		end
 	end
 	value = InputController.convert(value)
@@ -182,9 +186,7 @@ function InputController:getJoystickValue()
 			if axis then
 				-- if table of axises or single axis
 				if type(axis) == "table" and #axis == 2 then
-					local ax, ay =
-						joystick:getGamepadAxis(axis[1]),
-						joystick:getGamepadAxis(axis[2])
+					local ax, ay = joystick:getGamepadAxis(axis[1]), joystick:getGamepadAxis(axis[2])
 					if type(axisMin) == "number" then
 						local dist = math.dist(0, 0, ax, ay)
 						if axisMin > dist then
@@ -296,10 +298,7 @@ function InputController:held()
 			end
 		end
 		return changed
-	elseif vType == "table" and (
-				lvType == "number" or
-				self.lastValue == nil
-			) then
+	elseif vType == "table" and (lvType == "number" or self.lastValue == nil) then
 		return true
 	end
 end
@@ -314,10 +313,7 @@ function InputController:changed()
 			end
 		end
 		return false
-	elseif type(self.value) == "table" and (
-				type(self.lastValue) == "number" or
-				self.lastValue == nil
-			) then
+	elseif type(self.value) == "table" and (type(self.lastValue) == "number" or self.lastValue == nil) then
 		return true
 	end
 end
@@ -350,8 +346,8 @@ end
 
 function input.getInput(player, name)
 	-- Returns the first and last input of something
-	assert(type(player) == "number", "Player index required, "..type(player).." given")
-	assert(type(name) == "string", "Input name needs to be string, "..type(name).." given")
+	assert(type(player) == "number", "Player index required, " .. type(player) .. " given")
+	assert(type(name) == "string", "Input name needs to be string, " .. type(name) .. " given")
 	local players = input.players
 	local playerInputs = players[player]
 	if player <= #players and playerInputs then
@@ -380,6 +376,41 @@ function input.update(dt)
 			item:update(dt)
 		end
 	end
+end
+
+function love.textinput(t)
+	imgui.TextInput(t)
+end
+
+function love.keypressed(key)
+	imgui.KeyPressed(key)
+	if not imgui.GetWantCaptureKeyboard() then
+		if key == "`" then
+			showDebugTools = not showDebugTools
+		elseif key == "f4" then
+			showFPS = not showFPS
+		end
+	end
+end
+
+function love.keyreleased(key)
+	imgui.KeyReleased(key)
+end
+
+function love.mousemoved(x, y)
+	imgui.MouseMoved(x, y)
+end
+
+function love.mousepressed(x, y, button)
+	imgui.MousePressed(button)
+end
+
+function love.mousereleased(x, y, button)
+	imgui.MouseReleased(button)
+end
+
+function love.wheelmoved(x, y)
+	imgui.WheelMoved(y)
 end
 
 _G.input = input

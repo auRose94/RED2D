@@ -2,6 +2,10 @@ local ComponentClass = require "component"
 
 local HeadComponent = inheritsFrom(ComponentClass)
 
+function HeadComponent:getName()
+	return "HeadComponent"
+end
+
 function HeadComponent:init(parent, data)
 	ComponentClass.init(self, parent)
 	self.direction = 1 -- 0 or more equals right, 0 or less equals left

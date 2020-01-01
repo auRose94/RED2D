@@ -3,6 +3,10 @@ local PhysicsComponent = require "comp-physics"
 local WeaponComponent = require "comp-weapon"
 local BodyComponent = inheritsFrom(ComponentClass)
 
+function BodyComponent:getName()
+	return "BodyComponent"
+end
+
 function BodyComponent:init(parent, data)
 	ComponentClass.init(self, parent)
 	self.direction = 1
@@ -23,7 +27,7 @@ function BodyComponent:init(parent, data)
 	self.touchAngle = 0.005
 	self.knockOutSpeed = 1500
 	self.topSpeed = 600
-	self.rotSpeed = 40
+	self.rotSpeed = 10
 	self.speedSkew = 0.125
 	self.health = 10
 	self.maxHealth = 10
@@ -435,7 +439,7 @@ function BodyComponent:update(dt)
 	self.rightHand:setPosition(rightPoint)
 
 	local fromTop = self.topSpeed - speed
-	local speedMultiplier = self.topSpeed / fromTop
+	local speedMultiplier = math.min(1, self.topSpeed / fromTop)
 	local walkingFrameStep = now - (self.walkingFrameSpeed * dt) * speedMultiplier
 	local legsAnimation = faceTable.legs.animation
 	if standing and math.abs(lvx) > 1 and math.abs(lvy) < 10 then

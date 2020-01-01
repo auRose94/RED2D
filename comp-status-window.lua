@@ -1,122 +1,93 @@
-
-local GUISystem = require ".gui.system"
-local GUIElement = require ".gui.element"
-local GUIWindow = require ".gui.window"
-local GUIImage = require ".gui.image"
-local GUIText = require ".gui.text"
-local GUIButton = require ".gui.button"
-local GUIScroll = require ".gui.scroll"
-local GUIDropdown = require ".gui.dropdown"
+local imgui = require "imgui"
 local InventoryClass = require "comp-inventory"
-local StatusWindow = inheritsFrom(GUISystem)
-
-function StatusWindow:init(parent)
-	GUISystem.init(self, parent)
-	self.inventory = parent:getComponent(InventoryClass)
-	self.player = parent:getComponent(PlayerComponent or require "comp-player")
-	local window = GUIWindow(self, {
-		title = "Status",
-		maxWidth = 600,
-		maxHeight = nil
-	})
-
-	local statusButton = GUIButton(window, {
-		text = "Status",
-		width = 100,
-		onLeftClick = function(button)
-			self:changeTo("status")
-		end
-	})
-	local inventoryButton = GUIButton(window, {
-		text = "Inventory",
-		x = 100,
-		width = 100,
-		onLeftClick = function(button)
-			self:changeTo("inventory")
-		end
-	})
-	local questsButton = GUIButton(window, {
-		text = "Quests",
-		x = 200,
-		width = 100,
-		onLeftClick = function(button)
-			self:changeTo("quests")
-		end
-	})
-
-	local rootUpdate = function(element)
-		element.width, element.height = self:getRootSize()
-	end
-	local statusRoot = GUIElement(window, {
-		y = 32,
-		onUpdate = rootUpdate
-	})
-	local inventoryRoot = GUIElement(window, {
-		y = 32,
-		onUpdate = rootUpdate
-	})
-	local questsRoot = GUIElement(window, {
-		y = 32,
-		onUpdate = rootUpdate
-	})
-
-	local categoryDropdown = GUIDropdown(inventoryRoot, {
-		text = "Category",
-		width = 100
-	})
-	local categoryMenu = categoryDropdown:newMenu({
-		width = 100,
-		height = 32*5
-	},
-		GUIButton({ text = "Weapon" }),
-		GUIButton({ text = "Accessory", y = 32 }),
-		GUIButton({ text = "Assistive", y = 32*2 }),
-		GUIButton({ text = "Quest", y = 32*3 }),
-		GUIButton({ text = "Miscellaneous", y = 32*4 })
-	)
-
-	self.window = window
-	self.buttons = {}
-	self.currentButton = statusButton
-	self.buttons.status = statusButton
-	self.buttons.inventory = inventoryButton
-	self.buttons.quests = questsButton
-
-	self.inventory = {}
-	self.inventory.categoryMenu = categoryMenu
-
-	self.roots = {}
-	self.currentRoot = statusRoot
-	self.roots.status = statusRoot
-	self.roots.inventory = inventoryRoot
-	self.roots.quests = questsRoot
-	self:changeTo("status")
-end
-
-function StatusWindow:changeTo(mode)
-	local last = self.currentRoot
-	last.enabled = false
-	last.hide = true
-	local lastButton = self.currentButton or self.statusButton
-	lastButton.enabled = true
-	self.currentButton = self.buttons[mode] or self.currentButton
-	self.currentButton:makeActive()
-	self.currentButton.enabled = false
-	self.currentRoot = self.roots[mode] or last
-	self.currentRoot.enabled = true
-	self.currentRoot.hide = false
-end
-
-function StatusWindow:getRootSize()
-	return self.window.width, self.window.height-32
-end
+local ComponentClass = require "component"
+local StatusWindow = inheritsFrom(ComponentClass)
 
 function StatusWindow:getName()
 	return "StatusWindow"
 end
 
+function StatusWindow:init(parent)
+	ComponentClass.init(self, parent)
+	self.inventory = self:getComponent(InventoryClass)
+	self.player = self:getComponent(PlayerComponent or require "comp-player")
+
+	self.showWindow = true
+	self.state = {
+		current = "status",
+		inventory = {
+			category = 1, --> Any
+			sort = 1,
+			selected = {}
+		}
+	}
+end
+
 function StatusWindow:toggleWindow()
-	self.window:toggleWindow()
+	self.showWindow = not self.showWindow
+end
+
+function StatusWindow:draw()
+	if self.showWindow then
+		self.showWindow = imgui.Begin("Status", true, {"ImGuiWindowFlags_AlwaysAutoResize", "ImGuiWindowFlags_MenuBar"})
+
+		self.showBar = imgui.BeginMenuBar()
+		if self.showBar then
+			if imgui.RadioButton("Status", self.state.current == "status") then
+				self.state.current = "status"
+			end
+
+			if imgui.RadioButton("Inventory", self.state.current == "inventory") then
+				self.state.current = "inventory"
+			end
+
+			if imgui.RadioButton("Quests", self.state.current == "quests") then
+				self.state.current = "quests"
+			end
+			imgui.EndMenuBar()
+		end
+
+		if self.state.current == "status" then
+		elseif self.state.current == "inventory" then
+			self.state.inventory.category =
+				imgui.Combo(
+				"Category",
+				self.state.inventory.category,
+				{"Any", "Weapons", "Accessories", "Aid", "Tool", "Ammunition", "Junk", "Quest"},
+				6
+			)
+			imgui.SameLine()
+			self.state.inventory.sort =
+				imgui.Combo(
+				"Sort",
+				self.state.inventory.sort,
+				{
+					"Name",
+					"Weight",
+					"Price",
+					"Rarity",
+					"Count"
+				},
+				5
+			)
+			if self.inventory.items then
+				if imgui.ListBoxHeader("") then
+					for index, v in ipairs(self.inventory.items) do
+						local count, item = unpack(v)
+						local name = item.name
+						if count > 1 then
+							name = name .. " (" .. count .. ")"
+						end
+						self.state.inventory.selected[index] = imgui.Selectable(name, self.state.inventory.selected[index])
+					end
+					imgui.ListBoxFooter()
+				end
+			end
+		elseif self.state.current == "quests" then
+		end
+
+		imgui.End()
+	end
 end
 
 return StatusWindow

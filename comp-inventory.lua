@@ -1,5 +1,4 @@
 local ComponentClass = require "component"
-local InventoryWindow = require "comp-inventory-window"
 local InventoryClass = inheritsFrom(ComponentClass)
 local ItemClass = require "comp-item"
 local WeaponClass = require "comp-weapon"
