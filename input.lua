@@ -1,4 +1,4 @@
-local imgui = require "imgui"
+local imgui = require"imgui"
 local input = {}
 
 input.joysticks = {}
@@ -94,7 +94,7 @@ function InputController:getTouchValue()
 			local first = touches[1]
 			local x, y = love.touch.getPosition(first)
 			local pressure = love.touch.getPressure(first)
-			value = {x, y, pressure}
+			value = { x, y, pressure }
 			if pressureMin ~= nil then
 				if pressureMin > pressure then
 					value = 0
@@ -117,7 +117,7 @@ function InputController:getMouseValue()
 			elseif mouse.axis == 2 or mouse.axis == "y" then
 				value = love.mouse.getY()
 			elseif mouse.axis == "xy" then
-				value = {love.mouse.getPosition()}
+				value = { love.mouse.getPosition() }
 			end
 			-- if mouse button
 			if mouse.button then
@@ -142,7 +142,7 @@ function InputController:getKeyboardValue()
 				if type(altScancode) == "table" then
 					alts = altScancode
 				elseif type(altScancode) == "string" then
-					alts = {altScancode}
+					alts = { altScancode }
 				end
 				value = love.keyboard.isScancodeDown(scancode, unpack(alts))
 			elseif keyboard.key then
@@ -151,7 +151,7 @@ function InputController:getKeyboardValue()
 				if type(altKey) == "table" then
 					alts = altKey
 				elseif type(altKey) == "string" then
-					alts = {altKey}
+					alts = { altKey }
 				end
 				value = love.keyboard.isDown(key, unpack(alts))
 			end
@@ -186,14 +186,16 @@ function InputController:getJoystickValue()
 			if axis then
 				-- if table of axises or single axis
 				if type(axis) == "table" and #axis == 2 then
-					local ax, ay = joystick:getGamepadAxis(axis[1]), joystick:getGamepadAxis(axis[2])
+					local ax, ay =
+						joystick:getGamepadAxis(axis[1]),
+						joystick:getGamepadAxis(axis[2])
 					if type(axisMin) == "number" then
 						local dist = math.dist(0, 0, ax, ay)
 						if axisMin > dist then
 							value = 0
 						end
 					end
-					return {ax, ay}
+					return { ax, ay }
 				elseif type(axis) == "number" or type(axis) == "string" then
 					value = joystick:getGamepadAxis(axis)
 					if type(direction) == "number" then
@@ -313,7 +315,9 @@ function InputController:changed()
 			end
 		end
 		return false
-	elseif type(self.value) == "table" and (type(self.lastValue) == "number" or self.lastValue == nil) then
+	elseif type(self.value) == "table" and (type(
+		self.lastValue
+	) == "number" or self.lastValue == nil) then
 		return true
 	end
 end
@@ -346,8 +350,14 @@ end
 
 function input.getInput(player, name)
 	-- Returns the first and last input of something
-	assert(type(player) == "number", "Player index required, " .. type(player) .. " given")
-	assert(type(name) == "string", "Input name needs to be string, " .. type(name) .. " given")
+	assert(
+		type(player) == "number",
+		"Player index required, " .. type(player) .. " given"
+	)
+	assert(
+		type(name) == "string",
+		"Input name needs to be string, " .. type(name) .. " given"
+	)
 	local players = input.players
 	local playerInputs = players[player]
 	if player <= #players and playerInputs then

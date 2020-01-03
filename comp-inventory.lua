@@ -1,7 +1,7 @@
-local ComponentClass = require "component"
+local ComponentClass = require"component"
 local InventoryClass = inheritsFrom(ComponentClass)
-local ItemClass = require "comp-item"
-local WeaponClass = require "comp-weapon"
+local ItemClass = require"comp-item"
+local WeaponClass = require"comp-weapon"
 local renderBoundingBox = false
 
 function InventoryClass:getName()
@@ -45,8 +45,8 @@ end
 function InventoryClass:getBoundingBox()
 	local cx, cy = self:getPosition()
 	local scale = 600
-	local tx, ty = cx-(scale), cy-(scale)
-	local bx, by = cx+(scale), cy+(scale)
+	local tx, ty = cx - scale, cy - scale
+	local bx, by = cx + scale, cy + scale
 	return tx, ty, bx, by
 end
 
@@ -61,9 +61,7 @@ function InventoryClass:findIndex(item)
 end
 
 function InventoryClass:subtract(item, number)
-	if number == 0 or item == nil then
-		return
-	end
+	if number == 0 or item == nil then return end
 	local found = self:findIndex(item)
 	if found then
 		local current = self.items[found][1]
@@ -78,19 +76,22 @@ function InventoryClass:subtract(item, number)
 end
 
 function InventoryClass:drop(item, number)
-	if number > 0 then
-		local level = self.parent.level
-		local found = self:findIndex(item)
-		if found then
-			local count = math.max(self.items[found][1], number)
-			local dx, dy = self.entity:getPosition()
-			local dropEntity = EntityClass(level, item.name, dx, dy)
-			local dropped = ItemClass(dropEntity, item.typeName)
-			dropped.count = number
-			self.items[found][1] = self.items[found][1] - count
-			if self.items[found][1] <= 0 then
-				table.remove(self.item, found)
-			end
+	number = number or 1
+	local level = self.parent.level
+	local found = self:findIndex(item)
+	if found then
+		local count = math.max(1, math.min(self.items[found][1], number))
+		local dx, dy = self.entity:getPosition()
+		local dropEntity = EntityClass(level, item.name, dx, dy)
+		local dropped = item:class()(dropEntity, item.typeName)
+		dropped.count = number
+		local newCount = self.items[found][1] - count
+		self.items[found][1] = newCount
+		if newCount == 0 and item:canEquip() and item:isEquipped() then
+			item:unequip()
+		end
+		if newCount <= 0 then
+			table.remove(self.items, found)
 		end
 	end
 end
@@ -115,7 +116,7 @@ function InventoryClass:update(dt)
 	local pickup = self.pickup
 
 	function Q(fixture)
-		local cat1, cat2 = fixture:getCategory( )
+		local cat1, cat2 = fixture:getCategory()
 		if cat1 == 2 or cat2 == 2 then
 			local body = fixture:getBody()
 			local parent = body:getUserData()
@@ -154,9 +155,13 @@ function InventoryClass:draw()
 	if renderBoundingBox then
 		local tx, ty, bx, by = self:getBoundingBox()
 		love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
-		love.graphics.rectangle("fill",
-		tx, ty,
-		math.abs(tx - bx), math.abs(ty - by) )
+		love.graphics.rectangle(
+			"fill",
+			tx,
+			ty,
+			math.abs(tx - bx),
+			math.abs(ty - by)
+		)
 	end
 end
 

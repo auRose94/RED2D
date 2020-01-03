@@ -1,19 +1,18 @@
-local imgui = require "imgui"
-local imguiStyle = require "gui-style"
+local imgui = require"imgui"
+local imguiStyle = require"gui-style"
 love.graphics.setDefaultFilter("linear", "nearest")
 
-local CameraClass = require "camera"
-local LevelClass = require "level"
-local TestingLevel = require ".levels.testing"
-local input = require "input"
+local CameraClass = require"camera"
+local LevelClass = require"level"
+local TestingLevel = require".levels.testing"
+local input = require"input"
+local EditorWindow = require"tree-editor-window"
 
 local level = nil
 
 function love.load()
-
 	imgui.Init()
 	imguiStyle.load()
-
 	level = TestingLevel()
 end
 
@@ -26,11 +25,11 @@ function love.update(dt)
 	imgui.NewFrame()
 	level:update(dt)
 	input.update(dt)
+	collectgarbage()
 end
 
 function love.draw()
-	local w,
-		h = love.graphics.getPixelDimensions()
+	local w, h = love.graphics.getPixelDimensions()
 	love.graphics.setBackgroundColor(colors.black)
 	level.camera:dispatch()
 
@@ -44,6 +43,7 @@ function love.draw()
 	if showDebugTools then
 		if imgui.BeginMainMenuBar() then
 			if imgui.BeginMenu("Tools") then
+				showTreeEditor = imgui.Checkbox("Show Tree Editor", showTreeEditor)
 				showDebugTools = imgui.Checkbox("Show Debug Tools", showDebugTools)
 				showGUIDemo = imgui.Checkbox("Show GUI Demo", showGUIDemo)
 				showFPS = imgui.Checkbox("Show FPS", showFPS)
@@ -54,6 +54,10 @@ function love.draw()
 		if showGUIDemo then
 			showGUIDemo = imgui.ShowDemoWindow(true)
 		end
+	end
+
+	if showTreeEditor then
+		showTreeEditor = EditorWindow.draw(level)
 	end
 
 	-- Very important... this effects imgui

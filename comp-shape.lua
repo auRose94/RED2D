@@ -1,5 +1,4 @@
-
-local ComponentClass = require "component"
+local ComponentClass = require"component"
 local ShapeComponent = inheritsFrom(ComponentClass)
 
 function ShapeComponent:init(parent)
@@ -32,8 +31,8 @@ function ShapeComponent:computeMass(density)
 end
 
 function ShapeComponent:getChildCount()
- assert(self.shape)
- return self.shape:getChildCount()
+	assert(self.shape)
+	return self.shape:getChildCount()
 end
 
 function ShapeComponent:getRadius()
@@ -46,7 +45,17 @@ function ShapeComponent:getType()
 	return self.shape:getType()
 end
 
-function ShapeComponent:rayCast(x1, y1, x2, y2, maxFraction, tx, ty, tr, childIndex)
+function ShapeComponent:rayCast(
+x1,
+	y1,
+	x2,
+	y2,
+	maxFraction,
+	tx,
+	ty,
+	tr,
+	childIndex
+)
 	assert(self.shape)
 	return self.shape:rayCast(x1, y1, x2, y2, maxFraction, tx, ty, tr, childIndex)
 end

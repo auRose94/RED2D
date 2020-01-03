@@ -1,4 +1,3 @@
-
 local module = {}
 
 module.defaultMaxDepth = 1
@@ -20,43 +19,43 @@ function module.stringifyArray(array, depth, newLine, maxDepth)
 	local line = "{ "
 	for i, value in pairs(array) do
 		if newLine and #array > module.arrayNewlineMin then
-			line = line.."\n"
-			line = line..string.rep("\t", depth)
+			line = line .. "\n"
+			line = line .. string.rep("\t", depth)
 		end
 		if type(value) == "table" then
 			if depth <= maxDepth then
 				if module.isStringTable(value) then
-					line = line..module.stringify(value, depth+1, newLine)
+					line = line .. module.stringify(value, depth + 1, newLine)
 				else
-					line = line..module.stringifyArray(value, depth, newLine)
+					line = line .. module.stringifyArray(value, depth, newLine)
 				end
 			else
-				line = line.."{--[[Table depth exceeded]]--}"
+				line = line .. "{--[[Table depth exceeded]]--}"
 			end
 		elseif type(value) == "string" then
-			line = line.."\""..value.."\""
+			line = line .. '"' .. value .. '"'
 		elseif type(value) == "function" then
-			line = line.."\"function\""
+			line = line .. '"function"'
 		elseif type(value) == "userdata" then
-			line = line.."\"userdata\""
+			line = line .. '"userdata"'
 		elseif type(value) == "boolean" then
 			if value then
-				line = line.."true"
+				line = line .. "true"
 			else
-				line = line.."false"
+				line = line .. "false"
 			end
 		else
-			line = line..value
+			line = line .. value
 		end
 		if i ~= #array then
-			line = line..", "
+			line = line .. ", "
 		end
 	end
 	if newLine and #array > module.arrayNewlineMin then
-		line = line.."\n"
-		line = line..string.rep("\t", depth-1)
+		line = line .. "\n"
+		line = line .. string.rep("\t", depth - 1)
 	end
-	line = line.." }"
+	line = line .. " }"
 	return line
 end
 
@@ -71,62 +70,62 @@ function module.stringify(tableData, depth, newLine, maxDepth)
 	for name, item in pairs(tableData) do
 		local line = ""
 		if newLine then
-			line = line..string.rep("\t", depth)
+			line = line .. string.rep("\t", depth)
 		end
-		line = line.."["
+		line = line .. "["
 		if type(name) == "string" then
-			line = line.."\""..name.."\""
+			line = line .. '"' .. name .. '"'
 		else
-			line = line..name
+			line = line .. name
 		end
-		line = line.."] = "
+		line = line .. "] = "
 		if type(item) == "table" then
 			if depth <= maxDepth then
-				line = line..module.stringify(item, depth+1, newLine)
+				line = line .. module.stringify(item, depth + 1, newLine)
 			else
-				line = line.."{--[[Table depth exceeded]]--}"
+				line = line .. "{--[[Table depth exceeded]]--}"
 			end
 		elseif type(item) == "string" then
-			line = line.."\""..item.."\""
+			line = line .. '"' .. item .. '"'
 		elseif type(item) == "function" then
-			line = line.."\"function\""
+			line = line .. '"function"'
 		elseif type(item) == "userdata" then
-			line = line.."\"userdata\""
+			line = line .. '"userdata"'
 		elseif type(item) == "boolean" then
 			if item then
-				line = line.."true"
+				line = line .. "true"
 			else
-				line = line.."false"
+				line = line .. "false"
 			end
 		else
-			line = line..item
+			line = line .. item
 		end
 		table.insert(lines, line)
 	end
 	local data = "{ "
 	if newLine then
-		data = data.."\n"
+		data = data .. "\n"
 	end
 	for i, line in pairs(lines) do
-		data = data..line
+		data = data .. line
 		if i ~= #lines then
-			data = data..","
+			data = data .. ","
 		end
 		if newLine then
-			data = data.."\n"
+			data = data .. "\n"
 		else
-			data = data.." "
+			data = data .. " "
 		end
 	end
 	if newLine and depth > 1 then
-		data = data..string.rep("\t", depth-1)
+		data = data .. string.rep("\t", depth - 1)
 	end
-	data=data.."}"
+	data = data .. "}"
 	return data
 end
 
 function module.echo(...)
-	local args = {...}
+	local args = { ... }
 	for i = 1, select("#", ...) do
 		local value = select(i, ...)
 		local t = type(value)
@@ -138,22 +137,22 @@ function module.echo(...)
 end
 
 function module.convert2HEX(...)
-	local hexadecimal = '#'
+	local hexadecimal = "#"
 	local chanels = { ... }
 	for key = 1, #chanels do
 		local value = chanels[key]
-		local hex = ''
+		local hex = ""
 
-		while(value > 0)do
+		while (value > 0) do
 			local index = math.fmod(value, 16) + 1
 			value = math.floor(value / 16)
-			hex = string.sub('0123456789ABCDEF', index, index) .. hex
+			hex = string.sub("0123456789ABCDEF", index, index) .. hex
 		end
 
-		if(string.len(hex) == 0)then
-			hex = '00'
-		elseif(string.len(hex) == 1)then
-			hex = '0' .. hex
+		if (string.len(hex) == 0) then
+			hex = "00"
+		elseif (string.len(hex) == 1) then
+			hex = "0" .. hex
 		end
 		hexadecimal = hexadecimal .. hex
 	end
@@ -162,18 +161,17 @@ end
 
 function module.clone(t)
 	assert(type(t) == "table", "argument not a table")
-  local t2 = {}
-  for k,v in pairs(t) do
-    t2[k] = v
-  end
-  return t2
+	local t2 = {}
+	for k, v in pairs(t) do
+		t2[k] = v
+	end
+	return t2
 end
 
-for key,value in pairs(module) do
+for key, value in pairs(module) do
 	if type(value) == "function" and _G[key] == nil then
 		_G[key] = value
 	end
 end
-
 
 return module

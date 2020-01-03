@@ -1,10 +1,12 @@
-local ComponentClass = require "component"
-local PhysicsComponent = require "comp-physics"
-local LoadedItems = require "defaultItemTypes"
+local ComponentClass = require"component"
+local PhysicsComponent = require"comp-physics"
+local LoadedItems = require"defaultItemTypes"
+local imgui = require"imgui"
 local ItemClass = inheritsFrom(ComponentClass)
 
 function ItemClass.registerItem(data)
 	local key = data.id
+	assert(key ~= nil, "Missing id for item instance")
 	LoadedItems[key] = data
 end
 
@@ -42,6 +44,7 @@ function ItemClass:init(parent, data)
 	assert(data.shape ~= nil)
 
 	self.name = data.name or ""
+	self.description = data.description or ""
 	self.image = data.image or love.graphics.newImage("assets/Items.png")
 	self:setRect(data.rect)
 	self.color = data.color or { 1, 1, 1, 1 }
@@ -60,20 +63,37 @@ function ItemClass:init(parent, data)
 		self.density = data.density or 1
 		self.friction = data.friction or 0.1
 		self.restitution = data.restitution or 0
-		self.category = data.category or {2}
-		self.mask = data.mask or {3}
+		self.category = data.category or { 2 }
+		self.mask = data.mask or { 3 }
 		self:createBody()
 	end
 end
 
-function ItemClass:canInteract()
-	return type(self.useFunction) == "function"
+function ItemClass:drawStats()
+	-- Override with imgui calls
+	imgui.Text("Count: ")
+	imgui.SameLine()
+	imgui.TextColored(255, 0, 255, 255, tostring(self.count))
+	imgui.Text("Value: ")
+	imgui.SameLine()
+	imgui.TextColored(255, 0, 255, 255, tostring(self.value))
+	if self.weight > 0 then
+		imgui.Text("Weight: ")
+		imgui.SameLine()
+		imgui.TextColored(255, 0, 255, 255, tostring(self.count * self.weight))
+	end
 end
 
-function ItemClass:use(inventory)
-	if type(self.useFunction) == "function" then
-		self:useFunction(inventory)
-	end
+function ItemClass:canInteract()
+	return type(self.use) == "function"
+end
+
+function ItemClass:canEquip()
+	return type(self.equip) == "function"
+end
+
+function ItemClass:canDrop()
+	return true -- Overide if you want to prevent...
 end
 
 function ItemClass:setActive(boolean)
@@ -118,12 +138,12 @@ function ItemClass:setRect(rectOrX, y, w, h)
 	if type(rectOrX) == "table" and #rectOrX == 4 then
 		rect = rectOrX
 	elseif type(rectOrX) == "number" then
-		rect = {rectOrX, y, w, h}
+		rect = { rectOrX, y, w, h }
 	end
 	assert(#rect == 4, "Missing arguments")
 	local change = false
 	if type(self.rect) == "table" then
-		for i=1,#rect do
+		for i = 1, #rect do
 			if rect[i] ~= self.rect[i] then
 				change = true
 				break
@@ -134,14 +154,22 @@ function ItemClass:setRect(rectOrX, y, w, h)
 	end
 	if change or not self.quad then
 		self.rect = rect
-		self.quad = love.graphics.newQuad(rect[1], rect[2], rect[3], rect[4], self.image:getWidth(), self.image:getHeight())
+		self.quad =
+			love.graphics.newQuad(
+				rect[1],
+				rect[2],
+				rect[3],
+				rect[4],
+				self.image:getWidth(),
+				self.image:getHeight()
+			)
 	end
 end
 
 function ItemClass:draw()
 	if self.image and self.quad and not self.hide then
 		local v = love.timer.getTime() - self.timeHighlighted
-		local opacity = math.max(math.cos(v*5)+1, 0.5)
+		local opacity = math.max(math.cos(v * 5) + 1, 0.5)
 		if self.highlighted then
 			love.graphics.setColor(1, 1, 1, opacity)
 		else
@@ -149,10 +177,21 @@ function ItemClass:draw()
 		end
 		love.graphics.draw(self.image, self.quad)
 		if self.highlighted then
-			love.graphics.setColor(-math.cos(v*5)+0.5, math.cos(v*5)-1.5, math.cos(v*5)-1.5)
+			love.graphics.setColor(
+				-math.cos(v * 5) + 0.5,
+				math.cos(v * 5) - 1.5,
+				math.cos(v * 5) - 1.5
+			)
 			love.graphics.push()
 			love.graphics.translate(0, -48)
-			love.graphics.printf("⌄"..self.name.."×"..self.count, 0, math.cos(v*5)*16, 1024, "left", 0)
+			love.graphics.printf(
+				"⌄" .. self.name .. "×" .. self.count,
+				0,
+				math.cos(v * 5) * 16,
+				1024,
+				"left",
+				0
+			)
 			love.graphics.pop()
 		end
 	end

@@ -1,6 +1,6 @@
-local ComponentClass = require "component"
-local PhysicsComponent = require "comp-physics"
-local WeaponComponent = require "comp-weapon"
+local ComponentClass = require"component"
+local PhysicsComponent = require"comp-physics"
+local WeaponComponent = require"comp-weapon"
 local BodyComponent = inheritsFrom(ComponentClass)
 
 function BodyComponent:getName()
@@ -40,8 +40,7 @@ function BodyComponent:init(parent, data)
 	self.baseName = "default"
 
 	self.physComp =
-		parent:getComponent(PhysicsComponent) or
-		PhysicsComponent(parent, "dynamic")
+		parent:getComponent(PhysicsComponent) or PhysicsComponent(parent, "dynamic")
 
 	self.physComp:setFixedRotation(true)
 	self.physComp:useCCD(true)
@@ -82,9 +81,9 @@ function BodyComponent:getWeaponMounts()
 end
 
 function IsTexturePair(table)
-	if	type(table) == "table" and
-			type(table[1]) == "userdata" and
-			type(table[2]) == "userdata" then
+	if type(table) == "table" and type(table[1]) == "userdata" and type(
+		table[2]
+	) == "userdata" then
 		return true
 	end
 	return false
@@ -93,7 +92,9 @@ end
 function IsPointTable(table)
 	if type(table) == "table" then
 		for i, o in pairs(table) do
-			if not (type(o) == "table" and #o == 2 and type(o[1]) == "number" and type(o[2]) == "number") then
+			if not (type(o) == "table" and #o == 2 and type(
+				o[1]
+			) == "number" and type(o[2]) == "number") then
 				return false
 			end
 		end
@@ -116,7 +117,10 @@ function BodyComponent:loadBodyData(data)
 	self.loadedData = data
 	local left = data.left or nil
 	local right = data.right or nil
-	assert(type(left) == type(right) and type(left) == "table", "No left and right face tables")
+	assert(
+		type(left) == type(right) and type(left) == "table",
+		"No left and right face tables"
+	)
 	assert(#left == #right, "Both tables need to be the same size")
 
 	-- Left and right tables
@@ -128,14 +132,23 @@ function BodyComponent:loadBodyData(data)
 	assert(type(left.base.default) == "table", "No default base for left")
 	assert(type(left.arms) == "table", "No arms for left")
 	assert(type(left.legs) == "table", "No legs for left")
-	
-	assert(IsRotationTable(left.arms.left.rotations), "No left arm rotations for left")
+
+	assert(
+		IsRotationTable(left.arms.left.rotations),
+		"No left arm rotations for left"
+	)
 	assert(IsPointTable(left.arms.left.points), "No left arm points for left")
 	assert(type(left.arms.left.base) == "table", "No base for left arm for left")
 
-	assert(IsRotationTable(left.arms.right.rotations), "No right arm rotations for left")
+	assert(
+		IsRotationTable(left.arms.right.rotations),
+		"No right arm rotations for left"
+	)
 	assert(IsPointTable(left.arms.right.points), "No right arm points for left")
-	assert(type(left.arms.right.base) == "table", "No base for right arm for left")
+	assert(
+		type(left.arms.right.base) == "table",
+		"No base for right arm for left"
+	)
 
 	assert(type(right.base) == "table", "No base for right")
 	assert(type(right.center) == "table", "No center for right")
@@ -143,13 +156,25 @@ function BodyComponent:loadBodyData(data)
 	assert(type(right.arms) == "table", "No arms for right")
 	assert(type(right.legs) == "table", "No legs for right")
 
-	assert(IsRotationTable(right.arms.left.rotations), "No left arm rotations for right")
+	assert(
+		IsRotationTable(right.arms.left.rotations),
+		"No left arm rotations for right"
+	)
 	assert(IsPointTable(right.arms.left.points), "No left arm points for right")
-	assert(type(right.arms.left.base) == "table", "No base for left arm for right")
+	assert(
+		type(right.arms.left.base) == "table",
+		"No base for left arm for right"
+	)
 
-	assert(IsRotationTable(right.arms.right.rotations), "No right arm rotations for right")
+	assert(
+		IsRotationTable(right.arms.right.rotations),
+		"No right arm rotations for right"
+	)
 	assert(IsPointTable(right.arms.right.points), "No right arm points for right")
-	assert(type(right.arms.right.base) == "table", "No base for right arm for right")
+	assert(
+		type(right.arms.right.base) == "table",
+		"No base for right arm for right"
+	)
 
 	-- Properties for body
 	self.robot = data.robot or false
@@ -247,7 +272,7 @@ function BodyComponent:update(dt)
 	local world = self.parent.level.world
 	local physComp = self.physComp
 
-	local vx, vy	= physComp:getLinearVelocity()
+	local vx, vy = physComp:getLinearVelocity()
 	local lvx, lvy = physComp:getLocalVector(vx, vy)
 	local speed = math.dist(0, 0, vx, vy)
 	local now = love.timer.getTime()
@@ -255,19 +280,21 @@ function BodyComponent:update(dt)
 	local maxSpeed = self.topSpeed
 	local skewXMultiplier = maxSpeed / (maxSpeed - math.abs(lvx))
 	local skewYMultiplier = maxSpeed / (maxSpeed - math.abs(lvy))
-	local xSkew = (skewXMultiplier-1)*self.direction
-	local ySkew = (skewYMultiplier-1)
+	local xSkew = (skewXMultiplier - 1) * self.direction
+	local ySkew = (skewYMultiplier - 1)
 	if math.abs(xSkew) > self.speedSkew then
-		xSkew = math.min(math.abs(xSkew), self.speedSkew)*self.direction
+		xSkew = math.min(math.abs(xSkew), self.speedSkew) * self.direction
 	end
 	if math.abs(ySkew) > self.speedSkew then
-		ySkew = math.min(math.abs(ySkew), self.speedSkew)*(math.sign(lvy)*self.direction)
+		ySkew =
+			math.min(math.abs(ySkew), self.speedSkew) * (math.sign(
+				lvy
+			) * self.direction)
 	end
 	self:setSkew(xSkew, ySkew)
 
 	local standing = false
 	local knockedOut = false
-
 
 	if speed >= self.knockOutSpeed or self.health <= 0 then
 		knockedOut = true
@@ -281,13 +308,10 @@ function BodyComponent:update(dt)
 				local x1, y1 = contact:getPositions()
 				if x1 and y1 then
 					local fixtureA, fixtureB = contact:getFixtures()
-					if fixtureA == self.bottomFixture.fixture or
-							fixtureB == self.bottomFixture.fixture then
+					if fixtureA == self.bottomFixture.fixture or fixtureB == self.bottomFixture.fixture then
 						local cx, cy = contact:getNormal()
 						local angle = math.angle3(0, -1, cx, cy)
-						if angle < self.touchAngle or
-								angle > -self.touchAngle and
-								contact:isTouching() then
+						if angle < self.touchAngle or angle > -self.touchAngle and contact:isTouching() then
 							self.lastStanding = now
 							self.targetAngle = angle
 							self.currentNormalX = cx
@@ -316,9 +340,8 @@ function BodyComponent:update(dt)
 
 	if knockedOut == false then
 		self.physComp:setFixedRotation(true)
-		local angle = math.angle(
-			0, 0,
-			self.currentNormalX, self.currentNormalY)+math.rad(90)
+		local angle =
+			math.angle(0, 0, self.currentNormalX, self.currentNormalY) + math.rad(90)
 		local downDirX, downDirY = physComp:getWorldVector(0, -1)
 		local r = math.angleLerp(self:getRotation(), angle, self.rotSpeed * dt)
 		if not self.moveDown then
@@ -327,7 +350,8 @@ function BodyComponent:update(dt)
 		end
 		physComp:applyLinearImpulse(
 			downDirX * -self.gravity * dt,
-			downDirY * -self.gravity * dt)
+			downDirY * -self.gravity * dt
+		)
 	else
 		self.physComp:setFixedRotation(false)
 	end
@@ -382,25 +406,28 @@ function BodyComponent:update(dt)
 	local baseRect = faceTable.base[self.baseName or "default"]
 	local legsRect = faceTable.legs.standing
 
-	local aimAngle = math.pi/2
+	local aimAngle = math.pi / 2
 	if self.aimX ~= 0 and self.aimY ~= 0 then
 		aimAngle = self:getAim()
 	end
-	local rotIndex = math.abs(math.floor(math.deg(aimAngle+math.pi)/(360/rotations)))+1
-	local defaultIndex = math.abs(math.floor(math.deg((math.pi/2)+math.pi)/(360/rotations)))+1
+	local rotIndex =
+		math.abs(math.floor(math.deg(aimAngle + math.pi) / (360 / rotations))) + 1
+	local defaultIndex =
+		math.abs(
+			math.floor(math.deg((math.pi / 2) + math.pi) / (360 / rotations))
+		) + 1
 	local leftPoint = faceTable.arms.left.points[defaultIndex]
 	local rightPoint = faceTable.arms.right.points[defaultIndex]
 	leftArmRect = faceTable.arms.left.rotations[rotIndex]
 	rightArmRect = faceTable.arms.right.rotations[rotIndex]
 	local leftAim = aimAngle
 	local rightAim = aimAngle
-	
+
 	if self.leftAim or self.rightAim then
 		aimAngle = self:getAim(false, unpack(faceTable.center))
-		local partSize = 360/rotations
-		rotIndex = math.abs(math.floor(math.deg(aimAngle+math.pi)/partSize))+1
-		if 	(self.leftAim and self:getLeftWeapon()) and
-				(self.rightAim and self:getRightWeapon()) then
+		local partSize = 360 / rotations
+		rotIndex = math.abs(math.floor(math.deg(aimAngle + math.pi) / partSize)) + 1
+		if (self.leftAim and self:getLeftWeapon()) and (self.rightAim and self:getRightWeapon()) then
 			leftPoint = faceTable.arms.left.points[rotIndex]
 			rightPoint = faceTable.arms.right.points[rotIndex]
 		elseif (self.leftAim and self:getLeftWeapon()) then
@@ -443,7 +470,6 @@ function BodyComponent:update(dt)
 	local walkingFrameStep = now - (self.walkingFrameSpeed * dt) * speedMultiplier
 	local legsAnimation = faceTable.legs.animation
 	if standing and math.abs(lvx) > 1 and math.abs(lvy) < 10 then
-		--Walking
 		if self.lastWalkingFrameUpdate < walkingFrameStep then
 			self.lastWalkingFrameUpdate = now
 			self.walkingFrame = self.walkingFrame + 1
@@ -452,7 +478,8 @@ function BodyComponent:update(dt)
 			end
 		end
 		legsRect = legsAnimation[self.walkingFrame]
-	elseif standing == false	and lvy < 0 then
+	--Walking
+	elseif standing == false and lvy < 0 then
 		--Jump pending
 		legsRect = legsAnimation[5]
 	elseif standing == false and lvy > 0 then
@@ -477,7 +504,9 @@ function BodyComponent:update(dt)
 	end
 	self.order = order
 
-	table.sort(self.order, function(a,b) return a[1] < b[1] end)
+	table.sort(self.order, function(a, b)
+		return a[1] < b[1]
+	end)
 end
 
 function BodyComponent:draw()

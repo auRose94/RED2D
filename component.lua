@@ -1,4 +1,4 @@
-local EntityClass = require "entity"
+local EntityClass = require"entity"
 
 local ComponentClass = inheritsFrom(nil)
 
@@ -95,6 +95,9 @@ end
 function ComponentClass:inverseTransformNormal(...)
 	assert(self.parent, "No parent")
 	return self.parent:inverseTransformNormal(...)
+end
+
+function ComponentClass:drawEditor()
 end
 
 function ComponentClass:getName()

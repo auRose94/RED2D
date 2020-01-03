@@ -1,4 +1,4 @@
-local ComponentClass = require "component"
+local ComponentClass = require"component"
 
 local HeadComponent = inheritsFrom(ComponentClass)
 
@@ -26,7 +26,6 @@ function HeadComponent:init(parent, data)
 	self.leftMouthX, self.leftMouthY = 0, 0 -- A mouth that's too loud
 	self.rightMouthX, self.rightMouthY = 0, 0 -- And a mouth that can't stop
 	self.headBaseX, self.headBaseY = 0, 0 -- Used to mount to a body, if any at all
-
 	self.eyeColor = { 1, 1, 1, 1 }
 	self.mouthColor = { 1, 1, 1, 1 }
 	self.faceColor = { 1, 1, 1, 1 }
@@ -37,9 +36,9 @@ function HeadComponent:init(parent, data)
 end
 
 function IsTexturePair(table)
-	if	type(table) == "table" and
-			type(table[1]) == "userdata" and
-			type(table[2]) == "userdata" then
+	if type(table) == "table" and type(table[1]) == "userdata" and type(
+		table[2]
+	) == "userdata" then
 		return true
 	end
 	return false
@@ -59,13 +58,16 @@ end
 function HeadComponent:loadFaceData(data)
 	local left = data.left or nil
 	local right = data.right or nil
-	assert(type(left) == type(right) and type(left) == "table", "Missing left and right face tables")
+	assert(
+		type(left) == type(right) and type(left) == "table",
+		"Missing left and right face tables"
+	)
 	assert(#left == #right, "Both tables need to be the same size")
 
 	-- Left and right tables
 	self.left = left
 	self.right = right
-	
+
 	-- Properties for face
 	self.robot = data.robot or false
 	self.talkSpeed = data.talkSpeed or 100
@@ -83,7 +85,10 @@ function HeadComponent:loadFaceData(data)
 
 	-- Left Eyes
 	assert(type(left.eyes) == "table", "Missing eyes for left")
-	assert(IsRotation(left.eyes.rotations), "Left eye rotations needs to be a table of rect")
+	assert(
+		IsRotation(left.eyes.rotations),
+		"Left eye rotations needs to be a table of rect"
+	)
 	assert(IsTexturePair(left.eyes.dead), "Left eye dead needs to be a rect")
 	assert(IsTexturePair(left.eyes.happy), "Left eye happy needs to be a rect")
 	assert(IsTexturePair(left.eyes.heart), "Left eye heart needs to be a rect")
@@ -102,33 +107,54 @@ function HeadComponent:loadFaceData(data)
 
 	-- Left Face
 	assert(IsTexturePair(left.face), "Left face needs to be a rect")
-	assert(IsTexturePair(left.faceblushing), "Left faceBlushing needs to be a rect")
+	assert(
+		IsTexturePair(left.faceblushing),
+		"Left faceBlushing needs to be a rect"
+	)
 	assert(IsTexturePair(left.facebroken), "Left faceBroken needs to be a rect")
 
 	-- Right Eyes
 	assert(type(right.eyes) == "table", "Missing eyes for right")
-	assert(IsRotation(right.eyes.rotations), "Right eye rotations needs to be a table of rect")
+	assert(
+		IsRotation(right.eyes.rotations),
+		"Right eye rotations needs to be a table of rect"
+	)
 	assert(IsTexturePair(right.eyes.dead), "Right eye dead needs to be a rect")
 	assert(IsTexturePair(right.eyes.happy), "Right eye happy needs to be a rect")
 	assert(IsTexturePair(right.eyes.heart), "Right eye heart needs to be a rect")
 	assert(IsTexturePair(right.eyes.hurt), "Right eye hurt needs to be a rect")
-	assert(IsTexturePair(right.eyes.center), "Right eye center needs to be a rect")
+	assert(
+		IsTexturePair(right.eyes.center),
+		"Right eye center needs to be a rect"
+	)
 	assert(IsTexturePair(right.eyes.blink), "Right eye blink needs to be a rect")
 	assert(IsTexturePair(right.eyes.mad), "Right eye mad needs to be a rect")
 
 	-- Right Mouth
 	assert(type(right.mouth) == "table", "Missing mouth for right")
-	assert(IsTexturePair(right.mouth.frown), "Right mouth frown needs to be a rect")
-	assert(IsTexturePair(right.mouth.smile), "Right mouth smile needs to be a rect")
+	assert(
+		IsTexturePair(right.mouth.frown),
+		"Right mouth frown needs to be a rect"
+	)
+	assert(
+		IsTexturePair(right.mouth.smile),
+		"Right mouth smile needs to be a rect"
+	)
 	assert(IsTexturePair(right.mouth.open), "Right mouth open needs to be a rect")
-	assert(IsTexturePair(right.mouth.close), "Right mouth close needs to be a rect")
+	assert(
+		IsTexturePair(right.mouth.close),
+		"Right mouth close needs to be a rect"
+	)
 	assert(IsTexturePair(right.mouth.grit), "Right mouth grit needs to be a rect")
 
 	-- Right Face
 	assert(IsTexturePair(right.face), "Right face needs to be a rect")
-	assert(IsTexturePair(right.faceblushing), "Right faceBlushing needs to be a rect")
+	assert(
+		IsTexturePair(right.faceblushing),
+		"Right faceBlushing needs to be a rect"
+	)
 	assert(IsTexturePair(right.facebroken), "Right faceBroken needs to be a rect")
-	
+
 	local faceTable = self.right
 	if self.direction < 0 then
 		faceTable = self.left
@@ -147,7 +173,7 @@ function HeadComponent:getAim(invertY)
 	local rDirX, rDirY = self.lookX, self.lookY
 	local width, height = love.graphics.getPixelDimensions()
 	local dirMag = 300
-	rDirX, rDirY = rDirX*dirMag, rDirY*dirMag
+	rDirX, rDirY = rDirX * dirMag, rDirY * dirMag
 	if invertY then
 		rDirY = -rDirY
 	end
@@ -161,14 +187,11 @@ function HeadComponent:update(dt)
 	local blinkChange = false
 	local mouthChange = false
 	local emotion =
-		not self.dead and
-		(self.like or self.heart or self.sad or self.hurt or self.mad)
-	local looking =
-		not emotion and
-		(self.lookX ~= self.lookY and self.lookX ~= 0)
+		not self.dead and (self.like or self.heart or self.sad or self.hurt or self.mad)
+	local looking = not emotion and (self.lookX ~= self.lookY and self.lookX ~= 0)
 
 	if self.talking then
-		mouthChange = math.floor(math.cos(now*talkSpeed)) == 0
+		mouthChange = math.floor(math.cos(now * talkSpeed)) == 0
 	end
 
 	if self.blinking then
@@ -195,14 +218,16 @@ function HeadComponent:update(dt)
 	elseif self.happy or self.like then
 		face = faceTable.faceBlushing
 	end
-	
-	if not self.dead then
 
+	if not self.dead then
 		-- Eyes
 		if not blinkChange or now - self.currentBlink > self.currentBlinkWait then
 			if looking then
-				local aimAngle = math.abs(self:getAim()-math.pi)
-				local aimIndex = math.abs(math.floor(math.deg(aimAngle)/(360/#faceTable.eyes.rotations)))+1
+				local aimAngle = math.abs(self:getAim() - math.pi)
+				local aimIndex =
+					math.abs(
+						math.floor(math.deg(aimAngle) / (360 / #faceTable.eyes.rotations))
+					) + 1
 				eyes = faceTable.eyes.rotations[aimIndex]
 			elseif emotion then
 				if self.like then
@@ -225,7 +250,7 @@ function HeadComponent:update(dt)
 
 		-- Mouth
 		if self.talking then
-			local change = math.floor(math.cos(now*10)) ~= 0
+			local change = math.floor(math.cos(now * 10)) ~= 0
 			if change then
 				if mouth == faceTable.mouth.close then
 					mouth = faceTable.mouth.open
@@ -259,7 +284,9 @@ function HeadComponent:update(dt)
 	if eyes then
 		table.insert(self.order, { eyes[3], eyes, self.eyeColor })
 	end
-	table.sort(self.order, function(a,b) return a[1] < b[1] end)
+	table.sort(self.order, function(a, b)
+		return a[1] < b[1]
+	end)
 end
 
 function HeadComponent:draw()

@@ -1,4 +1,4 @@
-local EntityModel = require "entity"
+local EntityModel = require"entity"
 local CameraClass = inheritsFrom(EntityModel)
 
 _G.cameras = {}
@@ -42,7 +42,7 @@ end
 
 function CameraClass:getOffset(division)
 	division = division or 4
-	local scale = love.graphics.getDPIScale( )
+	local scale = love.graphics.getDPIScale()
 	local w, h = love.graphics.getDimensions()
 	w, h = (w / division) * scale, (h / division) * scale
 	return w * self.sx, h * self.sy
@@ -58,13 +58,9 @@ function CameraClass:setTransformOffset(xOrArray, y)
 	local ax, ay = self:getOffset(2)
 	local ox, oy = transform:transformPoint(ax, ay)
 	if type(xOrArray) == "number" then
-		EntityModel.setPosition(self,
-		xOrArray - ox,
-		y - oy)
+		EntityModel.setPosition(self, xOrArray - ox, y - oy)
 	elseif type(xOrArray) == "table" then
-		EntityModel.setPosition(self,
-			xOrArray[1] - ox,
-			xOrArray[2] - oy)
+		EntityModel.setPosition(self, xOrArray[1] - ox, xOrArray[2] - oy)
 	end
 end
 
@@ -89,29 +85,30 @@ function CameraClass:getCenter()
 end
 
 function CameraClass:mousePosition()
-	return self:getWorldPoint(
-		love.mouse.getX(),
-		love.mouse.getY()
-	)
+	return self:getWorldPoint(love.mouse.getX(), love.mouse.getY())
 end
 
 function CameraClass:newEntityLayer(scale, entities)
-	self:newLayer(scale,
-		function()
-			for i = 1, #entities do
-				local entity = entities[i]
-				if entity then
-					self:set()
-					entity:draw()
-					self:unset()
-				end
+	self:newLayer(scale, function()
+		for i = 1, #entities do
+			local entity = entities[i]
+			if entity then
+				self:set()
+				entity:draw()
+				self:unset()
 			end
-		end)
+		end
+	end)
 end
 
 function CameraClass:newLayer(scale, func)
-	table.insert(self.layers, { draw = func, scale = scale })
-	table.sort(self.layers, function(a, b) return a.scale < b.scale end)
+	table.insert(self.layers, {
+		draw = func,
+		scale = scale
+	})
+	table.sort(self.layers, function(a, b)
+		return a.scale < b.scale
+	end)
 end
 
 function CameraClass:dispatch()
@@ -127,12 +124,21 @@ function CameraClass:update(dt)
 	if self.followTarget then
 		local target = self.followTarget
 		local ox, oy = self:getOffset()
-		
+
 		local targetTransform = love.math.newTransform()
 		if target.parent then
 			targetTransform = target.parent:getTransform()
 		end
-		targetTransform = targetTransform * love.math.newTransform(target.x, target.y, target.r, target.sx, target.sy, target.ox, target.oy)
+		targetTransform =
+			targetTransform * love.math.newTransform(
+				target.x,
+				target.y,
+				target.r,
+				target.sx,
+				target.sy,
+				target.ox,
+				target.oy
+			)
 
 		local tX, tY = targetTransform:transformPoint(-ox, -oy)
 		local cx = math.lerp(self.x, tX, self.cameraSpeed * dt)

@@ -1,29 +1,33 @@
 local module = {}
 
-function C(r, g, b, a)
+function _G.RGB(r, g, b, a)
 	a = a or 255
-	return { r/255, g/255, b/255, a/255 }
+	return { r / 255, g / 255, b / 255, a / 255 }
 end
 
---mod.color	=				C(R,		G,		B)		--#HEX
-module.white =			C(255,	255,	255)	--#FFFFFF
-module.gray =				C(42,		42,		42)		--#424242
-module.black =			C(0,		0,		0)		--#000000
-module.brown =			C(42,		0,		0)		--#2a0000
-module.pansy =			C(120,	1,		79)		--#78014f
-module.red =				C(213,	14,		85)		--#d50e55
-module.orange =			C(237,	103,	58)		--#ed673a
-module.yellow =			C(255,	199,	93)		--#ffc75d
-module.darkGreen =	C(3,		118,	11)		--#03760b
-module.lightGreen =	C(83,		184,	16)		--#53b810
-module.lightBlue =	C(195,	255,	226)	--#c3ffe2
-module.purple =			C(143,	17,		186)	--#8f11ba
-module.blue =				C(53,		110,	226)	--#356ee2
-module.cyan =				C(71,		201,	237)	--#47c9ed
-module.eggplant =		C(89,		64,		75)		--#59404b
-module.darkPink =		C(146,	118,	145)	--#927691
-module.wisteria =		C(203,	156,	220)	--#cb9cdc
-module.magenta =		C(228,	39,		198)	--#e427c6
+function _G.uRGB(r, g, b, a)
+	return unpack(RGB(r, g, b, a))
+end
+
+--mod.color	=	RGB(R,		G,		B)
+module.white = RGB(255, 255, 255)
+module.gray = RGB(42, 42, 42)
+module.black = RGB(0, 0, 0)
+module.brown = RGB(42, 0, 0)
+module.pansy = RGB(120, 1, 79)
+module.red = RGB(213, 14, 85)
+module.orange = RGB(237, 103, 58)
+module.yellow = RGB(255, 199, 93)
+module.darkGreen = RGB(3, 118, 11)
+module.lightGreen = RGB(83, 184, 16)
+module.lightBlue = RGB(195, 255, 226)
+module.purple = RGB(143, 17, 186)
+module.blue = RGB(53, 110, 226)
+module.cyan = RGB(71, 201, 237)
+module.eggplant = RGB(89, 64, 75)
+module.darkPink = RGB(146, 118, 145)
+module.wisteria = RGB(203, 156, 220)
+module.magenta = RGB(228, 39, 198)
 
 _G.Colors = module
 _G.colors = module

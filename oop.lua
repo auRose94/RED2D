@@ -1,17 +1,16 @@
 function _G.inheritsFrom(baseClass)
-
 	local new_class = {}
 	new_class.__index = new_class
 
 	if baseClass ~= nil then
-		for key,value in pairs(baseClass) do
+		for key, value in pairs(baseClass) do
 			if type(value) == "function" and new_class[key] == nil then
 				new_class[key] = value
 			end
 		end
 	end
 
-	local call = function (cls, ...)
+	local call = function(cls, ...)
 		local self = setmetatable({}, cls)
 		self:init(...)
 		return self
@@ -56,10 +55,10 @@ end
 
 function _G.clone(base_object, clone_object)
 	assert(type(base_object) == "table", "base_object is not a table")
-  clone_object = clone_object or {}
+	clone_object = clone_object or {}
 	assert(type(clone_object) == "table", "clone_object is not a table")
-  clone_object.__index = base_object
-  return setmetatable(clone_object, clone_object)
+	clone_object.__index = base_object
+	return setmetatable(clone_object, clone_object)
 end
 
 function _G.isa(clone_object, base_object)

@@ -15,8 +15,10 @@ function GetLastModified(fileName)
 end
 
 function OraLoader:init(fileName)
-	assert(type(fileName) == "string",
-		"missing fileName! "..type(fileName).." given!")
+	assert(
+		type(fileName) == "string",
+		"missing fileName! " .. type(fileName) .. " given!"
+	)
 	self.layers = {}
 	self:load(fileName)
 end
@@ -25,9 +27,7 @@ function OraLoader:load(fileName)
 	fileName = fileName or self.fileName
 	if self.lastModified and self.fileName == fileName then
 		local now = GetLastModified(fileName)
-		if now == self.lastModified then
-			return
-		end
+		if now == self.lastModified then return end
 	end
 	local archive = Archive:read(fileName)
 	local disk = archive:GetDisk(0)
@@ -38,7 +38,10 @@ function OraLoader:load(fileName)
 		if index == "stack.xml" then
 			stack = entry
 		elseif string.match(index, "data/") and index ~= "data/" then
-			table.insert(imageFiles, { index=index, entry=entry })
+			table.insert(imageFiles, {
+				index = index,
+				entry = entry
+			})
 		end
 	end
 	assert(stack, "Stack couldn't be found inside")
@@ -66,12 +69,13 @@ function OraLoader:load(fileName)
 				for ii, ie in pairs(imageFiles) do
 					if ie.index == src then
 						imageFile = ie.entry
-						break;
+						break
 					end
 				end
 				if imageFile and visible then
 					imageFile:open()
-					local fileData = love.filesystem.newFileData(imageFile:read("*a"), name)
+					local fileData =
+						love.filesystem.newFileData(imageFile:read("*a"), name)
 					imageFile:close()
 					if fileData then
 						local imageData = love.image.newImageData(fileData)

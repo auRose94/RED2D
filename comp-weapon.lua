@@ -1,6 +1,7 @@
-local ItemClass = require "comp-item"
-local EntityClass = require "entity"
-local WeaponTypes = require "defaultWeaponTypes"
+local ItemClass = require"comp-item"
+local EntityClass = require"entity"
+local WeaponTypes = require"defaultWeaponTypes"
+local imgui = require"imgui"
 local WeaponClass = inheritsFrom(ItemClass)
 
 function WeaponClass:getName()
@@ -23,6 +24,19 @@ function WeaponClass:init(parent, data)
 	self.altLastAttack = love.timer.getTime()
 end
 
+function WeaponClass:drawStats()
+	-- Override with imgui calls
+	imgui.Text("Attack Rate: ")
+	imgui.SameLine()
+	imgui.TextColored(255, 0, 255, 255, tostring(self.attackRate))
+	if self.altAttackRate ~= nil then
+		imgui.Text("Alt Attack Rate: ")
+		imgui.SameLine()
+		imgui.TextColored(255, 0, 255, 255, tostring(self.altAttackRate))
+	end
+	ItemClass.drawStats(self)
+end
+
 function WeaponClass:equip(entity)
 	if entity and not self:isEquipped() then
 		local hands = entity:getWeaponMounts()
@@ -36,8 +50,7 @@ function WeaponClass:equip(entity)
 		end
 		local level = hand.level or entity.parent.level
 		hand:setOrigin(self.trigger)
-		local weaponEntity = EntityClass(level, self.name..
-	"(Equipped)")
+		local weaponEntity = EntityClass(level, self.name .. "(Equipped)")
 		weaponEntity:setParent(hand)
 		weaponEntity:addComponent(self)
 		weaponEntity:setOrigin(math.invert(self.trigger))
@@ -68,11 +81,15 @@ function WeaponClass:isPlayer()
 end
 
 function WeaponClass:isEquipped()
-	return self.entity ~= nil and self.entity.weapon == self
+	return self.entity and self.entity.weapons[self.handIndex] == self
 end
 
 function WeaponClass:canInteract()
-	return true
+	return false
+end
+
+function WeaponClass:canEquip()
+	return not self:isEquipped()
 end
 
 function WeaponClass:getTypeName()

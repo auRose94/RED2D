@@ -1,7 +1,20 @@
-local imgui = require "imgui"
-local InventoryClass = require "comp-inventory"
-local ComponentClass = require "component"
+local imgui = require"imgui"
+local InventoryClass = require"comp-inventory"
+local ComponentClass = require"component"
 local StatusWindow = inheritsFrom(ComponentClass)
+
+local CategoryNames =
+	{
+		"Any",
+		"Weapons",
+		"Accessories",
+		"Aid",
+		"Tool",
+		"Ammunition",
+		"Junk",
+		"Quest"
+	}
+local SortNames = { "Name", "Weight", "Price", "Rarity", "Count" }
 
 function StatusWindow:getName()
 	return "StatusWindow"
@@ -10,15 +23,15 @@ end
 function StatusWindow:init(parent)
 	ComponentClass.init(self, parent)
 	self.inventory = self:getComponent(InventoryClass)
-	self.player = self:getComponent(PlayerComponent or require "comp-player")
+	self.player = self:getComponent(PlayerComponent or require"comp-player")
 
 	self.showWindow = true
 	self.state = {
-		current = "status",
 		inventory = {
-			category = 1, --> Any
+			category = 1, -- > Any
 			sort = 1,
-			selected = {}
+			selected = nil,
+			showItemTabs = 1
 		}
 	}
 end
@@ -27,66 +40,143 @@ function StatusWindow:toggleWindow()
 	self.showWindow = not self.showWindow
 end
 
+function StatusWindow:selectItem(item)
+	self.state.inventory.selected = item
+end
+
 function StatusWindow:draw()
 	if self.showWindow then
-		self.showWindow = imgui.Begin("Status", true, {"ImGuiWindowFlags_AlwaysAutoResize", "ImGuiWindowFlags_MenuBar"})
+		self.showWindow =
+			imgui.Begin("Status", true, { "ImGuiWindowFlags_AlwaysAutoResize" })
 
-		self.showBar = imgui.BeginMenuBar()
-		if self.showBar then
-			if imgui.RadioButton("Status", self.state.current == "status") then
-				self.state.current = "status"
+		if imgui.BeginTabBar("Status") then
+			if imgui.BeginTabItem("Status") then
+				imgui.EndTabItem()
 			end
 
-			if imgui.RadioButton("Inventory", self.state.current == "inventory") then
-				self.state.current = "inventory"
-			end
+			if imgui.BeginTabItem("Inventory") then
+				imgui.BeginGroup()
+				imgui.BeginGroup()
+				imgui.PushID("Category")
+				imgui.SetNextItemWidth(208)
+				self.state.inventory.category =
+					imgui.Combo(
+						"",
+						self.state.inventory.category,
+						CategoryNames,
+						#CategoryNames
+					)
+				imgui.PopID()
+				imgui.PushID("Sort")
+				imgui.SetNextItemWidth(208)
+				self.state.inventory.sort =
+					imgui.Combo("", self.state.inventory.sort, SortNames, #SortNames)
+				imgui.PopID()
+				imgui.EndGroup()
 
-			if imgui.RadioButton("Quests", self.state.current == "quests") then
-				self.state.current = "quests"
-			end
-			imgui.EndMenuBar()
-		end
-
-		if self.state.current == "status" then
-		elseif self.state.current == "inventory" then
-			self.state.inventory.category =
-				imgui.Combo(
-				"Category",
-				self.state.inventory.category,
-				{"Any", "Weapons", "Accessories", "Aid", "Tool", "Ammunition", "Junk", "Quest"},
-				6
-			)
-			imgui.SameLine()
-			self.state.inventory.sort =
-				imgui.Combo(
-				"Sort",
-				self.state.inventory.sort,
-				{
-					"Name",
-					"Weight",
-					"Price",
-					"Rarity",
-					"Count"
-				},
-				5
-			)
-			if self.inventory.items then
-				if imgui.ListBoxHeader("") then
-					for index, v in ipairs(self.inventory.items) do
-						local count, item = unpack(v)
-						local name = item.name
-						if count > 1 then
-							name = name .. " (" .. count .. ")"
+				if self.inventory.items then
+					imgui.BeginGroup()
+					imgui.PushID("Items")
+					if imgui.ListBoxHeader("", #self.inventory.items) then
+						for index, v in ipairs(self.inventory.items) do
+							local count, item = unpack(v)
+							local name = item.name
+							if count > 1 then
+								name = name .. " (" .. count .. ")"
+							end
+							local selected =
+								imgui.Selectable(name, self.state.inventory.selected == item)
+							if selected then
+								self:selectItem(item)
+								self.state.inventory.dropDialog = false
+							end
 						end
-						self.state.inventory.selected[index] = imgui.Selectable(name, self.state.inventory.selected[index])
+						imgui.ListBoxFooter()
 					end
-					imgui.ListBoxFooter()
+					imgui.PopID()
+					imgui.EndGroup()
 				end
-			end
-		elseif self.state.current == "quests" then
-		end
+				imgui.EndGroup()
 
+				imgui.SameLine()
+				imgui.BeginGroup()
+				imgui.PushID("ItemBar")
+				imgui.AlignTextToFramePadding(0)
+				if self.state.inventory.selected ~= nil then
+					local item = self.state.inventory.selected
+					imgui.BeginGroup()
+					if item:canEquip() then
+						if imgui.Button("Equip") then
+							item:equip(self.player)
+						end
+						imgui.SameLine()
+					end
+					if item:canInteract() then
+						if imgui.Button("Use") then
+							item:use(self.inventory)
+						end
+						imgui.SameLine()
+					end
+					if item:canDrop() then
+						if imgui.Button("Drop") then
+							if item.count > 1 then
+								self.state.inventory.dropCount = 1
+								self.state.inventory.dropDialog = true
+							else
+								self:selectItem(nil)
+								self.inventory:drop(item, 1)
+							end
+						end
+						imgui.SameLine()
+					end
+					imgui.NewLine()
+					imgui.EndGroup()
+					local xOffset = imgui.GetItemRectSize()
+					if imgui.BeginTabBar("ItemBar") then
+						if imgui.BeginTabItem("Description") then
+							imgui.PushTextWrapPos(xOffset + 500)
+							imgui.TextWrapped(item.description)
+
+							imgui.EndTabItem()
+						end
+
+						if imgui.BeginTabItem("Stats") then
+							item:drawStats()
+							imgui.EndTabItem()
+						end
+						imgui.EndTabBar()
+					end
+				else
+					imgui.Text("Select an item first...")
+				end
+				imgui.PopID()
+				imgui.EndGroup()
+
+				imgui.EndTabItem()
+			end
+
+			if imgui.BeginTabItem("Quests") then
+				imgui.EndTabItem()
+			end
+			imgui.EndTabBar()
+		end
 		imgui.End()
+	end
+
+	if self.state.inventory.dropDialog and self.state.inventory.selected then
+		local item = self.state.inventory.selected
+		self.state.inventory.dropDialog =
+			imgui.Begin("Drop items", true, { "ImGuiWindowFlags_AlwaysAutoResize" })
+		if self.state.inventory.dropDialog then
+			local count = imgui.InputInt("Count", self.state.inventory.dropCount)
+			count = math.max(1, math.min(item.count, count))
+			self.state.inventory.dropCount = count
+			if imgui.Button("Drop") and count >= 1 then
+				self:selectItem(nil)
+				self.inventory:drop(item, count)
+			end
+			imgui.End()
+		end
 	end
 end
 

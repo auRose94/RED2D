@@ -1,5 +1,4 @@
-
-local ShapeComponent = require "comp-shape"
+local ShapeComponent = require"comp-shape"
 
 local ChainShapeComponent = inheritsFrom(ShapeComponent)
 
@@ -46,7 +45,6 @@ function ChainShapeComponent:setNextVertex(x, y)
 	assert(self.shape)
 	return self.shape:setNextVertex(x, y)
 end
-
 
 function ChainShapeComponent:setPreviousVertex(x, y)
 	assert(self.shape)

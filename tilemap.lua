@@ -1,9 +1,9 @@
-local EntityModel = require "entity"
-local defaultTileMap = require "defaultTileMap"
+local EntityModel = require"entity"
+local defaultTileMap = require"defaultTileMap"
 local TileMapClass = inheritsFrom(EntityModel)
 
 function TileMapClass:init(level, location, tileSize)
-	EntityModel.init(self, level, "TileMap("..location..")")
+	EntityModel.init(self, level, "TileMap(" .. location .. ")")
 	self.image = love.graphics.newImage(location)
 	self.image:setFilter("linear", "nearest")
 	self.tileSize = tileSize
@@ -11,20 +11,20 @@ function TileMapClass:init(level, location, tileSize)
 end
 
 function TileMapClass:loadLevel(location)
-	self.name = "Level("..location..")"
+	self.name = "Level(" .. location .. ")"
 	local image = love.image.newImageData(location)
 	assert(image ~= nil)
 	local width = image:getWidth()
 	local height = image:getHeight()
-	local spriteBatch = love.graphics.newSpriteBatch(self.image, width*height)
+	local spriteBatch = love.graphics.newSpriteBatch(self.image, width * height)
 	local physicsBody = love.physics.newBody(self.level.world, 0, 0, "static")
 	local indexMap = {}
 	local fixtureMap = {}
 	local shapeMap = {}
 	local size = self.tileSize
 
-	for i = 0, width-1 do
-		for j = 0, height-1 do
+	for i = 0, width - 1 do
+		for j = 0, height - 1 do
 			local index = j * width + i
 			local r, g, b, a = image:getPixel(i, j)
 			r = math.ceil(r * 255)
@@ -36,20 +36,14 @@ function TileMapClass:loadLevel(location)
 				local data = self:getTileData(key)
 				if data then
 					if data.quad then
-						indexMap[index] = spriteBatch:add(
-							data.quad,
-							(i * size),
-							(j * size),
-							0,
-							1)
+						indexMap[index] =
+							spriteBatch:add(data.quad, (i * size), (j * size), 0, 1)
 					end
 					if data.shape then
 						local shape = data.shape(i * size, j * size)
 						shapeMap[index] = shape
-						local fixture = love.physics.newFixture(
-							physicsBody,
-							shape,
-							data.density)
+						local fixture =
+							love.physics.newFixture(physicsBody, shape, data.density)
 						fixture:setFriction(data.friction)
 						fixture:setRestitution(data.restitution)
 						if #data.category > 0 then
@@ -77,11 +71,10 @@ function TileMapClass:loadLevel(location)
 end
 
 function TileMapClass:getOffset(x, y)
-	return
-		self.transform:inverseTransformPoint(
-			(x * self.tileSize),
-			(y * self.tileSize)
-		)
+	return self.transform:inverseTransformPoint(
+		(x * self.tileSize),
+		(y * self.tileSize)
+	)
 end
 
 function TileMapClass:registerTile(key, data)
@@ -91,7 +84,7 @@ function TileMapClass:registerTile(key, data)
 		density = data.density or 1,
 		friction = data.friction or 0.25,
 		restitution = data.restitution or 0,
-		category = data.category or {1},
+		category = data.category or { 1 },
 		mask = data.mask or {}
 	}
 end
@@ -115,23 +108,25 @@ function TileMapClass:draw()
 
 	love.graphics.applyTransform(transform)
 	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.draw(spriteBatch, -tileSize/2, -tileSize/2, 0, 1)
+	love.graphics.draw(spriteBatch, -tileSize / 2, -tileSize / 2, 0, 1)
 	if _G.debugDrawPhysics then
-		for ix = 0, width-1 do
-			for iy = 0, height-1 do
+		for ix = 0, width - 1 do
+			for iy = 0, height - 1 do
 				love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
 				local shape = shapeMap[iy * width + ix]
 				if shape then
 					if shape:getType() == "polygon" then
 						love.graphics.polygon(
 							"fill",
-							body:getWorldPoints(shape:getPoints()))
+							body:getWorldPoints(shape:getPoints())
+						)
 					else
 						love.graphics.circle(
 							"fill",
 							body:getX(),
 							body:getY(),
-							shape:getRadius())
+							shape:getRadius()
+						)
 					end
 				end
 			end

@@ -1,4 +1,3 @@
-
 local AttackElement = inheritsFrom()
 
 function AttackElement:init(system, attacker, weapon)
@@ -10,11 +9,9 @@ function AttackElement:init(system, attacker, weapon)
 end
 
 function AttackElement:update(dt)
-
 end
 
 function AttackElement:draw()
-
 end
 
 return AttackElement

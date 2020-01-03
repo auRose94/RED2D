@@ -1,4 +1,4 @@
-local CameraClass = require "camera"
+local CameraClass = require"camera"
 
 local LevelClass = inheritsFrom(nil)
 
@@ -36,6 +36,16 @@ function LevelClass:init()
 	self.world = love.physics.newWorld(0, 0, true)
 	self.camera = CameraClass(self)
 	self.camera:newEntityLayer(2, self.entities)
+end
+
+function LevelClass:getRootEntities()
+	local roots = {}
+	for i, entity in ipairs(self.entities) do
+		if entity.parent == nil then
+			table.insert(roots, entity)
+		end
+	end
+	return roots
 end
 
 return LevelClass

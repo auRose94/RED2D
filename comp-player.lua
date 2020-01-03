@@ -1,12 +1,12 @@
-local ComponentClass = require "component"
-local PhysicsComponent = require "comp-physics"
-local InventoryClass = require "comp-inventory"
-local StatusWindow = require "comp-status-window"
-local HeadComponent = require "comp-head"
-local BodyComponent = require "comp-body"
-local HeadRedData = require "head-red"
-local BodyRedData = require "body-red"
-local input = require "input"
+local ComponentClass = require"component"
+local PhysicsComponent = require"comp-physics"
+local InventoryClass = require"comp-inventory"
+local StatusWindow = require"comp-status-window"
+local HeadComponent = require"comp-head"
+local BodyComponent = require"comp-body"
+local HeadRedData = require"head-red"
+local BodyRedData = require"body-red"
+local input = require"input"
 
 local PlayerComponent = inheritsFrom(BodyComponent)
 
@@ -36,87 +36,103 @@ end
 
 function PlayerComponent:registerControls()
 	local playerIndex, joystickIndex = self.playerIndex, self.joystickIndex
-	self.leftControl = input.createInput(playerIndex, {
-		name = "Move Left",
-		keyboard = {
-			key = "a",
-			altKey = "left"
+	self.leftControl = input.createInput(
+		playerIndex,
+		{
+			name = "Move Left",
+			keyboard = {
+				key = "a",
+				altKey = "left"
+			},
+			joystick = {
+				axis = "leftx",
+				axisMin = 0.75,
+				direction = -1
+			}
 		},
-		joystick = {
-			axis = "leftx",
-			axisMin = 0.75,
-			direction = -1
-		}
-	}, joystickIndex)
-	self.rightControl = input.createInput(playerIndex, {
-		name = "Move Right",
-		keyboard = {
-			key = "d",
-			altKey = "right"
+		joystickIndex
+	)
+	self.rightControl = input.createInput(
+		playerIndex,
+		{
+			name = "Move Right",
+			keyboard = {
+				key = "d",
+				altKey = "right"
+			},
+			joystick = {
+				axis = "leftx",
+				axisMin = 0.75,
+				direction = 1
+			}
 		},
-		joystick = {
-			axis = "leftx",
-			axisMin = 0.75,
-			direction = 1
-		}
-	}, joystickIndex)
-	self.upControl = input.createInput(playerIndex, {
-		name = "Move Up",
-		keyboard = {
-			key = "w",
-			altKey = {"up", "space"}
+		joystickIndex
+	)
+	self.upControl = input.createInput(
+		playerIndex,
+		{
+			name = "Move Up",
+			keyboard = {
+				key = "w",
+				altKey = { "up", "space" }
+			},
+			joystick = {
+				button = "y",
+				axis = "lefty",
+				axisMin = 0.75,
+				direction = -1
+			}
 		},
-		joystick = {
-			button = "y",
-			axis = "lefty",
-			axisMin = 0.75,
-			direction = -1
-		}
-	}, joystickIndex)
-	self.downControl = input.createInput(playerIndex, {
-		name = "Move Down",
-		keyboard = {
-			key = "s",
-			altKey = "down"
+		joystickIndex
+	)
+	self.downControl = input.createInput(
+		playerIndex,
+		{
+			name = "Move Down",
+			keyboard = {
+				key = "s",
+				altKey = "down"
+			},
+			joystick = {
+				axis = "lefty",
+				axisMin = 0.5,
+				direction = 1
+			}
 		},
-		joystick = {
-			axis = "lefty",
-			axisMin = 0.5,
-			direction = 1
-		}
-	}, joystickIndex)
-	self.inventoryControl = input.createInput(playerIndex, {
-		name = "Inventory",
-		keyboard = {
-			key = "tab",
-			altKey = "rctrl"
+		joystickIndex
+	)
+	self.inventoryControl = input.createInput(
+		playerIndex,
+		{
+			name = "Inventory",
+			keyboard = {
+				key = "tab",
+				altKey = "rctrl"
+			},
+			joystick = { button = "back" }
 		},
-		joystick = {
-			button = "back"
-		}
-	}, joystickIndex)
-	self.interactControl = input.createInput(playerIndex, {
-		name = "Interact",
-		keyboard = {
-			key = "e",
-			altKey = "kp0"
+		joystickIndex
+	)
+	self.interactControl = input.createInput(
+		playerIndex,
+		{
+			name = "Interact",
+			keyboard = {
+				key = "e",
+				altKey = "kp0"
+			},
+			joystick = { button = "a" }
 		},
-		joystick = {
-			button = "a"
-		}
-	}, joystickIndex)
+		joystickIndex
+	)
 	self.guiPrimary = input.createInput(playerIndex, {
 		name = "GUI Left Click",
 		keyboard = {
 			key = "e",
 			altKey = "kp0"
 		},
-		mouse = {
-			button = 1
-		},
-		joystick = {
-			button = "a"
-		}
+		mouse = { button = 1 },
+		joystick = { button = "a" }
 	})
 	self.guiSecondary = input.createInput(playerIndex, {
 		name = "GUI Right Click",
@@ -124,21 +140,13 @@ function PlayerComponent:registerControls()
 			key = "q",
 			altKey = "kp."
 		},
-		mouse = {
-			button = 2
-		},
-		joystick = {
-			button = "x"
-		}
+		mouse = { button = 2 },
+		joystick = { button = "x" }
 	})
 	self.backControl = input.createInput(playerIndex, {
 		name = "Back",
-		keyboard = {
-			key = "backspace"
-		},
-		joystick = {
-			button = "b"
-		}
+		keyboard = { key = "backspace" },
+		joystick = { button = "b" }
 	})
 	self.reloadControl = input.createInput(playerIndex, {
 		name = "Reload",
@@ -146,41 +154,45 @@ function PlayerComponent:registerControls()
 			key = "r",
 			altKey = "/"
 		},
-		joystick = {
-			button = "x"
-		}
+		joystick = { button = "x" }
 	})
-	self.aimControl = input.createInput(playerIndex, {
-		name = "Aim",
-		mouse = {
-			button = 2,
-		}
-	}, joystickIndex)
-	self.fire1Control = input.createInput(playerIndex, {
-		name = "Primary Fire",
-		mouse = {
-			button = 1
+	self.aimControl = input.createInput(
+		playerIndex,
+		{
+			name = "Aim",
+			mouse = { button = 2 }
 		},
-		joystick = {
-			axis = "triggerright"
-		}
-	}, joystickIndex)
-	self.fire2Control = input.createInput(playerIndex, {
-		name = "Secondary Fire",
-		mouse = {
-			button = 3
+		joystickIndex
+	)
+	self.fire1Control = input.createInput(
+		playerIndex,
+		{
+			name = "Primary Fire",
+			mouse = { button = 1 },
+			joystick = { axis = "triggerright" }
 		},
-		joystick = {
-			axis = "triggerleft"
-		}
-	}, joystickIndex)
-	self.aimDirControl = input.createInput(playerIndex, {
-		name = "Aim Direction",
-		joystick = {
-			axis = {"rightx", "righty"},
-			axisMin = 0.15
-		}
-	}, joystickIndex)
+		joystickIndex
+	)
+	self.fire2Control = input.createInput(
+		playerIndex,
+		{
+			name = "Secondary Fire",
+			mouse = { button = 3 },
+			joystick = { axis = "triggerleft" }
+		},
+		joystickIndex
+	)
+	self.aimDirControl = input.createInput(
+		playerIndex,
+		{
+			name = "Aim Direction",
+			joystick = {
+				axis = { "rightx", "righty" },
+				axisMin = 0.15
+			}
+		},
+		joystickIndex
+	)
 end
 
 function PlayerComponent:getAimNormal(invertY)
@@ -189,13 +201,13 @@ function PlayerComponent:getAimNormal(invertY)
 		-- Joystick
 		local rDirX, rDirY = unpack(aim.value)
 		local width, height = love.graphics.getPixelDimensions()
-		rDirX, rDirY = rDirX*(width/4), rDirY*(height/4)
+		rDirX, rDirY = rDirX * (width / 4), rDirY * (height / 4)
 		if invertY then
 			rDirY = -rDirY
 		end
 		return rDirX, rDirY
-	else
 		-- Mouse
+	else
 		local camera = self.parent.level.camera
 		local mx, my = self:inverseTransformPoint(camera:mousePosition())
 		if invertY then
@@ -236,7 +248,7 @@ function PlayerComponent:update(dt)
 	if aim:held() or aimDir:held() then
 		self.leftAim = true
 		self.rightAim = true
-		self.headComp:lookAt({self:getAimNormal()})
+		self.headComp:lookAt({ self:getAimNormal() })
 	else
 		self.leftAim = false
 		self.rightAim = false
@@ -258,7 +270,7 @@ function PlayerComponent:update(dt)
 		rightWeapon.firing = fire1:held()
 		if rightWeapon.altFiring ~= nil then
 			rightWeapon.altFiring = fire2:held()
-		end	
+		end
 	end
 
 	BodyComponent.update(self, dt)

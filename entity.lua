@@ -24,9 +24,7 @@ function EntityClass:getName()
 end
 
 function EntityClass:callComponentMethods(name, ...)
-	if name == nil or name == "" then
-		return
-	end
+	if name == nil or name == "" then return end
 	for _, c in pairs(self.components) do
 		if type(c) == "table" then
 			local method = c[name] or nil
@@ -59,12 +57,12 @@ function EntityClass:destroy()
 			c.parent = nil
 		end
 	end
+	if self.parent then
+		self.parent:removeChild(self)
+	end
 	self.components = {}
 	self.transform = nil
-	local level = self.level
-	if level then
-		level:removeEntity(self)
-	end
+	self.level:removeEntity(self)
 end
 
 function EntityClass:setPosition(...)
@@ -149,7 +147,18 @@ end
 
 function EntityClass:getTransform()
 	if self.touched or not self.transform then
-		self.transform = love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
+		self.transform =
+			love.math.newTransform(
+				self.x,
+				self.y,
+				self.r,
+				self.sx,
+				self.sy,
+				self.ox,
+				self.oy,
+				self.kx,
+				self.ky
+			)
 		self.touched = false
 	end
 	if self.parent then
@@ -183,6 +192,18 @@ function EntityClass:getComponents(typeClass)
 		end
 	end
 	return comps
+end
+
+function EntityClass:getParentComponent(typeClass)
+	-- Recursively goes up from the child to the parent to get a component
+	if self.parent then
+		local component = self.parent:getComponent(typeClass)
+		if not component then
+			return self.parent:getParentComponent(typeClass)
+		end
+		return component
+	end
+	return nil
 end
 
 function EntityClass:addComponent(comp)

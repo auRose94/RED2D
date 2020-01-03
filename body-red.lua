@@ -1,10 +1,9 @@
-
 local module = {}
 
-local CircleShapeComponent = require "comp-shape-circle"
-local RectangleShapeComponent = require "comp-shape-rectangle"
+local CircleShapeComponent = require"comp-shape-circle"
+local RectangleShapeComponent = require"comp-shape-rectangle"
 
-local OraLoader = require "ora-loader"
+local OraLoader = require"ora-loader"
 local bodyRed = OraLoader("assets/body-red.ora")
 
 local topImage = bodyRed:getImage("Top")
@@ -94,12 +93,12 @@ module.left = {
 			rotations = {
 				NewTopArm(0, 48),
 				NewTopArm(16, 48),
-				NewTopArm(16*2, 48),
-				NewTopArm(16*3, 48),
-				NewTopArm(16*4, 48),
-				NewTopArm(16*5, 48),
-				NewTopArm(16*6, 48),
-				NewTopArm(16*7, 48)
+				NewTopArm(16 * 2, 48),
+				NewTopArm(16 * 3, 48),
+				NewTopArm(16 * 4, 48),
+				NewTopArm(16 * 5, 48),
+				NewTopArm(16 * 6, 48),
+				NewTopArm(16 * 7, 48)
 			},
 			points = {
 				{ 7, 7 },
@@ -110,8 +109,6 @@ module.left = {
 				{ 16, 11 },
 				{ 12, 11 },
 				{ 8, 10 }
-
-				
 			}
 		},
 		right = {
@@ -119,12 +116,12 @@ module.left = {
 			rotations = {
 				NewBottomArm(0, 16),
 				NewBottomArm(16, 16),
-				NewBottomArm(16*2, 16),
-				NewTopArm(16*3, 32),
-				NewTopArm(16*4, 32),
-				NewTopArm(16*5, 32),
-				NewBottomArm(16*6, 16),
-				NewBottomArm(16*7, 16)
+				NewBottomArm(16 * 2, 16),
+				NewTopArm(16 * 3, 32),
+				NewTopArm(16 * 4, 32),
+				NewTopArm(16 * 5, 32),
+				NewBottomArm(16 * 6, 16),
+				NewBottomArm(16 * 7, 16)
 			},
 			points = {
 				{ 1, 7 },
@@ -142,12 +139,12 @@ module.left = {
 		standing = NewLeg(0, 16),
 		animation = {
 			NewLeg(16, 16),
-			NewLeg(16*2, 16),
-			NewLeg(16*3, 16),
-			NewLeg(16*4, 16),
-			NewLeg(16*5, 16),
-			NewLeg(16*6, 16),
-			NewLeg(16*7, 16)
+			NewLeg(16 * 2, 16),
+			NewLeg(16 * 3, 16),
+			NewLeg(16 * 4, 16),
+			NewLeg(16 * 5, 16),
+			NewLeg(16 * 6, 16),
+			NewLeg(16 * 7, 16)
 		}
 	}
 }
@@ -170,12 +167,12 @@ module.right = {
 			rotations = {
 				NewTopArm(0, 0),
 				NewTopArm(16, 0),
-				NewTopArm(16*2, 0),
-				NewTopArm(16*3, 0),
-				NewTopArm(16*4, 0),
-				NewTopArm(16*5, 0),
-				NewTopArm(16*6, 0),
-				NewTopArm(16*7, 0)
+				NewTopArm(16 * 2, 0),
+				NewTopArm(16 * 3, 0),
+				NewTopArm(16 * 4, 0),
+				NewTopArm(16 * 5, 0),
+				NewTopArm(16 * 6, 0),
+				NewTopArm(16 * 7, 0)
 			},
 			points = {
 				{ 1, 7 },
@@ -193,12 +190,12 @@ module.right = {
 			rotations = {
 				NewTopArm(0, 16),
 				NewTopArm(16, 16),
-				NewBottomArm(16*2, 0),
-				NewBottomArm(16*3, 0),
-				NewBottomArm(16*4, 0),
-				NewBottomArm(16*5, 0),
-				NewBottomArm(16*6, 0),
-				NewTopArm(16*7, 16)
+				NewBottomArm(16 * 2, 0),
+				NewBottomArm(16 * 3, 0),
+				NewBottomArm(16 * 4, 0),
+				NewBottomArm(16 * 5, 0),
+				NewBottomArm(16 * 6, 0),
+				NewTopArm(16 * 7, 16)
 			},
 			points = {
 				{ 10, 8 },
@@ -216,12 +213,12 @@ module.right = {
 		standing = NewLeg(0, 0),
 		animation = {
 			NewLeg(16, 0),
-			NewLeg(16*2, 0),
-			NewLeg(16*3, 0),
-			NewLeg(16*4, 0),
-			NewLeg(16*5, 0),
-			NewLeg(16*6, 0),
-			NewLeg(16*7, 0)
+			NewLeg(16 * 2, 0),
+			NewLeg(16 * 3, 0),
+			NewLeg(16 * 4, 0),
+			NewLeg(16 * 5, 0),
+			NewLeg(16 * 6, 0),
+			NewLeg(16 * 7, 0)
 		}
 	}
 }

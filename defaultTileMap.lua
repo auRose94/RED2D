@@ -1,4 +1,3 @@
-
 local module = {}
 
 function StandardRect(x, y)
@@ -10,7 +9,9 @@ function TransformPoints(transform, points)
 	local build = {}
 	for _, v in ipairs(points) do
 		if type(v) == "array" then
-			for k,v in pairs(v) do build[k] = v end
+			for k, v in pairs(v) do
+				build[k] = v
+			end
 		elseif type(v) == "number" then
 			table.insert(build, v)
 		end
@@ -26,11 +27,7 @@ end
 
 function SlopedSurface(x, y, angle)
 	local transform = love.math.newTransform(x, y, angle, 1, 1)
-	local points = TransformPoints(transform, {
-		32, 32,
-		32, -32,
-		-32, -32
-	})
+	local points = TransformPoints(transform, { 32, 32, 32, -32, -32, -32 })
 	return love.physics.newPolygonShape(unpack(points))
 end
 
@@ -86,7 +83,6 @@ function module.registerTiles(tileMap)
 		shape = SlopedSurface4,
 		density = 1
 	})
-
 end
 
 return module

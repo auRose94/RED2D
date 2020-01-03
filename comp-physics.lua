@@ -1,5 +1,5 @@
-local ComponentClass = require "component"
-local FixtureComponent = require "comp-fixture"
+local ComponentClass = require"component"
+local FixtureComponent = require"comp-fixture"
 local PhysicsComponent = inheritsFrom(ComponentClass)
 
 function PhysicsComponent:getName()
@@ -146,20 +146,21 @@ function PhysicsComponent:draw()
 			if shapeType == "polygon" then
 				love.graphics.polygon(
 					"fill",
-					self.body:getWorldPoints(shape:getPoints()))
+					self.body:getWorldPoints(shape:getPoints())
+				)
 			elseif shapeType == "circle" then
 				local cx, cy = self.body:getWorldPoint(shape:getPoint())
 				love.graphics.circle("fill", cx, cy, shape:getRadius())
 			end
 		end
 
-		local contacts = self.body:getContacts( )
+		local contacts = self.body:getContacts()
 		for ci = 1, #contacts do
 			local contact = contacts[ci]
 			local fixtureA, fixtureB = contact:getFixtures()
 			love.graphics.setColor(0, 1, 0, 0.5)
 			love.graphics.setPointSize(3)
-			love.graphics.points(contact:getPositions( ))
+			love.graphics.points(contact:getPositions())
 		end
 		love.graphics.pop()
 	end

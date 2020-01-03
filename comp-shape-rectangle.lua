@@ -1,5 +1,4 @@
-
-local PolygonShapeComponent = require "comp-shape-polygon"
+local PolygonShapeComponent = require"comp-shape-polygon"
 
 local RectangleShapeComponent = inheritsFrom(PolygonShapeComponent)
 
