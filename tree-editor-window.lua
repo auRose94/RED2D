@@ -32,9 +32,6 @@ function module.drawComponent(entity, component)
 				"ImGuiTreeNodeFlags_OpenOnArrow"
 			}
 		)
-	if imgui.IsItemClicked(1) and (module.selected ~= component.parent) then
-		module.selected = component
-	end
 	imgui.PopStyleColor(1)
 	if compState then
 		component:drawEditor()
@@ -86,8 +83,7 @@ function module.draw(level)
 				{
 					"ImGuiTreeNodeFlags_None",
 					"ImGuiTreeNodeFlags_OpenOnDoubleClick",
-					"ImGuiTreeNodeFlags_OpenOnArrow",
-					"ImGI"
+					"ImGuiTreeNodeFlags_OpenOnArrow"
 				}
 			)
 		if headerState then
@@ -100,27 +96,36 @@ function module.draw(level)
 	end
 	local tx, ty = imgui.GetWindowPos()
 	local tw = imgui.GetWindowWidth()
-	imgui.End()
 
 	if module.selected then
-		imgui.SetNextWindowPos(tx + tw, ty)
+		imgui.SameLine()
 		local inspectorState =
-			imgui.Begin("Inspector", true, { "ImGuiWindowFlags_AlwaysAutoResize" })
+			imgui.BeginChild(
+				"Inspector",
+				420,
+				500,
+				{
+					"ImGuiWindowFlags_AlwaysAutoResize",
+					"ImGuiWindowFlags_NoMove",
+					"ImGuiWindowFlags_NoCollapse",
+					"ImGuiWindowFlags_NoFocusOnAppearing"
+				}
+			)
 		if inspectorState then
-			if module.selected:isa(ComponentClass) then
-				local component = module.selected
-				module.drawComponent(component.parent, component)
-			elseif module.selected:isa(EntityClass) then
+			if module.selected:isa(EntityClass) then
 				local entity = module.selected
-				for ci, component in ipairs(entity.components) do
-					module.drawComponent(entity, component)
+				if type(entity) == "table" and entity ~= nil then
+					entity:drawEditor()
+					for ci, component in ipairs(entity.components) do
+						module.drawComponent(entity, component)
+					end
 				end
 			end
-		else
-			module.selected = nil
 		end
-		imgui.End()
+		imgui.EndChild()
 	end
+
+	imgui.End()
 
 	return state
 end

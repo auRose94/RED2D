@@ -11,12 +11,7 @@ function HeadComponent:init(parent, data)
 	self.direction = 1 -- 0 or more equals right, 0 or less equals left
 	self.blinking = true
 	self.talking = false
-	self.dead = false
-	self.like = false
-	self.heart = false
-	self.sad = false
-	self.hurt = false
-	self.mad = false
+	self.facialState = {}
 	self.lookX = 0
 	self.lookY = 0
 
@@ -186,19 +181,19 @@ function HeadComponent:update(dt)
 
 	local blinkChange = false
 	local mouthChange = false
-	local emotion =
-		not self.dead and (self.like or self.heart or self.sad or self.hurt or self.mad)
+	local emotion = #self.facialState > 0
 	local looking = not emotion and (self.lookX ~= self.lookY and self.lookX ~= 0)
 
 	if self.talking then
 		mouthChange = math.floor(math.cos(now * talkSpeed)) == 0
 	end
 
+	self.currentBlinkWait = self.currentBlinkWait or 1
+	self.currentBlink = self.currentBlink or now
 	if self.blinking then
-		local currentBlinkWait = self.currentBlinkWait or 1
-		local currentBlink = self.currentBlink or now
-		if now - currentBlink >= currentBlinkWait then
-			self.currentBlinkWait = math.random(0, 3)
+		if now - self.currentBlink >= self.currentBlinkWait then
+			self.currentBlink = now
+			self.currentBlinkWait = (math.random(0, 1000) * 3) / 1000
 			blinkChange = true
 		end
 	end
@@ -213,13 +208,17 @@ function HeadComponent:update(dt)
 	local face = faceTable.face
 
 	-- Base
-	if self.dead then
+	if CheckValue(self.facialState, "dead") then
 		face = faceTable.facebroken
-	elseif self.happy or self.like then
+	elseif faceTable.faceBlushing and CheckValue(
+		self.facialState,
+		"happy",
+		"like"
+	) then
 		face = faceTable.faceBlushing
 	end
 
-	if not self.dead then
+	if not CheckValue(self.facialState, "dead") then
 		-- Eyes
 		if not blinkChange or now - self.currentBlink > self.currentBlinkWait then
 			if looking then
@@ -230,15 +229,15 @@ function HeadComponent:update(dt)
 					) + 1
 				eyes = faceTable.eyes.rotations[aimIndex]
 			elseif emotion then
-				if self.like then
+				if CheckValue(self.facialState, "like") then
 					eyes = faceTable.eyes.happy
-				elseif self.heart then
+				elseif CheckValue(self.facialState, "heart") then
 					eyes = faceTable.eyes.heart
-				elseif self.sad then
-					eyes = faceTable.eyes.frown
-				elseif self.hurt then
+				elseif CheckValue(self.facialState, "sad") then
+					eyes = faceTable.eyes.center
+				elseif CheckValue(self.facialState, "hurt") then
 					eyes = faceTable.eyes.hurt
-				elseif self.mad then
+				elseif CheckValue(self.facialState, "mad") then
 					eyes = faceTable.eyes.mad
 				end
 			else
@@ -259,16 +258,14 @@ function HeadComponent:update(dt)
 				end
 			end
 		else
-			if self.like then
+			if CheckValue(self.facialState, "like", "heart") then
 				mouth = faceTable.mouth.smile
-			elseif self.heart then
-				mouth = faceTable.mouth.smile
-			elseif self.sad then
-				mouth = faceTable.mouth.frown
-			elseif self.hurt then
-				mouth = faceTable.mouth.open
-			elseif self.mad then
+			elseif CheckValue(self.facialState, "sad") then
 				mouth = faceTable.mouth.grit
+			elseif CheckValue(self.facialState, "hurt") then
+				mouth = faceTable.mouth.open
+			elseif CheckValue(self.facialState, "mad") then
+				mouth = faceTable.mouth.frown
 			else
 				mouth = faceTable.mouth.close
 			end

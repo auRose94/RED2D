@@ -1,3 +1,4 @@
+local imgui = require"imgui"
 local EntityClass = inheritsFrom(nil)
 
 function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
@@ -37,6 +38,26 @@ end
 
 function EntityClass:update(dt)
 	self:callComponentMethods("update", dt)
+end
+
+function EntityClass:drawEditor()
+	local keys = sortedKeys(self)
+	for index, name in pairs(keys) do
+		local value = self[name]
+		local t = type(value)
+		if type(name) == "string" then
+			if t == "number" then
+				self[name] = imgui.DragFloat(name, value)
+			elseif t == "string" then
+				local changed, newValue = imgui.InputText(name, value, #value + 16)
+				if changed then
+					self[name] = changed
+				end
+			elseif t == "boolean" then
+				self[name] = imgui.Checkbox(name, value)
+			end
+		end
+	end
 end
 
 function EntityClass:draw()

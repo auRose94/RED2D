@@ -21,7 +21,12 @@ function LevelClass:addEntity(entity)
 end
 
 function LevelClass:update(dt)
-	self.world:update(dt)
+	local step = 1.0 / 60.0
+	self.accumulator = self.accumulator + dt
+	while self.accumulator >= step do
+		self.world:update(step)
+		self.accumulator = self.accumulator - step
+	end
 	for i = 1, #self.entities do
 		local entity = self.entities[i]
 		if entity and entity.update then
@@ -36,6 +41,7 @@ function LevelClass:init()
 	self.world = love.physics.newWorld(0, 0, true)
 	self.camera = CameraClass(self)
 	self.camera:newEntityLayer(2, self.entities)
+	self.accumulator = 0
 end
 
 function LevelClass:getRootEntities()

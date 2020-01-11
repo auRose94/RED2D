@@ -4,6 +4,7 @@ local PlayerClass = require"comp-player"
 local TileMapClass = require"tilemap"
 local ItemClass = require"comp-item"
 local WeaponClass = require"comp-weapon"
+local OraLoader = require"ora-loader"
 
 local level = inheritsFrom(LevelClass)
 
@@ -11,9 +12,15 @@ function level:init()
 	LevelClass.init(self)
 	local camera = self.camera
 
+	local oraLoader = OraLoader("levels/testing.ora")
+
+	local backTilemap = TileMapClass(self, "assets/Tileset.png", 64)
+	backTilemap:loadDefault()
+	backTilemap:loadLevel(oraLoader:getImageData("background"), false)
+
 	local tilemap = TileMapClass(self, "assets/Tileset.png", 64)
 	tilemap:loadDefault()
-	tilemap:loadLevel("levels/testing.png")
+	tilemap:loadLevel(oraLoader:getImageData("base"))
 
 	local playerEntity = EntityClass(self, "Player", tilemap:getOffset(30, 19))
 	PlayerClass(playerEntity)

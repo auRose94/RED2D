@@ -85,6 +85,7 @@ function OraLoader:load(fileName)
 								x = lx,
 								y = ly,
 								opacity = opacity,
+								imageData = imageData,
 								image = love.graphics.newImage(imageData)
 							})
 						end
@@ -132,6 +133,13 @@ function OraLoader:getImage(name)
 	local layer = self:getLayer(name)
 	if layer then
 		return layer.image
+	end
+end
+
+function OraLoader:getImageData(name)
+	local layer = self:getLayer(name)
+	if layer then
+		return layer.imageData
 	end
 end
 

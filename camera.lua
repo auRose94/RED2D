@@ -10,7 +10,7 @@ function CameraClass:init(level)
 	self.sx = scale --1.125
 	self.sy = scale
 	self.cameraSpeed = 4
-	self.rotSpeed = 6
+	self.rotSpeed = 4
 	table.insert(cameras, self)
 end
 
@@ -55,19 +55,19 @@ function CameraClass:setTransformOffset(xOrArray, y)
 	else
 		transform:rotate(-self.followTarget.r)
 	end
-	local ax, ay = self:getOffset(2)
-	local ox, oy = transform:transformPoint(ax, ay)
 	if type(xOrArray) == "number" then
-		EntityModel.setPosition(self, xOrArray - ox, y - oy)
+		EntityModel.setPosition(self, xOrArray, y)
 	elseif type(xOrArray) == "table" then
-		EntityModel.setPosition(self, xOrArray[1] - ox, xOrArray[2] - oy)
+		EntityModel.setPosition(self, xOrArray[1], xOrArray[2])
 	end
 end
 
 function CameraClass:getTransform()
+	local w, h = love.graphics.getPixelDimensions()
 	local trans = love.math.newTransform()
-	trans:rotate(-self.r)
+	trans:translate(w / 2, h / 2)
 	trans:scale(self.sx, self.sy)
+	trans:rotate(-self.r)
 	trans:translate(-self.x, -self.y)
 	return trans
 end
@@ -140,7 +140,7 @@ function CameraClass:update(dt)
 				target.oy
 			)
 
-		local tX, tY = targetTransform:transformPoint(-ox, -oy)
+		local tX, tY = targetTransform:transformPoint(0, 0)
 		local cx = math.lerp(self.x, tX, self.cameraSpeed * dt)
 		local cy = math.lerp(self.y, tY, self.cameraSpeed * dt)
 		local cr = math.angleLerp(self.r, target.r, self.rotSpeed * dt)

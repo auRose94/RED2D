@@ -1,5 +1,14 @@
 local module = {}
 
+function StandardEdgesRect(x, y)
+	return {
+		{ x + -32, y + -32, x + -32, y + 32 },
+		{ x + -32, y + 32, x + 32, y + 32 },
+		{ x + 32, y + 32, x + 32, y + -32 },
+		{ x + 32, y + -32, x + -32, y + -32 }
+	}
+end
+
 function StandardRect(x, y)
 	return love.physics.newRectangleShape(x, y, 64, 64)
 end
@@ -8,11 +17,12 @@ function TransformPoints(transform, points)
 	local returnValue = {}
 	local build = {}
 	for _, v in ipairs(points) do
-		if type(v) == "array" then
-			for k, v in pairs(v) do
-				build[k] = v
+		local tv = type(v)
+		if tv == "table" then
+			for k, av in pairs(v) do
+				build[k] = av
 			end
-		elseif type(v) == "number" then
+		elseif tv == "number" then
 			table.insert(build, v)
 		end
 		if #build == 2 then
@@ -25,62 +35,107 @@ function TransformPoints(transform, points)
 	return returnValue
 end
 
-function SlopedSurface(x, y, angle)
+function SlopedSurfaceEdge(x, y, angle)
+	local transform = love.math.newTransform(x, y, angle, 1, 1)
+	local points = TransformPoints(
+		transform,
+		{
+			{ 32, 32 }, -- Edge 1
+			{ 32, -32 },
+			{ 32, -32 }, -- Edge 2
+			{ -32, -32 },
+			{ -32, -32 }, -- Edge 3
+			{ 32, 32 }
+		}
+	)
+	local edges = {}
+	for i = 1, #points, 4 do
+		table.insert(
+			edges,
+			{ points[i + 0], points[i + 1], points[i + 2], points[i + 3] }
+		)
+	end
+	return edges
+end
+
+function SlopedSurfaceShape(x, y, angle)
 	local transform = love.math.newTransform(x, y, angle, 1, 1)
 	local points = TransformPoints(transform, { 32, 32, 32, -32, -32, -32 })
 	return love.physics.newPolygonShape(unpack(points))
 end
 
-function SlopedSurface1(x, y)
-	return SlopedSurface(x, y, math.rad(90 * 0))
+function SlopedSurfaceEdges0(x, y)
+	return SlopedSurfaceEdge(x, y, math.rad(90 * 0))
 end
 
-function SlopedSurface2(x, y)
-	return SlopedSurface(x, y, math.rad(90 * 1))
+function SlopedSurfaceEdges90(x, y)
+	return SlopedSurfaceEdge(x, y, math.rad(90 * 1))
 end
 
-function SlopedSurface3(x, y)
-	return SlopedSurface(x, y, math.rad(90 * 2))
+function SlopedSurfaceEdges180(x, y)
+	return SlopedSurfaceEdge(x, y, math.rad(90 * 2))
 end
 
-function SlopedSurface4(x, y)
-	return SlopedSurface(x, y, math.rad(90 * 3))
+function SlopedSurfaceEdges270(x, y)
+	return SlopedSurfaceEdge(x, y, math.rad(90 * 3))
+end
+
+function SlopedSurfaceShape0(x, y)
+	return SlopedSurfaceShape(x, y, math.rad(90 * 0))
+end
+
+function SlopedSurfaceShape90(x, y)
+	return SlopedSurfaceShape(x, y, math.rad(90 * 1))
+end
+
+function SlopedSurfaceShape180(x, y)
+	return SlopedSurfaceShape(x, y, math.rad(90 * 2))
+end
+
+function SlopedSurfaceShape270(x, y)
+	return SlopedSurfaceShape(x, y, math.rad(90 * 3))
 end
 
 function module.registerTiles(tileMap)
+	tileMap:registerTile("#FFFFFFFF", {
+		quad = love.graphics.newQuad(64, 1, 64, 64, 520, 520),
+		--edges = StandardEdgesRect,
+		density = 1
+	})
+
 	tileMap:registerTile("#000000FF", {
 		quad = love.graphics.newQuad(0, 1, 64, 64, 520, 520),
-		shape = StandardRect,
+		edges = StandardEdgesRect,
 		density = 1
 	})
 
 	tileMap:registerTile("#202020FF", {
 		quad = love.graphics.newQuad(0, 65, 64, 64, 520, 520),
-		shape = StandardRect,
+		edges = StandardEdgesRect,
 		density = 1
 	})
 
 	tileMap:registerTile("#200000FF", {
 		quad = love.graphics.newQuad(0, 196, 64, 64, 520, 520),
-		shape = SlopedSurface3,
+		edges = SlopedSurfaceEdges180,
 		density = 1
 	})
 
 	tileMap:registerTile("#400000FF", {
 		quad = love.graphics.newQuad(0, 131, 64, 64, 520, 520),
-		shape = SlopedSurface2,
+		edges = SlopedSurfaceEdges90,
 		density = 1
 	})
 
 	tileMap:registerTile("#600000FF", {
 		quad = love.graphics.newQuad(0, 326, 64, 64, 520, 520),
-		shape = SlopedSurface1,
+		edges = SlopedSurfaceEdges0,
 		density = 1
 	})
 
 	tileMap:registerTile("#800000FF", {
 		quad = love.graphics.newQuad(0, 261, 64, 64, 520, 520),
-		shape = SlopedSurface4,
+		edges = SlopedSurfaceEdges270,
 		density = 1
 	})
 end

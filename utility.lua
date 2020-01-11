@@ -3,6 +3,38 @@ local module = {}
 module.defaultMaxDepth = 1
 module.arrayNewlineMin = 4
 
+function module.CheckValue(t, ...)
+	for i, v in ipairs(t) do
+		for argI = 1, select("#", ...) do
+			local value = select(argI, ...)
+			if v == value then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function module.UniquePush(t, value)
+	if not CheckValue(t, value) then
+		table.insert(t, value)
+	end
+end
+
+function module.sortedKeys(tbl, sortFunction)
+	sortFunction = sortFunction or function(a, b)
+		return a < b
+	end
+	local keys = {}
+	for key, value in pairs(tbl) do
+		table.insert(keys, key)
+	end
+
+	table.sort(keys, sortFunction)
+
+	return keys
+end
+
 function module.isStringTable(tableData)
 	assert(type(tableData) == "table", "Needs to be table")
 	for i, v in pairs(tableData) do

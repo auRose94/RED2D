@@ -12,10 +12,11 @@ cPath = cPath .. ";3rdParty/build/??"
 love.filesystem.setCRequirePath(cPath)
 
 _G.debugDrawPhysics = false
-_G.showTreeEditor = true
+_G.showTreeEditor = false
 _G.showDebugTools = true
 _G.showGUIDemo = false
 _G.showFPS = true
+_G.showPixelEditor = true
 
 function love.conf(t)
 	t.identity = "RED2D" -- The name of the save directory (string)
@@ -27,7 +28,7 @@ function love.conf(t)
 	t.gammacorrect = true -- Enable gamma-correct rendering, when supported by the system (boolean)
 	t.audio.mixwithsystem = true -- Keep background music playing when opening LOVE (boolean, iOS and Android only)
 	t.window.title = "RED" -- The window title (string)
-	t.window.icon = nil -- Filepath to an image to use as the window's icon (string)
+	t.window.icon = "assets/icon.png" -- Filepath to an image to use as the window's icon (string)
 	t.window.width = 1600 -- The window width (number)
 	t.window.height = 400 -- The window height (number)
 	t.window.borderless = false -- Remove all border visuals from the window (boolean)

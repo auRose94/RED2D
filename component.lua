@@ -1,4 +1,5 @@
 local EntityClass = require"entity"
+local imgui = require"imgui"
 
 local ComponentClass = inheritsFrom(nil)
 
@@ -98,6 +99,21 @@ function ComponentClass:inverseTransformNormal(...)
 end
 
 function ComponentClass:drawEditor()
+	local keys = sortedKeys(self)
+	for index, name in pairs(keys) do
+		local value = self[name]
+		local t = type(value)
+		if type(name) == "string" then
+			if t == "number" then
+				self[name] = imgui.DragFloat(name, value)
+			elseif t == "string" then
+				local changed, newValue = imgui.InputText(name, value, #value + 1)
+				self[name] = changed and newValue or value
+			elseif t == "boolean" then
+				self[name] = imgui.Checkbox(name, value)
+			end
+		end
+	end
 end
 
 function ComponentClass:getName()

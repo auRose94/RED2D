@@ -20,7 +20,7 @@ function BodyComponent:init(parent, data)
 	self.lastWalkingFrameUpdate = love.timer.getTime()
 	self.walkingFrameSpeed = 0.015
 	self.speed = 600
-	self.jumpPower = 35000
+	self.jumpPower = 10
 	self.jumpCooloff = 0.1
 	self.flySpeed = 400
 	self.gravity = 980
@@ -43,7 +43,7 @@ function BodyComponent:init(parent, data)
 		parent:getComponent(PhysicsComponent) or PhysicsComponent(parent, "dynamic")
 
 	self.physComp:setFixedRotation(true)
-	self.physComp:useCCD(true)
+	--self.physComp:useCCD(true)
 
 	self.raycastLength = 32
 
@@ -290,6 +290,8 @@ function BodyComponent:update(dt)
 			math.min(math.abs(ySkew), self.speedSkew) * (math.sign(
 				lvy
 			) * self.direction)
+	else
+		ySkew = 0
 	end
 	self:setSkew(xSkew, ySkew)
 
@@ -357,7 +359,6 @@ function BodyComponent:update(dt)
 	end
 
 	local walkingDirX = 0
-	local walkingDirY = 0
 	local jumpingDir = 0
 	if self.moveRight then
 		if standing == false then
@@ -375,7 +376,7 @@ function BodyComponent:update(dt)
 
 	local recentlyJumped = self.lastJump < now - self.jumpCooloff
 	if recentlyJumped and standing and self.moveUp then
-		jumpingDir = -self.jumpPower * dt
+		jumpingDir = -self.jumpPower
 		self.lastJump = now
 	end
 
@@ -510,11 +511,13 @@ function BodyComponent:update(dt)
 end
 
 function BodyComponent:draw()
-	for _, o in pairs(self.order) do
-		local _, pair, color = unpack(o)
-		local img, rect = unpack(pair)
-		love.graphics.setColor(color)
-		love.graphics.draw(img, rect)
+	if self.order then
+		for _, o in pairs(self.order) do
+			local _, pair, color = unpack(o)
+			local img, rect = unpack(pair)
+			love.graphics.setColor(color)
+			love.graphics.draw(img, rect)
+		end
 	end
 	if _G.debugDrawPhysics then
 		if self.downRaycast ~= nil then
