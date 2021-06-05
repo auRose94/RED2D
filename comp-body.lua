@@ -240,12 +240,11 @@ function BodyComponent:getAim(invertY, aimOffsetX, aimOffsetY)
 	aimOffsetY = aimOffsetY or 0
 	local ax, ay = self.aimX, self.aimY
 	if self.getAimNormal then
-		ax, ay = self:getAimNormal()
+		ax, ay = self:getAimNormal(invertY)
 	end
-	if invertY then
-		ay = -ay
-	end
-	return math.angle(aimOffsetX, aimOffsetY, ax, ay)
+	local angle = math.angle(aimOffsetX, aimOffsetY, ax, ay)
+
+	return angle
 end
 
 function BodyComponent:getLeftWeapon()
@@ -467,11 +466,11 @@ function BodyComponent:update(dt)
 	self.rightHand:setPosition(rightPoint)
 
 	local fromTop = self.topSpeed - speed
-	local speedMultiplier = math.min(1, self.topSpeed / fromTop)
-	local walkingFrameStep = now - (self.walkingFrameSpeed * dt) * speedMultiplier
+	local speedMultiplier = ((fromTop/self.topSpeed) / self.walkingFrameSpeed)
+	local walkingFrameStep = now - speedMultiplier
 	local legsAnimation = faceTable.legs.animation
 	if standing and math.abs(lvx) > 1 and math.abs(lvy) < 10 then
-		if self.lastWalkingFrameUpdate < walkingFrameStep then
+		if self.lastWalkingFrameUpdate <= walkingFrameStep then
 			self.lastWalkingFrameUpdate = now
 			self.walkingFrame = self.walkingFrame + 1
 			if self.walkingFrame > #legsAnimation then

@@ -1,0 +1,79 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug (default)",
+      "generator": "Visual Studio 16 2019 Win64",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "LUA_INCLUDE_DIR",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src",
+          "type": "PATH"
+        },
+        {
+          "name": "LUA_LIBRARY",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src/lua51.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "LUAJIT_LIBRARY",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src/luajit.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "LUAJIT_INCLUDE_DIR",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src",
+          "type": "PATH"
+        },
+        {
+          "name": "CMAKE_VERBOSE_MAKEFILE",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ],
+      "cmakeExecutable": "C:/Program Files/CMake/bin/cmake.exe",
+      "intelliSenseMode": "windows-msvc-x64"
+    },
+    {
+      "name": "x86-Debug",
+      "generator": "Visual Studio 16 2019",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeExecutable": "C:/Program Files/CMake/bin/cmake.exe",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "intelliSenseMode": "windows-msvc-x86",
+      "variables": [
+        {
+          "name": "LUAJIT_INCLUDE_DIR",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src",
+          "type": "PATH"
+        },
+        {
+          "name": "LUAJIT_LIBRARY",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src/luajit.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "LUA_LIBRARY",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src/lua51.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "LUA_INCLUDE_DIR",
+          "value": "D:/Projects/LuaProjects/RED2D/3rdParty/LuaJIT-2.1/src",
+          "type": "PATH"
+        }
+      ]
+    }
+  ]
+}

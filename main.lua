@@ -23,16 +23,7 @@ function love.quit()
 end
 
 function love.update(dt)
-	local joysticks = love.joystick.getJoysticks()
-	local joystick = joysticks[1]
-	local right, left, down, up =
-		math.max(joystick:getGamepadAxis('leftx'),0),
-		math.abs(math.min(joystick:getGamepadAxis('leftx'),0)),
-		math.abs(math.min(joystick:getGamepadAxis('lefty'),0)),
-		math.max(joystick:getGamepadAxis('lefty'),0)
-	echo(right, left, down, up)
-
-	imgui.UseGamepad(1)
+	input.handleGUIControls()
 	imgui.NewFrame()
 	level:update(dt)
 	input.update(dt)
@@ -45,10 +36,13 @@ function love.draw()
 	level.camera:dispatch()
 
 	if showFPS then
+		local rFPS = 1/love.timer.getDelta()
+		local fps = love.timer.getFPS()
+		local string = "CFPS: " .. fps .. "    AFPS: " .. rFPS
 		love.graphics.setColor(colors.white)
-		love.graphics.print("FPS: " .. love.timer.getFPS(), 2, h - 16 - 2, 0, 0.5)
+		love.graphics.print(string, 2, h - 16 - 2, 0, 0.5)
 		love.graphics.setColor(colors.black)
-		love.graphics.print("FPS: " .. love.timer.getFPS(), 3, h - 16 - 3, 0, 0.5)
+		love.graphics.print(string, 3, h - 16 - 3, 0, 0.5)
 	end
 
 	if showDebugTools then
@@ -86,7 +80,61 @@ function love.draw()
 		showPixelEditor = PixelEditorWindow:draw()
 	end
 
+	if input.controllerFocusOnGUI then
+		love.graphics.setColor(RGB(0, 0, 0, 120))
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getPixelDimensions())
+	end
+
 	-- Very important... this effects imgui
 	love.graphics.setColor(colors.white)
 	imgui.Render()
+end
+
+function love.run()
+	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
+ 
+	-- We don't want the first frame's dt to include time taken by love.load.
+	if love.timer then love.timer.step() end
+ 
+	local dt = 0
+ 
+	-- Main loop time.
+	return function()
+		local width, height, flags = love.window.getMode( )		-- Process events.
+
+		local target = (1/_G.maxFrameRate)
+		if dt-target >= 0 then
+			love.timer.sleep(dt-target)
+		end
+		
+		-- Update dt, as we'll be passing it to update
+		if love.timer then dt = love.timer.step() end 
+
+
+		if love.event then
+			love.event.pump()
+			for name, a,b,c,d,e,f in love.event.poll() do
+				if name == "quit" then
+					if not love.quit or not love.quit() then
+						return a or 0
+					end
+				end
+				love.handlers[name](a,b,c,d,e,f)
+			end
+		end
+ 
+		-- Call update and draw
+		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+ 
+		if love.graphics and love.graphics.isActive() then
+			love.graphics.origin()
+			love.graphics.clear(love.graphics.getBackgroundColor())
+ 
+			if love.draw then love.draw() end
+ 
+			love.graphics.present()
+		end
+
+
+	end
 end

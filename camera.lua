@@ -6,7 +6,7 @@ _G.cameras = {}
 function CameraClass:init(level)
 	EntityModel.init(self, level, "Camera")
 	self.layers = {}
-	local scale = 1
+	local scale = 1.325
 	self.sx = scale --1.125
 	self.sy = scale
 	self.cameraSpeed = 4

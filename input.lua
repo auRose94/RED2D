@@ -2,12 +2,16 @@ local imgui = require"imgui"
 local input = {}
 
 input.joysticks = {}
-for i, j in pairs(love.joystick.getJoysticks()) do
-	if j:isGamepad() then
+input.jIndices = {}
+input.allJoysticks = love.joystick.getJoysticks()
+for i, j in pairs(input.allJoysticks) do
+	if j:isGamepad() and j:getAxisCount( ) <= 6 then
+		table.insert(input.jIndices, i)
 		table.insert(input.joysticks, j)
 	end
 end
 input.players = {}
+input.GUIJoystick = 1
 
 _G.playerOneKeyboardMouse = true
 _G.playerOneUseController = true
@@ -179,6 +183,20 @@ function InputController:getJoystickValue()
 					value = joystick:isDown(button)
 				elseif type(button) == "string" then
 					value = joystick:isGamepadDown(button)
+				elseif type(button) == "table" then
+					for _bi, bk in ipairs(button) do
+						local t = false
+						if type(bk) == "number" then
+							t = joystick:isDown(button)
+						elseif type(bk) == "string" then
+							t = joystick:isGamepadDown(button)
+						end
+
+						if t then
+							value = t
+							break;
+						end
+					end
 				end
 				value = InputController.convert(value)
 			end
@@ -191,24 +209,26 @@ function InputController:getJoystickValue()
 						joystick:getGamepadAxis(axis[2])
 					if type(axisMin) == "number" then
 						local dist = math.dist(0, 0, ax, ay)
-						if axisMin > dist then
-							value = 0
+						if axisMin < dist then
+							value = { ax, ay }
 						end
 					end
-					return { ax, ay }
 				elseif type(axis) == "number" or type(axis) == "string" then
-					value = joystick:getGamepadAxis(axis)
+					local t = joystick:getGamepadAxis(axis)
 					if type(direction) == "number" then
-						if direction > 0 and value < 0 then
-							value = 0
-						elseif direction < 0 and value > 0 then
-							value = 0
+						if direction < 0 then
+							if t >= 0 then t = 0 end
+						elseif direction > 0 then
+							if t <= 0 then t = 0 end
 						end
 					end
 					if type(axisMin) == "number" then
-						if math.abs(axisMin) > math.abs(value) then
-							value = 0
+						if math.abs(axisMin) > math.abs(t) then
+							t = 0
 						end
+					end
+					if t ~= 0 then
+						value = t
 					end
 				end
 			end
@@ -386,6 +406,23 @@ function input.update(dt)
 			item:update(dt)
 		end
 	end
+end
+
+function input.controllerFocusToggle()
+	input.controllerFocusOnGUI = not input.controllerFocusOnGUI
+end
+
+function input.handleGUIControls()
+	if input.controllerFocusOnGUI then
+		if input.isConnected(input.GUIJoystick) then
+			imgui.UseGamepad(input.GUIJoystick)
+		end
+	end
+end
+
+function input.isConnected(joystick)
+	assert(joystick >= 1)
+	return input.allJoysticks[input.jIndices[joystick]] ~= nil
 end
 
 function love.textinput(t)

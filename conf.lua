@@ -17,6 +17,7 @@ _G.showDebugTools = true
 _G.showGUIDemo = false
 _G.showFPS = true
 _G.showPixelEditor = true
+_G.maxFrameRate = 60
 
 function love.conf(t)
 	t.identity = "RED2D" -- The name of the save directory (string)

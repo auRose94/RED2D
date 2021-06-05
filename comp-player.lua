@@ -45,6 +45,7 @@ function PlayerComponent:registerControls()
 				altKey = "left"
 			},
 			joystick = {
+				button = "dpleft",
 				axis = "leftx",
 				axisMin = 0.75,
 				direction = -1
@@ -61,6 +62,7 @@ function PlayerComponent:registerControls()
 				altKey = "right"
 			},
 			joystick = {
+				button = "dpright",
 				axis = "leftx",
 				axisMin = 0.75,
 				direction = 1
@@ -77,7 +79,7 @@ function PlayerComponent:registerControls()
 				altKey = { "up", "space" }
 			},
 			joystick = {
-				button = "y",
+				button = {"y", "dpup"},
 				axis = "lefty",
 				axisMin = 0.75,
 				direction = -1
@@ -94,6 +96,7 @@ function PlayerComponent:registerControls()
 				altKey = "down"
 			},
 			joystick = {
+				button = "dpdown",
 				axis = "lefty",
 				axisMin = 0.5,
 				direction = 1
@@ -197,79 +200,80 @@ end
 
 function PlayerComponent:getAimNormal(invertY)
 	local aim = self.aimDirControl
+	local nx, ny = 0, 0
 	if aim:held() then
 		-- Joystick
-		local rDirX, rDirY = unpack(aim.value)
+		nx, ny = unpack(aim.value)
 		local width, height = love.graphics.getPixelDimensions()
-		rDirX, rDirY = rDirX * (width / 4), rDirY * (height / 4)
-		if invertY then
-			rDirY = -rDirY
-		end
-		return rDirX, rDirY
-		-- Mouse
+		nx, ny = nx * (width / 4), ny * (height / 4)
 	else
+		-- Mouse
 		local camera = self.parent.level.camera
-		local mx, my = self:inverseTransformPoint(camera:mousePosition())
-		if invertY then
-			my = -my
-		end
-		return mx, my
+		nx, ny = self:inverseTransformPoint(camera:mousePosition())
 	end
-	return 0, 0
+	if invertY then
+		ny = -ny
+	end
+	return math.normalize(nx, ny)
 end
 
 function PlayerComponent:update(dt)
 	local inventory = self.inventory
 
-	local right = self.rightControl
-	local left = self.leftControl
-	local up = self.upControl
-	local down = self.downControl
+	self.headComp.direction = self.direction
+
 	local inv = self.inventoryControl
-	local interact = self.interactControl
-	local aim = self.aimControl
-	local aimDir = self.aimDirControl
-	local fire1 = self.fire1Control
-	local fire2 = self.fire2Control
 
 	if inv:pressed() then
+		input.controllerFocusToggle()
 		self.statusWindow:toggleWindow()
 	end
 
-	inventory.pickup = interact:pressed()
+	if not input.controllerFocusOnGUI then
+		local right = self.rightControl
+		local left = self.leftControl
+		local up = self.upControl
+		local down = self.downControl
+		local interact = self.interactControl
+		local aim = self.aimControl
+		local aimDir = self.aimDirControl
+		local fire1 = self.fire1Control
+		local fire2 = self.fire2Control
 
-	self.moveRight = right:held()
-	self.moveLeft = left:held()
-	self.moveUp = up:held()
-	self.moveDown = down:held()
+		inventory.pickup = interact:pressed()
 
-	self.headComp.direction = self.direction
+		self.moveRight = right:held()
+		self.moveLeft = left:held()
+		self.moveUp = up:held()
+		self.moveDown = down:held()
 
-	if aim:held() or aimDir:held() then
-		self.leftAim = true
-		self.rightAim = true
-		self.headComp:lookAt({ self:getAimNormal() })
-	else
-		self.leftAim = false
-		self.rightAim = false
-		self.headComp:lookAt(0, 0)
-	end
 
-	local leftWeapon = self.weapons[1]
-	local rightWeapon = self.weapons[2]
-
-	if leftWeapon and rightWeapon then
-		leftWeapon.firing = fire1:held()
-		rightWeapon.firing = fire2:held()
-	elseif leftWeapon then
-		leftWeapon.firing = fire1:held()
-		if leftWeapon.altFiring ~= nil then
-			leftWeapon.altFiring = fire2:held()
+		if aim:held() or aimDir:held() then
+			self.leftAim = true
+			self.rightAim = true
+			self.headComp:lookAt({ self:getAimNormal() })
+		else
+			self.leftAim = false
+			self.rightAim = false
+			self.headComp:lookAt(0, 0)
 		end
-	elseif rightWeapon then
-		rightWeapon.firing = fire1:held()
-		if rightWeapon.altFiring ~= nil then
-			rightWeapon.altFiring = fire2:held()
+
+		local leftWeapon = self.weapons[1]
+		local rightWeapon = self.weapons[2]
+
+		if leftWeapon and rightWeapon then
+			leftWeapon.firing = fire1:held()
+			rightWeapon.firing = fire2:held()
+		elseif leftWeapon then
+			leftWeapon.firing = fire1:held()
+			if leftWeapon.altFiring ~= nil then
+				leftWeapon.altFiring = fire2:held()
+			end
+		elseif rightWeapon then
+			rightWeapon.firing = fire1:held()
+			if rightWeapon.altFiring ~= nil then
+				rightWeapon.altFiring = fire2:held()
+			end
 		end
 	end
 

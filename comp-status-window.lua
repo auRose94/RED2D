@@ -25,7 +25,7 @@ function StatusWindow:init(parent)
 	self.inventory = self:getComponent(InventoryClass)
 	self.player = self:getComponent(PlayerComponent or require"comp-player")
 
-	self.showWindow = true
+	self.showWindow = false
 	self.state = {
 		inventory = {
 			category = 1, -- > Any
@@ -37,6 +37,9 @@ function StatusWindow:init(parent)
 end
 
 function StatusWindow:toggleWindow()
+	if not self.showWindow then
+		self.justOpened = true	
+	end
 	self.showWindow = not self.showWindow
 end
 
@@ -46,6 +49,10 @@ end
 
 function StatusWindow:draw()
 	if self.showWindow then
+		if self.justOpened then
+			self.justOpened = nil
+			imgui.SetNextWindowFocus()
+		end
 		self.showWindow =
 			imgui.Begin("Status", true, { "ImGuiWindowFlags_AlwaysAutoResize" })
 

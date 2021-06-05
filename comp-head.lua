@@ -166,7 +166,6 @@ end
 
 function HeadComponent:getAim(invertY)
 	local rDirX, rDirY = self.lookX, self.lookY
-	local width, height = love.graphics.getPixelDimensions()
 	local dirMag = 300
 	rDirX, rDirY = rDirX * dirMag, rDirY * dirMag
 	if invertY then
@@ -225,7 +224,7 @@ function HeadComponent:update(dt)
 				local aimAngle = math.abs(self:getAim() - math.pi)
 				local aimIndex =
 					math.abs(
-						math.floor(math.deg(aimAngle) / (360 / #faceTable.eyes.rotations))
+						math.floor(math.deg(aimAngle) / (360 / (#faceTable.eyes.rotations-1)))
 					) + 1
 				eyes = faceTable.eyes.rotations[aimIndex]
 			elseif emotion then
