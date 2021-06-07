@@ -1,4 +1,4 @@
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local FileDialog = require"file-dialog"
 local PixelEditorWindow = {}
 
@@ -12,6 +12,7 @@ function PixelEditorWindow:saveFile(filePath)
 	echo(filePath)
 end
 
+--[[
 function PixelEditorWindow:draw()
 	imgui.SetNextWindowSizeConstraints(300, 300, 2000, 2000)
 	local state =
@@ -57,5 +58,6 @@ function PixelEditorWindow:draw()
 	end
 	return state
 end
+]]
 
 return PixelEditorWindow

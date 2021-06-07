@@ -1,4 +1,4 @@
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local EntityClass = require"entity"
 local ComponentClass = require"component"
 
@@ -8,6 +8,7 @@ module.selected = nil
 module.containerWidth = 300
 module.containerHeight = 300
 
+--[[
 function module.drawComponent(entity, component)
 	imgui.PushID(imgui.GetID(tostring(component)))
 	imgui.BeginGroup()
@@ -129,5 +130,6 @@ function module.draw(level)
 
 	return state
 end
+]]
 
 return module

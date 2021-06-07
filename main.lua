@@ -1,5 +1,5 @@
-local imgui = require"imgui"
-local imguiStyle = require"gui-style"
+--local imgui = require"imgui"
+--local imguiStyle = require"gui-style"
 love.graphics.setDefaultFilter("linear", "nearest")
 
 local CameraClass = require"camera"
@@ -13,18 +13,18 @@ local level = nil
 local accumulator = 0
 
 function love.load()
-	imgui.Init()
-	imguiStyle.load()
+	--imgui.Init()
+	--imguiStyle.load()
 	level = TestingLevel()
 end
 
 function love.quit()
-	imgui.ShutDown()
+	--imgui.ShutDown()
 end
 
 function love.update(dt)
 	input.handleGUIControls()
-	imgui.NewFrame()
+	--imgui.NewFrame()
 	level:update(dt)
 	input.update(dt)
 	collectgarbage()
@@ -40,11 +40,11 @@ function love.draw()
 		local fps = love.timer.getFPS()
 		local string = "CFPS: " .. fps .. "    AFPS: " .. rFPS
 		love.graphics.setColor(colors.white)
-		love.graphics.print(string, 2, h - 16 - 2, 0, 0.5)
+		love.graphics.print(string, 2, h - 16 - 2, 0, 1.5)
 		love.graphics.setColor(colors.black)
-		love.graphics.print(string, 3, h - 16 - 3, 0, 0.5)
+		love.graphics.print(string, 3, h - 16 - 3, 0, 1.5)
 	end
-
+--[[ 
 	if showDebugTools then
 		if imgui.BeginMainMenuBar() then
 			if imgui.BeginMenu("Tools") then
@@ -78,7 +78,7 @@ function love.draw()
 
 	if showPixelEditor then
 		showPixelEditor = PixelEditorWindow:draw()
-	end
+	end ]]
 
 	if input.controllerFocusOnGUI then
 		love.graphics.setColor(RGB(0, 0, 0, 120))
@@ -87,7 +87,7 @@ function love.draw()
 
 	-- Very important... this effects imgui
 	love.graphics.setColor(colors.white)
-	imgui.Render()
+	--imgui.Render()
 end
 
 function love.run()

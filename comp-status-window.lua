@@ -1,4 +1,4 @@
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local InventoryClass = require"comp-inventory"
 local ComponentClass = require"component"
 local StatusWindow = inheritsFrom(ComponentClass)
@@ -47,6 +47,7 @@ function StatusWindow:selectItem(item)
 	self.state.inventory.selected = item
 end
 
+--[[
 function StatusWindow:draw()
 	if self.showWindow then
 		if self.justOpened then
@@ -186,5 +187,6 @@ function StatusWindow:draw()
 		end
 	end
 end
+]]
 
 return StatusWindow

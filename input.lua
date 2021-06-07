@@ -1,4 +1,4 @@
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local input = {}
 
 input.joysticks = {}
@@ -114,19 +114,17 @@ function InputController:getMouseValue()
 	local value = 0
 	local mouse = self.mouse
 	if mouse then
-		if not imgui.GetWantCaptureMouse() then
-			-- if mouse axis
-			if mouse.axis == 1 or mouse.axis == "x" then
-				value = love.mouse.getX()
-			elseif mouse.axis == 2 or mouse.axis == "y" then
-				value = love.mouse.getY()
-			elseif mouse.axis == "xy" then
-				value = { love.mouse.getPosition() }
-			end
-			-- if mouse button
-			if mouse.button then
-				value = InputController.convert(love.mouse.isDown(mouse.button))
-			end
+		-- if mouse axis
+		if mouse.axis == 1 or mouse.axis == "x" then
+			value = love.mouse.getX()
+		elseif mouse.axis == 2 or mouse.axis == "y" then
+			value = love.mouse.getY()
+		elseif mouse.axis == "xy" then
+			value = { love.mouse.getPosition() }
+		end
+		-- if mouse button
+		if mouse.button then
+			value = InputController.convert(love.mouse.isDown(mouse.button))
 		end
 	end
 	return value
@@ -137,33 +135,32 @@ function InputController:getKeyboardValue()
 	local value = 0
 	local keyboard = self.keyboard
 	if keyboard then
-		if not imgui.GetWantCaptureKeyboard() and not imgui.GetWantTextInput() then
-			local alts = {}
-			-- scancode overides key
-			if keyboard.scancode then
-				local scancode = keyboard.scancode
-				local altScancode = keyboard.altScancode
-				if type(altScancode) == "table" then
-					alts = altScancode
-				elseif type(altScancode) == "string" then
-					alts = { altScancode }
-				end
-				value = love.keyboard.isScancodeDown(scancode, unpack(alts))
-			elseif keyboard.key then
-				local key = keyboard.key
-				local altKey = keyboard.altKey
-				if type(altKey) == "table" then
-					alts = altKey
-				elseif type(altKey) == "string" then
-					alts = { altKey }
-				end
-				value = love.keyboard.isDown(key, unpack(alts))
+		local alts = {}
+		-- scancode overides key
+		if keyboard.scancode then
+			local scancode = keyboard.scancode
+			local altScancode = keyboard.altScancode
+			if type(altScancode) == "table" then
+				alts = altScancode
+			elseif type(altScancode) == "string" then
+				alts = { altScancode }
 			end
+			value = love.keyboard.isScancodeDown(scancode, unpack(alts))
+		elseif keyboard.key then
+			local key = keyboard.key
+			local altKey = keyboard.altKey
+			if type(altKey) == "table" then
+				alts = altKey
+			elseif type(altKey) == "string" then
+				alts = { altKey }
+			end
+			value = love.keyboard.isDown(key, unpack(alts))
 		end
 	end
 	value = InputController.convert(value)
 	return value
 end
+
 
 function InputController:getJoystickValue()
 	-- Update if joystick
@@ -415,7 +412,7 @@ end
 function input.handleGUIControls()
 	if input.controllerFocusOnGUI then
 		if input.isConnected(input.GUIJoystick) then
-			imgui.UseGamepad(input.GUIJoystick)
+			--imgui.UseGamepad(input.GUIJoystick)
 		end
 	end
 end
@@ -425,6 +422,7 @@ function input.isConnected(joystick)
 	return input.allJoysticks[input.jIndices[joystick]] ~= nil
 end
 
+--[[
 function love.textinput(t)
 	imgui.TextInput(t)
 end
@@ -459,6 +457,7 @@ end
 function love.wheelmoved(x, y)
 	imgui.WheelMoved(y)
 end
+]]
 
 _G.input = input
 

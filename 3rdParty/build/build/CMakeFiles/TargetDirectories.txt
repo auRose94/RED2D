@@ -1,0 +1,7 @@
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/install/strip.dir
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/install/local.dir
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/install.dir
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/list_install_components.dir
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/edit_cache.dir
+/mnt/c/Projects/RED2D/3rdParty/build/build/CMakeFiles/love-imgui.dir

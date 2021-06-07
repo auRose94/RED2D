@@ -1,4 +1,4 @@
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local EntityClass = inheritsFrom(nil)
 
 function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)

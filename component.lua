@@ -1,5 +1,5 @@
 local EntityClass = require"entity"
-local imgui = require"imgui"
+--local imgui = require"imgui"
 
 local ComponentClass = inheritsFrom(nil)
 
@@ -98,6 +98,8 @@ function ComponentClass:inverseTransformNormal(...)
 	return self.parent:inverseTransformNormal(...)
 end
 
+--[[
+	
 function ComponentClass:drawEditor()
 	local keys = sortedKeys(self)
 	for index, name in pairs(keys) do
@@ -114,7 +116,8 @@ function ComponentClass:drawEditor()
 			end
 		end
 	end
-end
+end\
+]]
 
 function ComponentClass:getName()
 	return "ComponentClass"

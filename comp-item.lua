@@ -1,7 +1,7 @@
 local ComponentClass = require"component"
 local PhysicsComponent = require"comp-physics"
 local LoadedItems = require"defaultItemTypes"
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local ItemClass = inheritsFrom(ComponentClass)
 
 function ItemClass.registerItem(data)
@@ -69,6 +69,7 @@ function ItemClass:init(parent, data)
 	end
 end
 
+--[[
 function ItemClass:drawStats()
 	-- Override with imgui calls
 	imgui.Text("Count: ")
@@ -83,6 +84,7 @@ function ItemClass:drawStats()
 		imgui.TextColored(255, 0, 255, 255, tostring(self.count * self.weight))
 	end
 end
+]]
 
 function ItemClass:canInteract()
 	return type(self.use) == "function"

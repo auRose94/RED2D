@@ -1,7 +1,7 @@
 local ItemClass = require"comp-item"
 local EntityClass = require"entity"
 local WeaponTypes = require"defaultWeaponTypes"
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local WeaponClass = inheritsFrom(ItemClass)
 
 function WeaponClass:getName()
@@ -24,6 +24,7 @@ function WeaponClass:init(parent, data)
 	self.altLastAttack = love.timer.getTime()
 end
 
+--[[
 function WeaponClass:drawStats()
 	-- Override with imgui calls
 	imgui.Text("Attack Rate: ")
@@ -36,6 +37,7 @@ function WeaponClass:drawStats()
 	end
 	ItemClass.drawStats(self)
 end
+]]
 
 function WeaponClass:equip(entity)
 	if entity and not self:isEquipped() then

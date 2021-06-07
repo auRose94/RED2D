@@ -1,4 +1,4 @@
-local imgui = require"imgui"
+--local imgui = require"imgui"
 local FileDialog = inheritsFrom()
 
 local UnixLikePath = package.config:sub(1, 1) == "/"
@@ -79,6 +79,7 @@ function FileDialog:submit()
 	end
 end
 
+--[[
 function FileDialog:draw()
 	local title = self.title or "Select a file path"
 	assert(type(title) == "string", title .. " is an invalid title")
@@ -139,5 +140,6 @@ function FileDialog:draw()
 	end
 	return state
 end
+]]
 
 return FileDialog
