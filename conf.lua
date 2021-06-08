@@ -1,9 +1,10 @@
-require"oop"
-require"extraMath"
-require"colors"
-require"utility"
+require".src.oop"
+require".src.extraMath"
+require".src.colors"
+require".src.utility"
 
 local paths = love.filesystem.getRequirePath()
+paths = paths .. ";3rdParty/xml2lua/?.lua"
 paths = paths .. ";lua_modules/share/lua/5.1/?.lua"
 paths = paths .. ";lua_modules/share/lua/5.1/?/init.lua"
 love.filesystem.setRequirePath(paths)

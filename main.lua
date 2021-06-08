@@ -2,12 +2,12 @@
 --local imguiStyle = require"gui-style"
 love.graphics.setDefaultFilter("linear", "nearest")
 
-local CameraClass = require"camera"
-local LevelClass = require"level"
+local CameraClass = require".src.camera"
+local LevelClass = require".src.level"
 local TestingLevel = require".levels.testing"
-local input = require"input"
-local EditorWindow = require"tree-editor-window"
-local PixelEditorWindow = require"pixel-editor-window"
+local input = require".src.input"
+local EditorWindow = require".src.tree-editor-window"
+local PixelEditorWindow = require".src.pixel-editor-window"
 
 local level = nil
 local accumulator = 0
