@@ -1,7 +1,7 @@
 local LevelClass = require".src.level"
 local EntityClass = require".src.entity"
 local PlayerClass = require".src.comp-player"
-local TileMapClass = require".src.tilemap"
+local TileMapClass = require".src.comp-tilemap"
 local ItemClass = require".src.comp-item"
 local WeaponClass = require".src.comp-weapon"
 local OraLoader = require".src.ora-loader"
@@ -14,11 +14,13 @@ function level:init()
 
 	local oraLoader = OraLoader("levels/testing.ora")
 
-	local backTilemap = TileMapClass(self, "assets/Tileset.png", 64)
+	local tilemapObj = EntityClass(self, "Tilemap")
+
+	local backTilemap = TileMapClass(tilemapObj, "assets/Tileset.png", 64)
 	backTilemap:loadDefault()
 	backTilemap:loadLevel(oraLoader:getImageData("background"), false)
 
-	local tilemap = TileMapClass(self, "assets/Tileset.png", 64)
+	local tilemap = TileMapClass(tilemapObj, "assets/Tileset.png", 64)
 	tilemap:loadDefault()
 	tilemap:loadLevel(oraLoader:getImageData("base"))
 

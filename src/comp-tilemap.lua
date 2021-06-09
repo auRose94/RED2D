@@ -1,7 +1,7 @@
-local EntityModel = require".src.entity"
+local ComponentClass = require".src.component"
 local defaultTileMap = require".src.defaultTileMap"
 local PathMap = require".src.path-map"
-local TileMapClass = inheritsFrom(EntityModel)
+local TileMapClass = inheritsFrom(ComponentClass)
 
 function floatEqual(left, right, precision)
 	precision = precision or 0.1
@@ -24,14 +24,15 @@ function UniquePush(t, value)
 	end
 end
 
-function TileMapClass:init(level, location, tileSize)
-	EntityModel.init(self, level, "TileMap(" .. location .. ")")
+function TileMapClass:init(parent, location, tileSize)
+	ComponentClass.init(self, parent)
 	self.image = love.graphics.newImage(location)
 	self.image:setFilter("linear", "nearest")
 	self.tileSize = tileSize
 	self.tiles = {}
 	self.data = {}
 	self.body = nil
+    self.parent.drawOrder = -1
 end
 
 function TileMapClass:loadLevel(location, usePhysics)
@@ -48,7 +49,7 @@ function TileMapClass:loadLevel(location, usePhysics)
 	local spriteBatch = love.graphics.newSpriteBatch(self.image, width * height)
 	if usePhysics then
 		self.body =
-			self.body or love.physics.newBody(self.level.world, 0, 0, "static")
+			self.body or love.physics.newBody(self.parent.level.world, 0, 0, "static")
 	end
 	local indexMap = {}
 	local fixturesMap = {}
@@ -169,7 +170,7 @@ function TileMapClass:loadLevel(location, usePhysics)
 end
 
 function TileMapClass:getOffset(x, y)
-	return self.transform:inverseTransformPoint(
+	return self.parent.transform:inverseTransformPoint(
 		(x * self.tileSize),
 		(y * self.tileSize)
 	)
@@ -204,41 +205,36 @@ function TileMapClass:draw(batch)
 	local body = self.body
 	local tileSize = self.tileSize
 	local transform = self:getTransform()
-	table.insert(batch, {
-		self.drawOrder,
-		function ()
-			love.graphics.applyTransform(transform)
-			love.graphics.setColor(1, 1, 1, 1)
-			love.graphics.draw(spriteBatch, -tileSize / 2, -tileSize / 2, 0, 1)
-			if _G.debugDrawPhysics then
-				for i, shape in ipairs(shapesMap) do
-					local shapeType = shape:getType()
-					if shapeType == "polygon" then
-					--[[
-							love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
-							love.graphics.polygon(
-								"fill",
-								body:getWorldPoints(shape:getPoints())
-							)]]
-					elseif shapeType == "edge" then
-						love.graphics.setColor(0, 1, 1, 0.5)
-						love.graphics.line(body:getWorldPoints(shape:getPoints()))
-						love.graphics.setColor(1, 0.8, 0.5, 0.5)
-						love.graphics.setPointSize(6)
-						love.graphics.points(body:getWorldPoints(shape:getPoints()))
-					elseif shapeType == "circle" then
-						love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
-						love.graphics.circle(
-							"fill",
-							body:getX(),
-							body:getY(),
-							shape:getRadius()
-						)
-					end
-				end
-			end
-		end,
-	})
+	love.graphics.applyTransform(transform)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(spriteBatch, -tileSize / 2, -tileSize / 2, 0, 1)
+    if _G.debugDrawPhysics then
+        for i, shape in ipairs(shapesMap) do
+            local shapeType = shape:getType()
+            if shapeType == "polygon" then
+            --[[
+                    love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
+                    love.graphics.polygon(
+                        "fill",
+                        body:getWorldPoints(shape:getPoints())
+                    )]]
+            elseif shapeType == "edge" then
+                love.graphics.setColor(0, 1, 1, 0.5)
+                love.graphics.line(body:getWorldPoints(shape:getPoints()))
+                love.graphics.setColor(1, 0.8, 0.5, 0.5)
+                love.graphics.setPointSize(6)
+                love.graphics.points(body:getWorldPoints(shape:getPoints()))
+            elseif shapeType == "circle" then
+                love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
+                love.graphics.circle(
+                    "fill",
+                    body:getX(),
+                    body:getY(),
+                    shape:getRadius()
+                )
+            end
+        end
+    end
 
 	
 end

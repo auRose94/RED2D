@@ -1,6 +1,7 @@
 local ComponentClass = require".src.component"
 local PhysicsComponent = require".src.comp-physics"
 local LoadedItems = require".src.defaultItemTypes"
+local guiStyle = require".src.gui-style"
 --local imgui = require".src.imgui"
 local ItemClass = inheritsFrom(ComponentClass)
 
@@ -34,6 +35,7 @@ end
 
 function ItemClass:init(parent, data)
 	ComponentClass.init(self, parent)
+	self.parent.drawOrder = 1
 	if type(data) == "string" then
 		self.typeName = data
 		data = ItemClass.findItemById(data) or ItemClass.findItemByName(data)
@@ -168,6 +170,19 @@ function ItemClass:setRect(rectOrX, y, w, h)
 	end
 end
 
+function ItemClass:update(dt)
+	local curText = {
+		colors.white, "⇩",
+		colors.red, self.name,
+		colors.white, "×",
+		colors.red, self.count
+	}
+	if not self.text or unpack(curText) ~= unpack(self.text) then
+		self.text = curText
+		self.textObj = love.graphics.newText(guiStyle.font, curText)
+	end
+end
+
 function ItemClass:draw()
 	if self.image and self.quad and not self.hide then
 		local v = love.timer.getTime() - self.timeHighlighted
@@ -178,22 +193,16 @@ function ItemClass:draw()
 			love.graphics.setColor(self.color)
 		end
 		love.graphics.draw(self.image, self.quad)
-		if self.highlighted then
+		if self.highlighted and self.textObj then
 			love.graphics.setColor(
-				-math.cos(v * 5) + 0.5,
-				math.cos(v * 5) - 1.5,
-				math.cos(v * 5) - 1.5
+				math.cos(v * 5) + 1.5,
+				math.cos(v * 5) + 1.5,
+				math.cos(v * 5) + 1.5
 			)
 			love.graphics.push()
 			love.graphics.translate(0, -48)
-			love.graphics.printf(
-				"⌄" .. self.name .. "×" .. self.count,
-				0,
-				math.cos(v * 5) * 16,
-				1024,
-				"left",
-				0
-			)
+			love.graphics.draw(self.textObj, 0,
+			math.cos(v * 5) * 16)
 			love.graphics.pop()
 		end
 	end

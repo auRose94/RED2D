@@ -4,8 +4,10 @@ local EntityClass = inheritsFrom(nil)
 function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
 	assert(level, "No level given")
 	level:addEntity(self)
+	self.level = level
 	self.x = x
 	self.y = y
+	self.z = z or 0
 	self.r = r or 0
 	self.sx = sx or 1
 	self.sy = sy or self.sx
@@ -13,6 +15,7 @@ function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
 	self.oy = oy or 0
 	self.kx = kx or 0
 	self.ky = ky or 0
+	self.drawOrder = 0
 	self.touched = false
 	self.components = {}
 	self.children = {}
@@ -64,9 +67,7 @@ function EntityClass:draw()
 	love.graphics.applyTransform(self:getTransform())
 	for _, c in pairs(self.components) do
 		if type(c) == "table" and c.draw then
-			love.graphics.push()
 			c:draw()
-			love.graphics.pop()
 		end
 	end
 end

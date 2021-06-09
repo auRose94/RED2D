@@ -34,7 +34,8 @@ function StatusWindow:init(parent)
 			showItemTabs = 1
 		}
 	}
-	self.window = WindowClass(parent)
+	--self.windowObject = EntityClass(parent.level, "Status Window", 0, 0)
+	self.window = WindowClass(self.parent)
 end
 
 function StatusWindow:toggleWindow()
@@ -50,6 +51,10 @@ end
 
 function StatusWindow:update()
 	self.justOpened = false
+	local trans = self:getTransform()
+	trans = trans:inverse()
+	local x, y = trans:inverseTransformPoint(0, 0)
+	--self.windowObject:setPosition(x, y)
 end
 
 --[[

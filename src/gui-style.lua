@@ -1,10 +1,12 @@
 -- Setup GUI Style
 local module = {}
-local imgui = require".src.imgui"
+--local imgui = require".src.imgui"
+
+local font = love.graphics.newFont("assets/unifont.ttf", 32, "mono")
+font:setFilter("linear", "nearest", 0)
+module.font = font
 
 function module.load()
-	local font = love.graphics.newFont("assets/unifont.ttf", 32, "mono")
-	font:setFilter("linear", "nearest", 0)
 	love.graphics.setFont(font)
 
 	imgui.SetStyleColorV4(imgui.ImGuiCol_TabActive, 0.00, 0.44, 1.00, 1.00)

@@ -90,6 +90,9 @@ end
 
 function CameraClass:newEntityLayer(scale, entities)
 	self:newLayer(scale, function()
+		table.sort(entities, function(a,b)
+			if a.drawOrder < b.drawOrder then return true end
+		end)
 		for i = 1, #entities do
 			local entity = entities[i]
 			if entity then
