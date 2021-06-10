@@ -8,10 +8,10 @@ end
 function WindowClass:init(parent, data)
 	ComponentClass.init(self, parent, data)
     parent.drawOrder = 10
-    self.width = 300
-    self.height = 100
-    self.x = -275
-    self.y = -10
+    self.width = 250
+    self.height = 150
+    self.x = -295
+    self.y = -100
     self.elements = {}
 end
 
@@ -41,7 +41,7 @@ function WindowClass:handleUI()
         self.y = self.oy + wmy
     end
     self.lastDown = mdown
-    love.graphics.translate(self.x, self.y)
+    love.graphics.translate(self.x, self.y+8)
     for _, element in pairs(self.elements) do
         if element and type(element.draw) == "function" then
             love.graphics.push()

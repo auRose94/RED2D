@@ -54,18 +54,23 @@ function _G.inheritsFrom(baseClass)
 end
 
 function _G.clone(base_object, clone_object)
-	assert(type(base_object) == "table", "base_object is not a table")
-	clone_object = clone_object or {}
-	assert(type(clone_object) == "table", "clone_object is not a table")
+	if type(base_object) ~= "table" then
+		return nil
+	end
+	if type(clone_object) ~= "table" then
+		return nil
+	end
 	clone_object.__index = base_object
 	return setmetatable(clone_object, clone_object)
 end
 
 function _G.isa(clone_object, base_object)
-	assert(type(clone_object) == "table", "clone_object is not a table")
-	assert(type(base_object) == "table", "base_object is not a table")
-	assert(type(clone_object.class) == "function", "clone_object is not a class")
-	assert(type(base_object.class) == "function", "base_object is not a class")
+	if type(base_object) ~= "table" or type(base_object.class) ~= "function" then
+		return false
+	end
+	if type(clone_object) ~= "table" or type(clone_object.class) ~= "function" then
+		return false
+	end
 	local cur_class = clone_object:class()
 
 	while cur_class do

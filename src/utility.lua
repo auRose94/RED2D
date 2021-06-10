@@ -1,9 +1,8 @@
-local module = {}
 
-module.defaultMaxDepth = 1
-module.arrayNewlineMin = 4
+local defaultMaxDepth = 1
+local arrayNewlineMin = 4
 
-function module.CheckValue(t, ...)
+function _G.CheckValue(t, ...)
 	for i, v in ipairs(t) do
 		for argI = 1, select("#", ...) do
 			local value = select(argI, ...)
@@ -15,13 +14,13 @@ function module.CheckValue(t, ...)
 	return false
 end
 
-function module.UniquePush(t, value)
+function _G.UniquePush(t, value)
 	if not CheckValue(t, value) then
 		table.insert(t, value)
 	end
 end
 
-function module.sortedKeys(tbl, sortFunction)
+function _G.sortedKeys(tbl, sortFunction)
 	sortFunction = sortFunction or function(a, b)
 		return a < b
 	end
@@ -35,7 +34,7 @@ function module.sortedKeys(tbl, sortFunction)
 	return keys
 end
 
-function module.isStringTable(tableData)
+function _G.isStringTable(tableData)
 	assert(type(tableData) == "table", "Needs to be table")
 	for i, v in pairs(tableData) do
 		if type(i) == "string" then
@@ -45,21 +44,21 @@ function module.isStringTable(tableData)
 	return false
 end
 
-function module.stringifyArray(array, depth, newLine, maxDepth)
-	maxDepth = maxDepth or module.defaultMaxDepth
+function _G.stringifyArray(array, depth, newLine, maxDepth)
+	maxDepth = maxDepth or defaultMaxDepth
 	assert(type(array) == "table", "Needs to be table")
 	local line = "{ "
 	for i, value in pairs(array) do
-		if newLine and #array > module.arrayNewlineMin then
+		if newLine and #array > arrayNewlineMin then
 			line = line .. "\n"
 			line = line .. string.rep("\t", depth)
 		end
 		if type(value) == "table" then
 			if depth <= maxDepth then
-				if module.isStringTable(value) then
-					line = line .. module.stringify(value, depth + 1, newLine)
+				if isStringTable(value) then
+					line = line .. stringify(value, depth + 1, newLine)
 				else
-					line = line .. module.stringifyArray(value, depth, newLine)
+					line = line .. stringifyArray(value, depth, newLine)
 				end
 			else
 				line = line .. "{--[[Table depth exceeded]]--}"
@@ -83,7 +82,7 @@ function module.stringifyArray(array, depth, newLine, maxDepth)
 			line = line .. ", "
 		end
 	end
-	if newLine and #array > module.arrayNewlineMin then
+	if newLine and #array > arrayNewlineMin then
 		line = line .. "\n"
 		line = line .. string.rep("\t", depth - 1)
 	end
@@ -91,12 +90,12 @@ function module.stringifyArray(array, depth, newLine, maxDepth)
 	return line
 end
 
-function module.stringify(tableData, depth, newLine, maxDepth)
-	maxDepth = maxDepth or module.defaultMaxDepth
+function _G.stringify(tableData, depth, newLine, maxDepth)
+	maxDepth = maxDepth or defaultMaxDepth
 	assert(type(tableData) == "table", "Needs to be table")
 	depth = depth or 1
-	if not module.isStringTable(tableData) then
-		return module.stringifyArray(tableData, depth, newLine)
+	if not isStringTable(tableData) then
+		return stringifyArray(tableData, depth, newLine)
 	end
 	local lines = {}
 	for name, item in pairs(tableData) do
@@ -113,7 +112,7 @@ function module.stringify(tableData, depth, newLine, maxDepth)
 		line = line .. "] = "
 		if type(item) == "table" then
 			if depth <= maxDepth then
-				line = line .. module.stringify(item, depth + 1, newLine)
+				line = line .. stringify(item, depth + 1, newLine)
 			else
 				line = line .. "{--[[Table depth exceeded]]--}"
 			end
@@ -156,19 +155,19 @@ function module.stringify(tableData, depth, newLine, maxDepth)
 	return data
 end
 
-function module.echo(...)
+function _G.echo(...)
 	local args = { ... }
 	for i = 1, select("#", ...) do
 		local value = select(i, ...)
 		local t = type(value)
 		if t == "table" then
-			args[i] = module.stringify(value, 1, true)
+			args[i] = stringify(value, 1, true)
 		end
 	end
 	print(unpack(args))
 end
 
-function module.convert2HEX(...)
+function _G.convert2HEX(...)
 	local hexadecimal = "#"
 	local chanels = { ... }
 	for key = 1, #chanels do
@@ -191,7 +190,7 @@ function module.convert2HEX(...)
 	return hexadecimal
 end
 
-function module.clone(t)
+function _G.clone(t)
 	assert(type(t) == "table", "argument not a table")
 	local t2 = {}
 	for k, v in pairs(t) do
@@ -200,10 +199,19 @@ function module.clone(t)
 	return t2
 end
 
-for key, value in pairs(module) do
-	if type(value) == "function" and _G[key] == nil then
-		_G[key] = value
-	end
+function _G.tableMerge(t1, t2)
+	-- https://stackoverflow.com/a/1283608
+    for k,v in pairs(t2) do
+        if type(v) == "table" then
+            if type(t1[k] or false) == "table" then
+                tableMerge(t1[k] or {}, t2[k] or {})
+            else
+                t1[k] = v
+            end
+        else
+            t1[k] = v
+        end
+    end
+    return t1
 end
 
-return module

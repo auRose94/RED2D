@@ -80,14 +80,6 @@ function love.draw()
 		showPixelEditor = PixelEditorWindow:draw()
 	end ]]
 
-	if input.controllerFocusOnGUI then
-		love.graphics.setColor(RGB(0, 0, 0, 120))
-		love.graphics.rectangle("fill", 0, 0, love.graphics.getPixelDimensions())
-	end
-
-	-- Very important... this effects imgui
-	love.graphics.setColor(colors.white)
-	--imgui.Render()
 end
 
 function love.run()
