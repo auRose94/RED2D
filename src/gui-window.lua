@@ -12,6 +12,20 @@ function WindowClass:init(parent, data)
     self.height = 100
     self.x = -275
     self.y = -10
+    self.elements = {}
+end
+
+function WindowClass:addElement(element)
+    table.insert(self.elements, element)
+end
+
+function WindowClass:removeElement(entity)
+	for i = 1, #self.elements do
+		if self.elements[i] == entity then
+			table.remove(self.elements, i)
+			break
+		end
+	end
 end
 
 function WindowClass:handleUI()
@@ -27,18 +41,26 @@ function WindowClass:handleUI()
         self.y = self.oy + wmy
     end
     self.lastDown = mdown
+    love.graphics.translate(self.x, self.y)
+    for _, element in pairs(self.elements) do
+        if element and type(element.draw) == "function" then
+            love.graphics.push()
+            element:draw()
+            love.graphics.pop()
+        end
+    end
 end
 
 function WindowClass:draw()
     local width, height = self.width, self.height
     local x, y = self.x, self.y
-    self:handleUI()
     if self.show then
         love.graphics.setColor(colors.red)
         love.graphics.rectangle("fill", x, y, width, height)
         love.graphics.setColor(colors.white)
         love.graphics.setLineWidth(1)
         love.graphics.rectangle("line", x, y, width, height)
+        self:handleUI()
     end
 end
 

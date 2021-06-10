@@ -1,6 +1,7 @@
 --local imgui = require".src.imgui"
 local InventoryClass = require".src.comp-inventory"
 local ComponentClass = require".src.component"
+local Button = require".src.elem-button"
 local WindowClass = require ".src.gui-window"
 local StatusWindow = inheritsFrom(ComponentClass)
 
@@ -36,6 +37,7 @@ function StatusWindow:init(parent)
 	}
 	--self.windowObject = EntityClass(parent.level, "Status Window", 0, 0)
 	self.window = WindowClass(self.parent)
+	self.window:addElement(Button("Bigger Example"))
 end
 
 function StatusWindow:toggleWindow()
