@@ -100,7 +100,12 @@ function love.run()
 		end
 		
 		-- Update dt, as we'll be passing it to update
-		if love.timer then dt = love.timer.step() end 
+		if love.timer then 
+			dt = love.timer.step() 
+			if dt > target then
+				dt = target
+			end
+		end 
 
 
 		if love.event then

@@ -36,12 +36,19 @@ function StatusWindow:init(parent)
 		}
 	}
 	--self.windowObject = EntityClass(parent.level, "Status Window", 0, 0)
-	self.window = WindowClass(self.parent)
-	local inc = 250/4
-	self.window:addElement(Button("Status", {x=inc * 0, width=inc}))
-	self.window:addElement(Button("Items", {x=inc * 1, width=inc}))
-	self.window:addElement(Button("Equip", {x=inc * 2, width=inc}))
-	self.window:addElement(Button("Quests", {x=inc * 3, width=inc}))
+	local window = WindowClass(self.parent)
+	self.window = window
+	window.parent = self.parent
+	window.width = 200
+	window.height = 150
+	window.x = -295
+	window.y = -100
+	window.title = "Status"
+	local inc = window.width/4
+	window:addElement(Button("Info", {x=inc * 0, width=inc}))
+	window:addElement(Button("Items", {x=inc * 1, width=inc}))
+	window:addElement(Button("Equip", {x=inc * 2, width=inc}))
+	window:addElement(Button("Quests", {x=inc * 3, width=inc}))
 end
 
 function StatusWindow:toggleWindow()

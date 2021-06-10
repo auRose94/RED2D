@@ -215,3 +215,20 @@ function _G.tableMerge(t1, t2)
     return t1
 end
 
+function _G.polyPoint(vertices,px,py)
+	local collision = false
+	local next = 1
+	 for current = 1, #vertices do
+	   next = current + 1
+	   if (next > #vertices) then
+		 next = 1
+	   end
+	   local vc = vertices[current]
+	   local vn = vertices[next]
+	   if (((vc[2] >= py and vn[2] < py) or (vc[2] < py and vn[2] >= py)) and
+	   (px < (vn[1]-vc[1])*(py-vc[2]) / (vn[2]-vc[2])+vc[1])) then
+		   collision = not(collision)
+	   end
+	 end
+	 return collision
+	end

@@ -35,7 +35,7 @@ end
 
 function ItemClass:init(parent, data)
 	ComponentClass.init(self, parent)
-	self.parent.drawOrder = 1
+	self.parent.drawOrder = 0
 	if type(data) == "string" then
 		self.typeName = data
 		data = ItemClass.findItemById(data) or ItemClass.findItemByName(data)

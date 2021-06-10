@@ -16,7 +16,7 @@ end
 
 function PlayerComponent:init(parent, playerIndex, joystickIndex)
 	BodyComponent.init(self, parent, BodyRedData)
-	self.parent.drawOrder = 0
+	self.parent.drawOrder = 1
 
 	self:setScale(2, 2)
 
