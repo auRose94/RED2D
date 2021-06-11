@@ -8,16 +8,15 @@ function InventoryClass:getName()
     return "InventoryClass"
 end
 
-function InventoryClass:init(parent, entity)
-    ComponentClass.init(self, parent)
+function InventoryClass:init(parent, ...)
+    ComponentClass.init(self, parent, ...)
     self.items = {}
-    self.maxWeight = 100
+    self.maxWeight = self.maxWeight or 100
     self.open = false
     self.moveTarget = nil
     self.tradeTarget = nil
     self.pickUpDistance = 128
-    self.entity = entity
-    self.entity = entity or nil
+    self.entity = self.entity or nil
     self.pickup = false
 end
 
@@ -99,15 +98,21 @@ function InventoryClass:drop(item, number)
 end
 
 function InventoryClass:pickUp(item)
+    local added = false
     if item.hide == false then
         item:destroyBody()
         item.parent:destroy()
         local found = self:findIndex(item)
         if found then
             self.items[found][1] = self.items[found][1] + item.count
+            added = true
         else
             table.insert(self.items, {item.count, item})
+            added = true
         end
+    end
+    if added then
+        self.parent:callComponentMethods("onPickUp", item)
     end
 end
 

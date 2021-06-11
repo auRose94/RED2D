@@ -1,5 +1,6 @@
 local CameraClass = require ".src.camera"
-
+local ItemClass = require ".src.comp-item"
+local EntityClass = require ".src.entity"
 local LevelClass = inheritsFrom(nil)
 
 function LevelClass:addParalaxLevel(index, layer)
@@ -18,6 +19,13 @@ end
 function LevelClass:addEntity(entity)
     entity.level = self
     table.insert(self.entities, entity)
+end
+
+function LevelClass:newItem(name, type, x, y)
+    if self.tilemap then
+        return ItemClass(EntityClass(self, name, self.tilemap:getOffset(x, y)), type)
+    end
+    return nil
 end
 
 function LevelClass:update(dt)

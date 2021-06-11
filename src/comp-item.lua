@@ -33,8 +33,8 @@ function ItemClass:getName()
     return "ItemClass"
 end
 
-function ItemClass:init(parent, data)
-    ComponentClass.init(self, parent)
+function ItemClass:init(parent, data, ...)
+    ComponentClass.init(self, parent, ...)
     self.parent.drawOrder = 0
     if type(data) == "string" then
         self.typeName = data
@@ -159,7 +159,7 @@ function ItemClass:setRect(rectOrX, y, w, h)
     if change or not self.quad then
         self.rect = rect
         self.quad = love.graphics.newQuad(rect[1], rect[2], rect[3], rect[4], self.image:getWidth(),
-                        self.image:getHeight())
+            self.image:getHeight())
     end
 end
 

@@ -24,13 +24,13 @@ function UniquePush(t, value)
     end
 end
 
-function TileMapClass:init(parent, location, tileSize)
-    ComponentClass.init(self, parent)
+function TileMapClass:init(parent, location, tileSize, ...)
+    ComponentClass.init(self, parent, ...)
     self.image = love.graphics.newImage(location)
     self.image:setFilter("linear", "nearest")
-    self.tileSize = tileSize
-    self.tiles = {}
-    self.data = {}
+    self.tileSize = tileSize or self.tileSize or 0
+    self.tiles = self.tiles or {}
+    self.data = self.data or {}
     self.body = nil
     self.parent.drawOrder = -1
 end

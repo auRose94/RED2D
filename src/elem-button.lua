@@ -43,15 +43,15 @@ function Button:draw()
     if tH > height then
         height = tH
     end
+    if self.maxWidth < width then
+        width = self.maxWidth
+    end
     if self.maxHeight < height then
         height = self.maxHeight
     end
-    if self.maxWidth < height then
-        height = self.maxWidth
-    end
 
     local textWidth, textHeight = textObj:getDimensions()
-    local textX, textY = x + (width - (textWidth * self.fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
+    local textX, textY = (width - (textWidth * self.fontScale)) / 2, (height - (textHeight * fontScale)) / 2
 
     local bgColor = colors.darkPink
     if self:mouseInside() then
@@ -66,11 +66,12 @@ function Button:draw()
         self.lastDown = mdown
     end
 
+    love.graphics.translate(x, y)
     love.graphics.setColor(bgColor)
-    love.graphics.rectangle("fill", x, y, width, height)
+    love.graphics.rectangle("fill", 0, 0, width, height)
     love.graphics.setColor(colors.white)
     love.graphics.setLineWidth(self.lineWidth)
-    love.graphics.rectangle("line", x, y, width, height)
+    love.graphics.rectangle("line", 0, 0, width, height)
     love.graphics.setColor(colors.white)
     love.graphics.draw(textObj, textX, textY, 0, self.fontScale, self.fontScale)
 end

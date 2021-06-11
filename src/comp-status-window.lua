@@ -17,7 +17,8 @@ end
 function StatusWindow:init(parent)
     ComponentClass.init(self, parent)
     self.inventory = self:getComponent(InventoryClass)
-    self.player = self:getComponent(PlayerComponent or require ".src.comp-player")
+    local PlayerComponent = _G.PlayerComponent or require ".src.comp-player"
+    self.player = self:getComponent(PlayerComponent)
 
     self.state = {
         inventory = {
@@ -28,14 +29,15 @@ function StatusWindow:init(parent)
         }
     }
     -- self.windowObject = EntityClass(parent.level, "Status Window", 0, 0)
-    local window = WindowClass(self.parent)
+    local window = WindowClass(self.parent, {
+        parent = self.parent,
+        width = 274,
+        height = 150,
+        x = -295,
+        y = -100,
+        title = "Status"
+    })
     self.window = window
-    window.parent = self.parent
-    window.width = 200
-    window.height = 150
-    window.x = -295
-    window.y = -100
-    window.title = "Status"
     local inc = window.width / 4
     self.optionsBar = ElementClass(Button("Info", {
         x = inc * 0,
@@ -64,57 +66,74 @@ function StatusWindow:init(parent)
     }))
     window:addElement(self.optionsBar)
 
-	self.infoScroll = Scroll()
-	self.infoScroll.width = 100
-	self.infoScroll.height = 150
-	window:addElement(self.infoScroll)
-	self:regenInfo()
+    local scrollWidth = window.width / 2
+    local scrollHeight = 150
 
-	self.itemScroll = Scroll()
-	self.itemScroll.width = 100
-	self.itemScroll.height = 150
-	window:addElement(self.itemScroll)
-	self:regenItem()
+    self.infoScroll = Scroll({
+        width = scrollWidth,
+        height = scrollHeight,
+        y = 16
+    })
+    self.itemScroll = Scroll({
+        width = scrollWidth,
+        height = scrollHeight,
+        y = 16
+    })
+    self.equipScroll = Scroll({
+        width = scrollWidth,
+        height = scrollHeight,
+        y = 16
+    })
+    self.questScroll = Scroll({
+        width = scrollWidth,
+        height = scrollHeight,
+        y = 16
+    })
 
-	self.equipScroll = Scroll()
-	self.equipScroll.width = 100
-	self.equipScroll.height = 150
-	window:addElement(self.equipScroll)
-	self:regenEquip()
+    window:addElement(self.infoScroll)
+    window:addElement(self.itemScroll)
+    window:addElement(self.equipScroll)
+    window:addElement(self.questScroll)
 
-	self.questScroll = Scroll()
-	self.questScroll.width = 100
-	self.questScroll.height = 150
-	window:addElement(self.questScroll)
-	self:regenQuest()
+    self:regenQuest()
+    self:regenEquip()
+    self:regenItem()
+    self:regenInfo()
+end
+
+function StatusWindow:onPickUp(item)
+    self:regenItem()
 end
 
 function StatusWindow:regenItem()
-	self.itemScroll.elements = {}
-	local iy = 32
-	for k, v in pairs(self.inventory.items) do
-		
-		local name = item.name
-		if count > 1 then
-			name = name .. " (" .. count .. ")"
-		end
+    self.itemScroll.elements = {}
+    local width = self.window.width / 2
+    for k, v in pairs(self.inventory.items) do
+        local count, item = unpack(v)
+        local name = item.name
+        if count > 1 then
+            name = name .. " (" .. count .. ")"
+        end
 
-		local elem = Button(name, {y=iy})
-		iy = iy + 32
-		self.itemScroll:addElement(elem)
-	end
+        local elem = Button(name, {
+            width = width,
+            maxWidth = width,
+            fontScale = 0.35
+        })
+        self.itemScroll:addElement(elem)
+    end
 end
 
 function StatusWindow:regenInfo()
-	self.infoScroll.elements = {}
+    self.infoScroll.elements = {}
 end
 
 function StatusWindow:regenEquip()
-	self.equipScroll.elements = {}
+    self.equipScroll.elements = {}
 end
 
 function StatusWindow:regenQuest()
-	self.questScroll.elements = {}
+    self.questScroll.elements = {}
 end
 
 function StatusWindow:toggleWindow()

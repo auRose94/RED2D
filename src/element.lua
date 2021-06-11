@@ -24,7 +24,9 @@ function ElementClass:init(...)
                 table.insert(self.elements, value)
                 value.parent = self
             else
-                self = tableMerge(self, value)
+                for k, v in pairs(value) do
+                    self[k] = v
+                end
             end
         elseif tValue == "string" then
             self.text = value
@@ -35,6 +37,35 @@ end
 
 function ElementClass:getName()
     return "ElementClass"
+end
+
+function ElementClass:addElement(elem)
+    assert(type(self.elements) == "table", "Elements is not a table")
+    table.insert(self.elements, elem)
+    elem.parent = self
+end
+
+function ElementClass:removeElement(elemOrTypeOrIndex)
+    local found = false
+    local value = nil
+    if type(elemOrTypeOrIndex) == "number" then
+        value = self.elements[elemOrTypeOrIndex]
+        found = elemOrTypeOrIndex
+    elseif type(elemOrTypeOrIndex) == "table" then
+        for index, v in ipairs(self.elements) do
+            if elemOrTypeOrIndex == v or v:isa(elemOrTypeOrIndex) then
+                value = v
+                found = index
+                break
+            end
+        end
+    end
+    if found then
+        value:destroy()
+        value.parent = nil
+        table.remove(self.elements, found)
+        return value
+    end
 end
 
 function ElementClass:setPosition(...)
@@ -155,11 +186,11 @@ function ElementClass:mouseInside()
             height = tH
         end
     end
+    if self.maxWidth < width then
+        width = self.maxWidth
+    end
     if self.maxHeight < height then
         height = self.maxHeight
-    end
-    if self.maxWidth < height then
-        height = self.maxWidth
     end
 
     local v = {}

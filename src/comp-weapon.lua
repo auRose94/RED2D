@@ -8,8 +8,8 @@ function WeaponClass:getName()
     return "WeaponClass"
 end
 
-function WeaponClass:init(parent, data)
-    ItemClass.init(self, parent, data)
+function WeaponClass:init(parent, data, ...)
+    ItemClass.init(self, parent, data, ...)
     if type(data) == "string" then
         data = ItemClass.findItemById(data) or ItemClass.findItemByName(data)
     end

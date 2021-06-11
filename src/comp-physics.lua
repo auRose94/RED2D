@@ -6,8 +6,8 @@ function PhysicsComponent:getName()
     return "PhysicsComponent"
 end
 
-function PhysicsComponent:init(parent, type)
-    ComponentClass.init(self, parent)
+function PhysicsComponent:init(parent, type, ...)
+    ComponentClass.init(self, parent, ...)
     type = type or "dynamic"
     local ex, ey = ComponentClass.getPosition(self)
     local er = ComponentClass.getRotation(self)

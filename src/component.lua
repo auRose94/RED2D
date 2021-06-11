@@ -123,14 +123,25 @@ function ComponentClass:getName()
     return "ComponentClass"
 end
 
-function ComponentClass:init(parent)
+function ComponentClass:init(parent, ...)
     assert(self ~= nil)
     assert(parent ~= nil, "No parent")
     assert(EntityClass, "EntityClass is not a global")
     assert(isa(parent, EntityClass), "parent is not an EntityClass")
     self.parent = parent
-    local name = self:getName()
+    self.children = {}
     parent:addComponent(self)
+    for i = 1, select('#', ...) do
+        local value = select(i, ...)
+        local tValue = type(value)
+        if tValue == "table" then
+            for k, v in pairs(value) do
+                self[k] = v
+            end
+        elseif tValue == "string" then
+            self.text = value
+        end
+    end
 end
 
 return ComponentClass

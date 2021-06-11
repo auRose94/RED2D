@@ -8,8 +8,8 @@ function WindowClass:getName()
     return "WindowClass"
 end
 
-function WindowClass:init(parent, data)
-    ComponentClass.init(self, parent, data)
+function WindowClass:init(parent, ...)
+    ComponentClass.init(self, parent, ...)
     parent.drawOrder = 10
     self.title = "New Window"
     self.lineWidth = 0.25
@@ -90,14 +90,17 @@ function WindowClass:handleUI()
 end
 
 function WindowClass:draw()
-    local width, height = self.width, self.height
-    local x, y = self.x, self.y
     if self.show then
+        local width, height = self.width, self.height
+        local x, y = self.x, self.y
+        local textX, textY = x + 3, y
+
         love.graphics.setColor(colors.red)
         love.graphics.rectangle("fill", x, y, width, height)
         love.graphics.setColor(colors.white)
         love.graphics.setLineWidth(self.lineWidth)
         love.graphics.rectangle("line", x, y, width, height)
+        love.graphics.draw(self.titleObj, textX, textY, 0, self.fontScale, self.fontScale)
         self:handleUI()
     end
 end

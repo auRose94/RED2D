@@ -38,7 +38,7 @@ function love.draw()
     if showFPS then
         local rFPS = 1 / love.timer.getDelta()
         local fps = love.timer.getFPS()
-        local string = "CFPS: " .. fps .. "    AFPS: " .. rFPS
+        local string = "CFPS: " .. fps .. "    AFPS: " .. string.format("%.3f", rFPS)
         local scale = 0.5
         love.graphics.setColor(colors.white)
         love.graphics.print(string, 2, h - (32 * scale) - 2, 0, scale)
