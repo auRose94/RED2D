@@ -3,6 +3,7 @@ local InventoryClass = require ".src.comp-inventory"
 local ComponentClass = require ".src.component"
 local ElementClass = require ".src.element"
 local Button = require ".src.elem-button"
+local Scroll = require ".src.elem-scroll"
 local WindowClass = require ".src.gui-window"
 local StatusWindow = inheritsFrom(ComponentClass)
 
@@ -62,6 +63,58 @@ function StatusWindow:init(parent)
         end
     }))
     window:addElement(self.optionsBar)
+
+	self.infoScroll = Scroll()
+	self.infoScroll.width = 100
+	self.infoScroll.height = 150
+	window:addElement(self.infoScroll)
+	self:regenInfo()
+
+	self.itemScroll = Scroll()
+	self.itemScroll.width = 100
+	self.itemScroll.height = 150
+	window:addElement(self.itemScroll)
+	self:regenItem()
+
+	self.equipScroll = Scroll()
+	self.equipScroll.width = 100
+	self.equipScroll.height = 150
+	window:addElement(self.equipScroll)
+	self:regenEquip()
+
+	self.questScroll = Scroll()
+	self.questScroll.width = 100
+	self.questScroll.height = 150
+	window:addElement(self.questScroll)
+	self:regenQuest()
+end
+
+function StatusWindow:regenItem()
+	self.itemScroll.elements = {}
+	local iy = 32
+	for k, v in pairs(self.inventory.items) do
+		
+		local name = item.name
+		if count > 1 then
+			name = name .. " (" .. count .. ")"
+		end
+
+		local elem = Button(name, {y=iy})
+		iy = iy + 32
+		self.itemScroll:addElement(elem)
+	end
+end
+
+function StatusWindow:regenInfo()
+	self.infoScroll.elements = {}
+end
+
+function StatusWindow:regenEquip()
+	self.equipScroll.elements = {}
+end
+
+function StatusWindow:regenQuest()
+	self.questScroll.elements = {}
 end
 
 function StatusWindow:toggleWindow()

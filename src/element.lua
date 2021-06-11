@@ -129,7 +129,7 @@ end
 function ElementClass:getInnerSize()
     local width, height = 0, 0
     for _, value in pairs(self.elements) do
-        if value then
+        if value and not value.hide then
             if value.x + value.width > width then
                 width = value.x + value.width
             end
@@ -142,12 +142,43 @@ function ElementClass:getInnerSize()
     return width, height
 end
 
+function ElementClass:mouseInside()
+    local mx, my = love.mouse.getPosition()
+    local width, height = self.width, self.height
+    if self.textObj then
+        local textObj = self.textObj
+        local tW, tH = textObj:getDimensions()
+        if tW > width then
+            width = tW
+        end
+        if tH > height then
+            height = tH
+        end
+    end
+    if self.maxHeight < height then
+        height = self.maxHeight
+    end
+    if self.maxWidth < height then
+        height = self.maxWidth
+    end
+
+    local v = {}
+    v[1] = {love.graphics.transformPoint(self.x, self.y)}
+    v[2] = {love.graphics.transformPoint(self.x + width, self.y)}
+    v[3] = {love.graphics.transformPoint(self.x + width, self.y + height)}
+    v[4] = {love.graphics.transformPoint(self.x, self.y + height)}
+
+    return polyPoint(v, mx, my)
+end
+
 function ElementClass:draw()
-    for _, value in pairs(self.elements) do
-        if value and type(value.draw) == "function" then
-            love.graphics.push()
-            value:draw()
-            love.graphics.pop()
+    if not self.hide then
+        for _, value in pairs(self.elements) do
+            if value and not value.hide and type(value.draw) == "function" then
+                love.graphics.push()
+                value:draw()
+                love.graphics.pop()
+            end
         end
     end
 end

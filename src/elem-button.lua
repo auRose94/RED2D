@@ -29,33 +29,6 @@ function Button:updateText(text)
     self.textObj = love.graphics.newText(font, text)
 end
 
-function Button:mouseInside()
-    local mx, my = love.mouse.getPosition()
-    local width, height = self.width, self.height
-    local textObj = self.textObj
-    local tW, tH = textObj:getDimensions()
-    if tW > width then
-        width = tW
-    end
-    if tH > height then
-        height = tH
-    end
-    if self.maxHeight < height then
-        height = self.maxHeight
-    end
-    if self.maxWidth < height then
-        height = self.maxWidth
-    end
-
-    local v = {}
-    v[1] = {love.graphics.transformPoint(self.x, self.y)}
-    v[2] = {love.graphics.transformPoint(self.x + width, self.y)}
-    v[3] = {love.graphics.transformPoint(self.x + width, self.y + height)}
-    v[4] = {love.graphics.transformPoint(self.x, self.y + height)}
-
-    return polyPoint(v, mx, my)
-end
-
 function Button:draw()
     local fontScale = self.fontScale
     local x, y = self.x, self.y
