@@ -1,9 +1,8 @@
-local ElementClass = require".src.element"
-local guiStyle = require".src.gui-style"
+local ElementClass = require ".src.element"
+local guiStyle = require ".src.gui-style"
 local Button = inheritsFrom(ElementClass)
 
-local buttonFont =
-    love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
+local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
 
 function Button:init(...)
     ElementClass.init(self, ...)
@@ -24,22 +23,29 @@ function Button:updateText(text)
     local font = self.font or buttonFont
     local textSize = font:getLineHeight()
     if textSize ~= self.textSize then
-        font = love.graphics.newFont(
-            guiStyle.fontPath, self.textSize, guiStyle.fontType)
+        font = love.graphics.newFont(guiStyle.fontPath, self.textSize, guiStyle.fontType)
         self.font = font
     end
     self.textObj = love.graphics.newText(font, text)
 end
 
 function Button:mouseInside()
-    local mx, my = love.mouse.getPosition( )
+    local mx, my = love.mouse.getPosition()
     local width, height = self.width, self.height
     local textObj = self.textObj
     local tW, tH = textObj:getDimensions()
-    if tW > width then width = tW end
-    if tH > height then height = tH end
-    if self.maxHeight < height then height = self.maxHeight end
-    if self.maxWidth < height then height = self.maxWidth end
+    if tW > width then
+        width = tW
+    end
+    if tH > height then
+        height = tH
+    end
+    if self.maxHeight < height then
+        height = self.maxHeight
+    end
+    if self.maxWidth < height then
+        height = self.maxWidth
+    end
 
     local v = {}
     v[1] = {love.graphics.transformPoint(self.x, self.y)}
@@ -56,17 +62,35 @@ function Button:draw()
     local textObj = self.textObj
     local width, height = self.width, self.height
     local tW, tH = textObj:getDimensions()
-    if tW > width then width = tW end
-    if tH > height then height = tH end
-    if self.maxHeight < height then height = self.maxHeight end
-    if self.maxWidth < height then height = self.maxWidth end
+    local mdown = love.mouse.isDown(1)
+
+    if tW > width then
+        width = tW
+    end
+    if tH > height then
+        height = tH
+    end
+    if self.maxHeight < height then
+        height = self.maxHeight
+    end
+    if self.maxWidth < height then
+        height = self.maxWidth
+    end
 
     local textWidth, textHeight = textObj:getDimensions()
-    local textX, textY = x + (width - (textWidth*self.fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
+    local textX, textY = x + (width - (textWidth * self.fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
 
     local bgColor = colors.darkPink
     if self:mouseInside() then
-        bgColor = colors.red
+        if mdown then
+            bgColor = colors.magenta
+            if not self.lastDown and type(self.callback) == "function" then
+                self.callback()
+            end
+        else
+            bgColor = colors.red
+        end
+        self.lastDown = mdown
     end
 
     love.graphics.setColor(bgColor)

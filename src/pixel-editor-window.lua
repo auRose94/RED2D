@@ -1,15 +1,15 @@
---local imgui = require".src.imgui"
-local FileDialog = require".src.file-dialog"
+-- local imgui = require".src.imgui"
+local FileDialog = require ".src.file-dialog"
 local PixelEditorWindow = {}
 
 PixelEditorWindow.FileDialog = nil
 
 function PixelEditorWindow:loadFile(filePath)
-	echo(filePath)
+    echo(filePath)
 end
 
 function PixelEditorWindow:saveFile(filePath)
-	echo(filePath)
+    echo(filePath)
 end
 
 --[[

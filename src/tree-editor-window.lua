@@ -1,6 +1,6 @@
---local imgui = require".src.imgui"
-local EntityClass = require".src.entity"
-local ComponentClass = require".src.component"
+-- local imgui = require".src.imgui"
+local EntityClass = require ".src.entity"
+local ComponentClass = require ".src.component"
 
 local module = {}
 

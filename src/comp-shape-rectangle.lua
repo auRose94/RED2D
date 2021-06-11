@@ -1,14 +1,14 @@
-local PolygonShapeComponent = require".src.comp-shape-polygon"
+local PolygonShapeComponent = require ".src.comp-shape-polygon"
 
 local RectangleShapeComponent = inheritsFrom(PolygonShapeComponent)
 
 function RectangleShapeComponent:init(parent, x, y, width, height, angle)
-	PolygonShapeComponent.init(self, parent)
-	self.shape = love.physics.newRectangleShape(x, y, width, height, angle)
+    PolygonShapeComponent.init(self, parent)
+    self.shape = love.physics.newRectangleShape(x, y, width, height, angle)
 end
 
 function RectangleShapeComponent:getName()
-	return "RectangleShapeComponent"
+    return "RectangleShapeComponent"
 end
 
 _G.RectangleShapeComponent = RectangleShapeComponent

@@ -1,16 +1,15 @@
 local ComponentClass = require ".src.component"
-local guiStyle = require".src.gui-style"
+local guiStyle = require ".src.gui-style"
 local WindowClass = inheritsFrom(ComponentClass)
 
-local windowFont =
-    love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
+local windowFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
 
 function WindowClass:getName()
-	return "WindowClass"
+    return "WindowClass"
 end
 
 function WindowClass:init(parent, data)
-	ComponentClass.init(self, parent, data)
+    ComponentClass.init(self, parent, data)
     parent.drawOrder = 10
     self.title = "New Window"
     self.lineWidth = 0.25
@@ -25,8 +24,7 @@ function WindowClass:updateText(text)
     local font = self.font or windowFont
     local textSize = font:getLineHeight()
     if textSize ~= self.textSize then
-        font = love.graphics.newFont(
-            guiStyle.fontPath, self.textSize, guiStyle.fontType)
+        font = love.graphics.newFont(guiStyle.fontPath, self.textSize, guiStyle.fontType)
         self.font = font
     end
     self.titleObj = love.graphics.newText(font, text)
@@ -37,21 +35,25 @@ function WindowClass:addElement(element)
 end
 
 function WindowClass:removeElement(entity)
-	for i = 1, #self.elements do
-		if self.elements[i] == entity then
-			table.remove(self.elements, i)
-			break
-		end
-	end
+    for i = 1, #self.elements do
+        if self.elements[i] == entity then
+            table.remove(self.elements, i)
+            break
+        end
+    end
 end
 
 function WindowClass:mouseInside()
-    local mx, my = love.mouse.getPosition( )
+    local mx, my = love.mouse.getPosition()
     local width, height = self.width, self.height
     local titleObj = self.titleObj
     local tW, tH = titleObj:getDimensions()
-    if tW > width then width = tW end
-    if tH > height then height = tH end
+    if tW > width then
+        width = tW
+    end
+    if tH > height then
+        height = tH
+    end
 
     local v = {}
     v[1] = {love.graphics.transformPoint(self.x, self.y)}
@@ -63,21 +65,21 @@ function WindowClass:mouseInside()
 end
 
 function WindowClass:handleUI()
-    local mx, my = love.mouse.getPosition( )
+    local mx, my = love.mouse.getPosition()
     local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
     local mdown = love.mouse.isDown(1)
-    if self:mouseInside() then 
+    if self:mouseInside() then
         if mdown and not self.lastDown then
             self.ox = self.x - wmx
             self.oy = self.y - wmy
-        end 
+        end
         if mdown and self.lastDown then
             self.x = self.ox + wmx
             self.y = self.oy + wmy
         end
     end
     self.lastDown = mdown
-    love.graphics.translate(self.x, self.y+8)
+    love.graphics.translate(self.x, self.y + 8)
     for _, element in pairs(self.elements) do
         if element and type(element.draw) == "function" then
             love.graphics.push()

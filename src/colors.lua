@@ -1,15 +1,15 @@
 local module = {}
 
 function _G.RGB(r, g, b, a)
-	a = a or 255
-	return { r / 255, g / 255, b / 255, a / 255 }
+    a = a or 255
+    return {r / 255, g / 255, b / 255, a / 255}
 end
 
 function _G.uRGB(r, g, b, a)
-	return unpack(RGB(r, g, b, a))
+    return unpack(RGB(r, g, b, a))
 end
 
---mod.color	=	RGB(R,		G,		B)
+-- mod.color	=	RGB(R,		G,		B)
 module.white = RGB(255, 255, 255)
 module.gray = RGB(42, 42, 42)
 module.black = RGB(0, 0, 0)
