@@ -11,8 +11,8 @@ end
 function WindowClass:init(parent, ...)
     ComponentClass.init(self, parent, ...)
     parent.drawOrder = 10
-    self.title = "New Window"
-    self.lineWidth = 0.25
+    self.title = self.title or "New Window"
+    self.lineWidth = self.lineWidth or 0.25
     self.textSize = self.textSize or 16
     self.fontScale = self.fontScale or 0.5
     self.elements = {}
