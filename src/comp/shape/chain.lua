@@ -1,4 +1,4 @@
-local ShapeComponent = require ".src.comp-shape"
+local ShapeComponent = require ".src.comp.shape"
 
 local ChainShapeComponent = inheritsFrom(ShapeComponent)
 

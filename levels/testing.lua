@@ -1,9 +1,9 @@
 local LevelClass = require ".src.level"
 local EntityClass = require ".src.entity"
-local PlayerClass = require ".src.comp-player"
-local TileMapClass = require ".src.comp-tilemap"
-local ItemClass = require ".src.comp-item"
-local WeaponClass = require ".src.comp-weapon"
+local PlayerClass = require ".src.comp.player"
+local TileMapClass = require ".src.comp.tilemap"
+local ItemClass = require ".src.comp.item"
+local WeaponClass = require ".src.comp.weapon"
 local OraLoader = require ".src.ora-loader"
 
 local level = inheritsFrom(LevelClass)

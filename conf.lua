@@ -5,6 +5,7 @@ require ".src.utility"
 
 local paths = love.filesystem.getRequirePath()
 paths = paths .. ";3rdParty/xml2lua/?.lua"
+paths = paths .. ";3rdParty/rotLove/src/?.lua"
 paths = paths .. ";lua_modules/share/lua/5.1/?.lua"
 paths = paths .. ";lua_modules/share/lua/5.1/?/init.lua"
 love.filesystem.setRequirePath(paths)
@@ -14,10 +15,10 @@ love.filesystem.setCRequirePath(cPath)
 
 _G.debugDrawPhysics = false
 _G.showTreeEditor = false
-_G.showDebugTools = true
+_G.showDebugTools = false
 _G.showGUIDemo = false
 _G.showFPS = true
-_G.showPixelEditor = true
+_G.showPixelEditor = false
 _G.maxFrameRate = 60
 
 function love.conf(t)

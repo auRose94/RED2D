@@ -1,6 +1,7 @@
 local ComponentClass = require ".src.component"
 local defaultTileMap = require ".src.defaultTileMap"
 local PathMap = require ".src.path-map"
+local ROT = require ".3rdParty.rotLove.src.rot"
 local TileMapClass = inheritsFrom(ComponentClass)
 
 function floatEqual(left, right, precision)
@@ -35,6 +36,31 @@ function TileMapClass:init(parent, location, tileSize, ...)
     self.parent.drawOrder = -1
 end
 
+function TileMapClass:setStarMap(x, y, value)
+    if type(self.starMap[y]) ~= "table" then
+        self.starMap[y] = {}
+    end
+    self.starMap[y][x] = value
+end
+
+function TileMapClass:getStarPoint(x, y)
+    if type(self.starMap[y]) ~= "table" then
+        return 0
+    end
+    return self.starMap[y][x] or 0
+end
+
+function TileMapClass:calcPath(sx, sy, ex, ey)
+    local dijkstra = ROT.Path.Dijkstra(sx, sy, function(x, y)
+        self:getStarPoint(x, y)
+    end)
+    local path = {}
+    dijkstra:compute(ex, ey, function(x, y)
+        table.insert(path, {x, y})
+    end)
+    return path
+end
+
 function TileMapClass:loadLevel(location, usePhysics)
     usePhysics = usePhysics or true
     local image = nil
@@ -46,14 +72,15 @@ function TileMapClass:loadLevel(location, usePhysics)
     assert(image ~= nil)
     local width = image:getWidth()
     local height = image:getHeight()
-    local spriteBatch = love.graphics.newSpriteBatch(self.image, width * height)
+    self.spriteBatch = love.graphics.newSpriteBatch(self.image, width * height)
     if usePhysics then
         self.body = self.body or love.physics.newBody(self.parent.level.world, 0, 0, "static")
     end
-    local indexMap = {}
-    local fixturesMap = {}
-    local shapesMap = {}
-    local edgeTable = {}
+    self.indexMap = {}
+    self.fixturesMap = {}
+    self.shapesMap = {}
+    self.edgeTable = {}
+    self.starMap = {}
     local size = self.tileSize
 
     for x = 0, width - 1 do
@@ -72,13 +99,14 @@ function TileMapClass:loadLevel(location, usePhysics)
                     local shapes = {}
                     local fixtures = {}
                     if tileData.quad then
-                        indexMap[index] = spriteBatch:add(tileData.quad, (x * size), (y * size), 0, 1)
+                        self.indexMap[index] = self.spriteBatch:add(tileData.quad, (x * size), (y * size), 0, 1)
                     end
                     if usePhysics then
                         if tileData.edges then
+                            self:setStarMap(x * size, y * size, 1)
                             local edges = tileData.edges(x * size, y * size)
                             for ei, edge in ipairs(edges) do
-                                table.insert(edgeTable, {edge, tileData})
+                                table.insert(self.edgeTable, {edge, tileData})
                             end
                         end
                         if tileData.shape then
@@ -92,8 +120,8 @@ function TileMapClass:loadLevel(location, usePhysics)
                             if #tileData.mask > 0 then
                                 fixture:setMask(unpack(tileData.mask))
                             end
-                            table.insert(fixturesMap, fixture)
-                            table.insert(shapesMap, shape)
+                            table.insert(self.fixturesMap, fixture)
+                            table.insert(self.shapesMap, shape)
                         end
                     end
                 else
@@ -103,15 +131,15 @@ function TileMapClass:loadLevel(location, usePhysics)
             table.insert(self.data, {x, y, tileData})
         end
     end
-    spriteBatch:flush()
+    self.spriteBatch:flush()
     if usePhysics then
         local pathMap = PathMap()
         -- Optimize edges, remove double edges
         local toRemove = {} -- Add index of doubles
-        for iA, packA in ipairs(edgeTable) do
+        for iA, packA in ipairs(self.edgeTable) do
             local aEdge, aTileData = unpack(packA)
             aX1, aY1, aX2, aY2 = unpack(aEdge) -- x1, y1, x2, y2
-            for iB, packB in ipairs(edgeTable) do
+            for iB, packB in ipairs(self.edgeTable) do
                 if packA ~= packB then
                     local bEdge, bTileData = unpack(packB)
                     bX1, bY1, bX2, bY2 = unpack(bEdge) -- x1, y1, x2, y2
@@ -129,7 +157,7 @@ function TileMapClass:loadLevel(location, usePhysics)
             end
         end
         -- We still need to optimize the edges more
-        for i, pack in ipairs(edgeTable) do
+        for i, pack in ipairs(self.edgeTable) do
             local edge, tileData = unpack(pack)
             if not CheckValue(toRemove, i) then
                 local x1, y1, x2, y2 = unpack(edge)
@@ -141,6 +169,8 @@ function TileMapClass:loadLevel(location, usePhysics)
         local edges = pathMap:getEdges() -- {x1, y1, x2, y2, tileData}[]
         for i, v in ipairs(edges) do
             local x1, y1, x2, y2, tileData = unpack(v)
+            self:setStarMap(x1, y1, 1)
+            self:setStarMap(x2, y2, 1)
             local shape = love.physics.newEdgeShape(x1, y1, x2, y2)
             local fixture = love.physics.newFixture(self.body, shape, tileData.density)
             fixture:setFriction(tileData.friction)
@@ -152,15 +182,11 @@ function TileMapClass:loadLevel(location, usePhysics)
                 fixture:setMask(unpack(tileData.mask))
             end
 
-            table.insert(shapesMap, shape)
-            table.insert(fixturesMap, fixture)
+            table.insert(self.shapesMap, shape)
+            table.insert(self.fixturesMap, fixture)
         end
     end
 
-    self.spriteBatch = spriteBatch
-    self.indexMap = indexMap
-    self.fixturesMap = fixturesMap
-    self.shapesMap = shapesMap
     self.width = width
     self.height = height
 end

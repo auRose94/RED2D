@@ -7,3 +7,6 @@
 [submodule "3rdParty/xml2lua"]
 	path = 3rdParty/xml2lua
 	url = https://github.com/manoelcampos/xml2lua.git
+[submodule "3rdParty/rotLove"]
+	path = 3rdParty/rotLove
+	url = https://github.com/paulofmandown/rotLove.git

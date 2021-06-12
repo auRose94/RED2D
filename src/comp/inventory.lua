@@ -1,7 +1,7 @@
 local ComponentClass = require ".src.component"
 local InventoryClass = inheritsFrom(ComponentClass)
-local ItemClass = require ".src.comp-item"
-local WeaponClass = require ".src.comp-weapon"
+local ItemClass = require ".src.comp.item"
+local WeaponClass = require ".src.comp.weapon"
 local renderBoundingBox = false
 
 function InventoryClass:getName()

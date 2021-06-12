@@ -1,5 +1,5 @@
 -- local imgui = require".src.imgui"
-local InventoryClass = require ".src.comp-inventory"
+local InventoryClass = require ".src.comp.inventory"
 local ComponentClass = require ".src.component"
 local ElementClass = require ".src.element"
 local Button = require ".src.elem-button"
@@ -17,7 +17,7 @@ end
 function StatusWindow:init(parent)
     ComponentClass.init(self, parent)
     self.inventory = self:getComponent(InventoryClass)
-    local PlayerComponent = _G.PlayerComponent or require ".src.comp-player"
+    local PlayerComponent = _G.PlayerComponent or require ".src.comp.player"
     self.player = self:getComponent(PlayerComponent)
 
     self.state = {
@@ -108,7 +108,7 @@ end
 function StatusWindow:regenItem()
     self.itemScroll.elements = {}
     local width = self.window.width / 2
-    for k, v in pairs(self.inventory.items) do
+    for k, v in ipairs(self.inventory.items) do
         local count, item = unpack(v)
         local name = item.name
         if count > 1 then
@@ -119,6 +119,7 @@ function StatusWindow:regenItem()
             width = width,
             maxWidth = width,
             fontScale = 0.35
+
         })
         self.itemScroll:addElement(elem)
     end

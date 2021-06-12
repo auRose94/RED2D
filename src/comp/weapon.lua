@@ -1,4 +1,4 @@
-local ItemClass = require ".src.comp-item"
+local ItemClass = require ".src.comp.item"
 local EntityClass = require ".src.entity"
 local WeaponTypes = require ".src.defaultWeaponTypes"
 -- local imgui = require".src.imgui"

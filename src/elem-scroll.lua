@@ -22,23 +22,22 @@ function ScrollClass:draw()
         local sw, sh = love.graphics.getDimensions()
 
         local last = nil
-        local y = 0
-        for _, item in pairs(self.elements) do
-            item:setPosition(0, y)
-            love.graphics.push()
-            love.graphics.applyTransform(item:getTransform())
-            item:draw()
-            love.graphics.pop()
-            local height = item.height
-            if item.maxHeight < height then
-                height = item.maxHeight
+        for _, element in ipairs(self.elements) do
+
+            if last then
+                local height = last.height
+                if last.maxHeight < height then
+                    height = last.maxHeight
+                end
+                element.y = last.y + height
             end
-            y = y + height
+            last = element
         end
 
         love.graphics.setScissor(0, 0, sw, sh)
         love.graphics.intersectScissor(x1, y1, math.abs(width), math.abs(height))
         love.graphics.translate(self.x, self.y)
+        Element.draw(self)
         love.graphics.setScissor()
     end
 end

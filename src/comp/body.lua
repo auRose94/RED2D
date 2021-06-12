@@ -1,6 +1,6 @@
 local ComponentClass = require ".src.component"
-local PhysicsComponent = require ".src.comp-physics"
-local WeaponComponent = require ".src.comp-weapon"
+local PhysicsComponent = require ".src.comp.physics"
+local WeaponComponent = require ".src.comp.weapon"
 local BodyComponent = inheritsFrom(ComponentClass)
 
 function BodyComponent:getName()

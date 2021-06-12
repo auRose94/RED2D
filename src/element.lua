@@ -2,27 +2,13 @@ local ElementClass = inheritsFrom(nil)
 
 function ElementClass:init(...)
     self.elements = {}
-    self.x = 0
-    self.y = 0
-    self.z = 0
-    self.r = 0
-    self.sx = 1
-    self.sy = 1
-    self.ox = 0
-    self.oy = 0
-    self.kx = 0
-    self.ky = 0
-    self.width = 0
-    self.height = 0
-    self.hide = false
     self.transform = love.math.newTransform()
     for i = 1, select('#', ...) do
         local value = select(i, ...)
         local tValue = type(value)
         if tValue == "table" then
             if isa(value, ElementClass) then
-                table.insert(self.elements, value)
-                value.parent = self
+                self:addElement(value)
             else
                 for k, v in pairs(value) do
                     self[k] = v
@@ -32,7 +18,19 @@ function ElementClass:init(...)
             self.text = value
         end
     end
-
+    self.x = self.x or 0
+    self.y = self.y or 0
+    self.z = self.z or 0
+    self.r = self.r or 0
+    self.sx = self.sx or 1
+    self.sy = self.sy or 1
+    self.ox = self.ox or 0
+    self.oy = self.oy or 0
+    self.kx = self.kx or 0
+    self.ky = self.ky or 0
+    self.width = self.width or 0
+    self.height = self.height or 0
+    self.hide = self.hide or false
 end
 
 function ElementClass:getName()
@@ -159,7 +157,7 @@ end
 
 function ElementClass:getInnerSize()
     local width, height = 0, 0
-    for _, value in pairs(self.elements) do
+    for _, value in ipairs(self.elements) do
         if value and not value.hide then
             if value.x + value.width > width then
                 width = value.x + value.width
@@ -204,7 +202,7 @@ end
 
 function ElementClass:draw()
     if not self.hide then
-        for _, value in pairs(self.elements) do
+        for _, value in ipairs(self.elements) do
             if value and not value.hide and type(value.draw) == "function" then
                 love.graphics.push()
                 value:draw()

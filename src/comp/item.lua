@@ -1,5 +1,5 @@
 local ComponentClass = require ".src.component"
-local PhysicsComponent = require ".src.comp-physics"
+local PhysicsComponent = require ".src.comp.physics"
 local LoadedItems = require ".src.defaultItemTypes"
 local guiStyle = require ".src.gui-style"
 -- local imgui = require".src.imgui"

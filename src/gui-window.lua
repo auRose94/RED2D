@@ -80,7 +80,7 @@ function WindowClass:handleUI()
     end
     self.lastDown = mdown
     love.graphics.translate(self.x, self.y + 8)
-    for _, element in pairs(self.elements) do
+    for _, element in ipairs(self.elements) do
         if element and type(element.draw) == "function" then
             love.graphics.push()
             element:draw()

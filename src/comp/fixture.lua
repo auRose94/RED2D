@@ -3,7 +3,7 @@ local FixtureComponent = inheritsFrom(ComponentClass)
 
 function FixtureComponent:init(parent, shapeComp, density, ...)
     ComponentClass.init(self, parent, ...)
-    local bodyComp = self:getComponent(require ".src.comp-physics")
+    local bodyComp = self:getComponent(require ".src.comp.physics")
     self.fixture = love.physics.newFixture(bodyComp.body, shapeComp.shape, density)
     shapeComp.fixture = self.fixture
     shapeComp.body = bodyComp

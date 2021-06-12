@@ -1,5 +1,5 @@
 local CameraClass = require ".src.camera"
-local ItemClass = require ".src.comp-item"
+local ItemClass = require ".src.comp.item"
 local EntityClass = require ".src.entity"
 local LevelClass = inheritsFrom(nil)
 
@@ -43,6 +43,13 @@ function LevelClass:update(dt)
     end
 end
 
+function LevelClass:calcPath(sx, sy, ex, ey)
+    if self.tilemap then
+        return self.tilemap:calcPath(sx, sy, ex, ey)
+    end
+    return nil
+end
+
 function LevelClass:init()
     self.entities = {}
     love.physics.setMeter(64)
@@ -50,6 +57,7 @@ function LevelClass:init()
     self.camera = CameraClass(self)
     self.camera:newEntityLayer(2, self.entities)
     self.accumulator = 0
+    self.tilemap = nil
 end
 
 function LevelClass:getRootEntities()
