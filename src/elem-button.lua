@@ -52,14 +52,14 @@ function Button:draw()
         end
 
         local textWidth, textHeight = textObj:getDimensions()
-        local textX, textY = x + (width - (textWidth * self.fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
+        local textX, textY = x + (width - (textWidth * fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
 
         local bgColor = colors.darkPink
         if self:mouseInside() then
             if mdown then
                 bgColor = colors.magenta
                 if not self.lastDown and type(self.callback) == "function" then
-                    self.callback()
+                    self:callback()
                 end
             else
                 bgColor = colors.red

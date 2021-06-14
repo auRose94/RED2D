@@ -3,14 +3,22 @@ local ScrollClass = inheritsFrom(Element)
 
 function ScrollClass:init(...)
     Element.init(self, ...)
+    self.scrollBarWidth = 8
+    self.scrollY = 0
+    self.scrollBarHeight = 32
 end
 
 function ScrollClass:addElement(elem)
     local size = #self.elements
-    if size > 0 then
+    if size >= 1 then
         local last = self.elements[size]
         elem.y = last.y + last.height
     end
+    local width = elem.width - self.scrollBarWidth
+    elem.width = width
+    elem.maxWidth = width
+    local _, height = self:getInnerSize()
+    self.scrollBarHeight = (self.height / height)
     Element.addElement(self, elem)
 end
 
@@ -20,25 +28,30 @@ function ScrollClass:draw()
         local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
         local width, height = x2 - x1, y2 - y1
         local sw, sh = love.graphics.getDimensions()
-
-        local last = nil
-        for _, element in ipairs(self.elements) do
-
-            if last then
-                local height = last.height
-                if last.maxHeight < height then
-                    height = last.maxHeight
-                end
-                element.y = last.y + height
-            end
-            last = element
-        end
+        local mdown = love.mouse.isDown(1)
 
         love.graphics.setScissor(0, 0, sw, sh)
         love.graphics.intersectScissor(x1, y1, math.abs(width), math.abs(height))
-        love.graphics.translate(self.x, self.y)
         Element.draw(self)
         love.graphics.setScissor()
+
+        local bgColor = colors.darkPink
+        local x = self.width - self.scrollBarWidth
+        local y = self.y + self.scrollY
+        if self:mouseInsideRect(x, y, self.scrollBarWidth, self.scrollBarHeight) then
+            if mdown then
+                bgColor = colors.magenta
+                if not self.lastDown and type(self.callback) == "function" then
+                    self:callback()
+                end
+            else
+                bgColor = colors.red
+            end
+            self.lastDown = mdown
+        end
+        love.graphics.setColor(bgColor)
+
+        love.graphics.rectangle("fill", x, y, self.scrollBarWidth, self.scrollBarHeight)
     end
 end
 

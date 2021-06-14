@@ -8,7 +8,7 @@ function CameraClass:init(level)
     self.layers = {}
     local scale = 1.325
     self.sx = scale -- 1.125
-    
+
     self.sy = scale
     self.cameraSpeed = 4
     self.rotSpeed = 4
@@ -30,15 +30,6 @@ function CameraClass:destroy()
     if found then
         table.remove(cameras, found)
     end
-end
-
-function CameraClass:set()
-    love.graphics.push()
-    love.graphics.replaceTransform(self:getTransform())
-end
-
-function CameraClass:unset()
-    love.graphics.pop()
 end
 
 function CameraClass:getOffset(division)
@@ -96,14 +87,15 @@ function CameraClass:newEntityLayer(scale, entities)
                 return true
             end
         end)
+        love.graphics.push()
         for i = 1, #entities do
             local entity = entities[i]
             if entity then
-                self:set()
+                love.graphics.replaceTransform(self:getTransform())
                 entity:draw()
-                self:unset()
             end
         end
+        love.graphics.pop()
     end)
 end
 
@@ -136,8 +128,8 @@ function CameraClass:update(dt)
             targetTransform = target.parent:getTransform()
         end
         targetTransform = targetTransform *
-                              love.math.newTransform(target.x, target.y, target.r, target.sx, target.sy, target.ox,
-                                  target.oy)
+                              love.math
+                                  .newTransform(target.x, target.y, target.r, target.sx, target.sy, target.ox, target.oy)
 
         local tX, tY = targetTransform:transformPoint(0, 0)
         local cx = math.lerp(self.x, tX, self.cameraSpeed * dt)
