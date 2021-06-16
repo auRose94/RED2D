@@ -15,6 +15,7 @@ function Button:init(...)
     self.callback = self.callback or nil
     self.maxWidth = self.maxWidth or 500
     self.maxHeight = self.maxHeight or self.textSize
+    self.disabled = self.disabled or false
     self:updateText(text)
 end
 
@@ -55,16 +56,20 @@ function Button:draw()
         local textX, textY = x + (width - (textWidth * fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
 
         local bgColor = colors.darkPink
-        if self:mouseInside() then
-            if mdown then
-                bgColor = colors.magenta
-                if not self.lastDown and type(self.callback) == "function" then
-                    self:callback()
+        if not self.disabled then
+            if self:mouseInside() then
+                if mdown then
+                    bgColor = colors.magenta
+                    if not self.lastDown and type(self.callback) == "function" then
+                        self:callback()
+                    end
+                else
+                    bgColor = colors.red
                 end
-            else
-                bgColor = colors.red
             end
             self.lastDown = mdown
+        else
+            bgColor = colors.magenta
         end
 
         love.graphics.setColor(bgColor)

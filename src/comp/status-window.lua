@@ -24,7 +24,8 @@ function StatusWindow:init(parent)
         inventory = {
             category = 1, -- > Any
             sort = 1,
-            selected = nil,
+            selectedButton = nil,
+            selectedItem = nil,
             showItemTabs = 1
         }
     }
@@ -32,80 +33,154 @@ function StatusWindow:init(parent)
     local window = WindowClass(self.parent, {
         parent = self.parent,
         width = 274,
-        height = 150,
+        height = 125,
         x = -295,
         y = -100,
         title = "Status"
     })
     self.window = window
-    local inc = window.width / 4
-    self.optionsBar = ElementClass(Button("Info", {
+
+    self:createOptionsBar()
+
+    self:createInfoSection()
+    self:createItemSection()
+    self:createEquipSection()
+    self:createQuestSection()
+
+    self:regenQuest()
+    self:regenEquip()
+    self:regenItems()
+    self:regenInfo()
+end
+
+function StatusWindow:createOptionsBar()
+    local inc = self.window.width / 4
+    self.optionsBar = ElementClass({
+        height = 16,
+        width = self.window.width
+    }, Button("Info", {
         x = inc * 0,
         width = inc,
         callback = function()
-            echo("Info")
+            self.infoSection.hide = false
+            self.itemSection.hide = true
+            self.equipSection.hide = true
+            self.questSection.hide = true
+            self:regenQuest()
         end
     }), Button("Items", {
         x = inc * 1,
         width = inc,
         callback = function()
-            echo("Items")
+            self.infoSection.hide = true
+            self.itemSection.hide = false
+            self.equipSection.hide = true
+            self.questSection.hide = true
+            self:regenItems()
+
         end
     }), Button("Equip", {
         x = inc * 2,
         width = inc,
         callback = function()
-            echo("Equip")
+            self.infoSection.hide = true
+            self.itemSection.hide = true
+            self.equipSection.hide = false
+            self.questSection.hide = true
+            self:regenEquip()
         end
     }), Button("Quests", {
         x = inc * 3,
         width = inc,
         callback = function()
-            echo("Quests")
+            self.infoSection.hide = true
+            self.itemSection.hide = true
+            self.equipSection.hide = true
+            self.questSection.hide = false
+            self:regenQuest()
         end
     }))
-    window:addElement(self.optionsBar)
+    self.window:addElement(self.optionsBar)
 
-    local scrollWidth = window.width / 2
-    local scrollHeight = 150
+end
+
+function StatusWindow:createInfoSection()
+    local scrollWidth = self.window.width / 2
+    local scrollHeight = 16 * 6
 
     self.infoScroll = Scroll({
         width = scrollWidth,
         height = scrollHeight,
         y = 16
     })
+
+    self.infoSection = ElementClass(self.infoScroll, {
+        width = self.window.width,
+        height = self.window.height - 32,
+        hide = false
+    })
+    self.window:addElement(self.infoSection)
+end
+
+function StatusWindow:createItemSection()
+    local scrollWidth = self.window.width / 2
+    local scrollHeight = 16 * 6
+
     self.itemScroll = Scroll({
         width = scrollWidth,
         height = scrollHeight,
         y = 16
     })
+
+    self.itemSection = ElementClass(self.itemScroll, {
+        width = self.window.width,
+        height = self.window.height - 32,
+        hide = true
+    })
+    self.window:addElement(self.itemSection)
+end
+
+function StatusWindow:createEquipSection()
+    local scrollWidth = self.window.width / 2
+    local scrollHeight = 16 * 6
+
     self.equipScroll = Scroll({
         width = scrollWidth,
         height = scrollHeight,
         y = 16
     })
+
+    self.equipSection = ElementClass(self.equipScroll, {
+        width = self.window.width,
+        height = self.window.height - 32,
+        hide = true
+    })
+    self.window:addElement(self.equipSection)
+end
+
+function StatusWindow:createQuestSection()
+    local scrollWidth = self.window.width / 2
+    local scrollHeight = 16 * 6
+
     self.questScroll = Scroll({
         width = scrollWidth,
         height = scrollHeight,
         y = 16
     })
 
-    window:addElement(self.infoScroll)
-    window:addElement(self.itemScroll)
-    window:addElement(self.equipScroll)
-    window:addElement(self.questScroll)
-
-    self:regenQuest()
-    self:regenEquip()
-    self:regenItem()
-    self:regenInfo()
+    self.questSection = ElementClass(self.questScroll, {
+        width = self.window.width,
+        height = self.window.height - 32,
+        hide = true
+    })
+    self.window:addElement(self.questSection)
 end
 
 function StatusWindow:onPickUp(item)
-    self:regenItem()
+    self.state.inventory.selectedItem = item
 end
 
-function StatusWindow:regenItem()
+function StatusWindow:regenItems()
     self.itemScroll.elements = {}
     local width = self.window.width / 2
     for k, v in ipairs(self.inventory.items) do
@@ -115,11 +190,24 @@ function StatusWindow:regenItem()
             name = name .. " (" .. count .. ")"
         end
 
+        function ItemSelected(button)
+            if self.state.inventory.selectedButton then
+                self.state.inventory.selectedButton.disabled = false
+            end
+            button.disabled = true
+            self.state.inventory.selectedItem = button.item
+            self.state.inventory.selectedButton = button
+        end
+        echo(self.state.inventory.selectedItem == item)
+
         local elem = Button(name, {
             width = width,
             maxWidth = width,
-            fontScale = 0.35
-
+            fontScale = 0.35,
+            callback = ItemSelected,
+            item = item,
+            count = count,
+            disabled = self.state.inventory.selectedItem == item
         })
         self.itemScroll:addElement(elem)
     end
@@ -142,10 +230,6 @@ function StatusWindow:toggleWindow()
         self.justOpened = true
     end
     self.window.show = not self.window.show
-end
-
-function StatusWindow:selectItem(item)
-    self.state.inventory.selected = item
 end
 
 function StatusWindow:update()

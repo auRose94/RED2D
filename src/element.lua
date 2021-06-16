@@ -2,7 +2,6 @@ local ElementClass = inheritsFrom(nil)
 
 function ElementClass:init(...)
     self.elements = {}
-    self.transform = love.math.newTransform()
     for i = 1, select('#', ...) do
         local value = select(i, ...)
         local tValue = type(value)
@@ -28,6 +27,8 @@ function ElementClass:init(...)
     self.oy = self.oy or 0
     self.kx = self.kx or 0
     self.ky = self.ky or 0
+    self.transform = love.math
+                         .newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
     self.width = self.width or 0
     self.height = self.height or 0
     self.hide = self.hide or false
@@ -156,19 +157,28 @@ function ElementClass:getTransform()
 end
 
 function ElementClass:getInnerSize()
-    local width, height = 0, 0
-    for _, value in ipairs(self.elements) do
-        if value and not value.hide then
-            if value.x + value.width > width then
-                width = value.x + value.width
+    local pWidth, pHeight = self.width, self.height
+    local nWidth, nHeight = 0, 0
+    for _, elem in ipairs(self.elements) do
+        if elem and not elem.hide then
+            local fw = elem.x + elem.width
+            local fh = elem.y + elem.height
+            if fw > pWidth then
+                pWidth = fw
+            end
+            if fw < nWidth then
+                nWidth = fw
             end
 
-            if value.y + value.height > height then
-                height = value.y + value.height
+            if fh > pHeight then
+                pHeight = fh
+            end
+            if fh < nHeight then
+                nHeight = fh
             end
         end
     end
-    return width, height
+    return pWidth - nWidth, pHeight - nHeight
 end
 
 function ElementClass:mouseInside()
@@ -205,14 +215,22 @@ end
 
 function ElementClass:draw()
     if not self.hide then
+        local iw, ih = self:getInnerSize()
+        local x1, y1 = love.graphics.transformPoint(self.x, self.y)
+        local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
+        local width, height = x2 - x1, y2 - y1
+        local sw, sh = love.graphics.getDimensions()
+        love.graphics.setScissor(x1, y1, width, height)
         love.graphics.push()
-        for _, value in ipairs(self.elements) do
-            if value and not value.hide and type(value.draw) == "function" then
+
+        for _, elem in ipairs(self.elements) do
+            if elem and not elem.hide and type(elem.draw) == "function" then
                 love.graphics.applyTransform(self:getTransform())
-                value:draw()
+                elem:draw()
             end
         end
         love.graphics.pop()
+        love.graphics.setScissor()
     end
 end
 

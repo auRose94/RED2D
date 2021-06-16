@@ -19,7 +19,8 @@ function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
     self.touched = false
     self.components = {}
     self.children = {}
-    self.transform = love.math.newTransform()
+    self.transform = love.math
+                         .newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
     self.name = name or "New Entity"
 end
 
@@ -172,7 +173,7 @@ end
 function EntityClass:getTransform()
     if self.touched or not self.transform then
         self.transform = love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx,
-                             self.ky)
+            self.ky)
         self.touched = false
     end
     if self.parent then

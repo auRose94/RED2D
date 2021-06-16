@@ -1,5 +1,6 @@
 local ComponentClass = require ".src.component"
 local guiStyle = require ".src.gui-style"
+local Element = require ".src.element"
 local WindowClass = inheritsFrom(ComponentClass)
 
 local windowFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
@@ -16,6 +17,8 @@ function WindowClass:init(parent, ...)
     self.textSize = self.textSize or 16
     self.fontScale = self.fontScale or 0.5
     self.elements = {}
+    self.ox = 0
+    self.oy = 0
     self:updateText(self.title)
 end
 
@@ -44,7 +47,6 @@ function WindowClass:removeElement(entity)
 end
 
 function WindowClass:mouseInside()
-    local mx, my = love.mouse.getPosition()
     local width, height = self.width, self.height
     local titleObj = self.titleObj
     local tW, tH = titleObj:getDimensions()
@@ -55,36 +57,51 @@ function WindowClass:mouseInside()
         height = tH
     end
 
-    local v = {}
-    v[1] = {love.graphics.transformPoint(self.x, self.y)}
-    v[2] = {love.graphics.transformPoint(self.x + width, self.y)}
-    v[3] = {love.graphics.transformPoint(self.x + width, self.y + height)}
-    v[4] = {love.graphics.transformPoint(self.x, self.y + height)}
+    return WindowClass:mouseInsideRect(self.x, self.y, width, height)
+end
 
-    return polyPoint(v, mx, my)
+function WindowClass:mouseInsideRect(rX, rY, rW, rH)
+    local v = {}
+    v[1] = {love.graphics.transformPoint(rX, rY)}
+    v[2] = {love.graphics.transformPoint(rX + rW, rY)}
+    v[3] = {love.graphics.transformPoint(rX + rW, rY + rH)}
+    v[4] = {love.graphics.transformPoint(rX, rY + rH)}
+
+    return polyPoint(v, love.mouse.getPosition())
 end
 
 function WindowClass:handleUI()
     local mx, my = love.mouse.getPosition()
     local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
     local mdown = love.mouse.isDown(1)
-    if self:mouseInside() then
+    if self:mouseInsideRect(self.x, self.y, self.width, self.textSize) then
         if mdown and not self.lastDown then
             self.ox = self.x - wmx
             self.oy = self.y - wmy
         end
-        if mdown and self.lastDown then
-            self.x = self.ox + wmx
-            self.y = self.oy + wmy
-        end
+    end
+    if self.lastDown and not mdown then
+        self.ox = 0
+        self.oy = 0
+    end
+    if mdown and self.lastDown and (self.ox ~= 0 or self.oy ~= 0) then
+        self.x = self.ox + wmx
+        self.y = self.oy + wmy
     end
     self.lastDown = mdown
     love.graphics.translate(self.x, self.y + 8)
-    for _, element in ipairs(self.elements) do
-        if element and type(element.draw) == "function" then
+    local x1, y1 = love.graphics.transformPoint(self.x, self.y)
+    local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
+    local width, height = x2 - x1, y2 - y1
+    local sw, sh = love.graphics.getDimensions()
+
+    for _, elem in ipairs(self.elements) do
+        if elem and not elem.hide and type(elem.draw) == "function" then
+            love.graphics.setScissor(x1, y1, width, height)
             love.graphics.push()
-            element:draw()
+            elem:draw()
             love.graphics.pop()
+            love.graphics.setScissor()
         end
     end
 end

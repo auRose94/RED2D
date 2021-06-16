@@ -17,8 +17,6 @@ function ScrollClass:addElement(elem)
     local width = elem.width - self.scrollBarWidth
     elem.width = width
     elem.maxWidth = width
-    local _, height = self:getInnerSize()
-    self.scrollBarHeight = (self.height / height)
     Element.addElement(self, elem)
 end
 
@@ -30,12 +28,15 @@ function ScrollClass:draw()
         local sw, sh = love.graphics.getDimensions()
         local mdown = love.mouse.isDown(1)
 
-        love.graphics.setScissor(0, 0, sw, sh)
-        love.graphics.intersectScissor(x1, y1, math.abs(width), math.abs(height))
+        love.graphics.setScissor(x1, y1, math.abs(width), math.abs(height))
+        -- love.graphics.intersectScissor(x1, y1, math.abs(width), math.abs(height))
         Element.draw(self)
         love.graphics.setScissor()
 
         local bgColor = colors.darkPink
+        local _, height = self:getInnerSize()
+        local rel = self.height / height
+        self.scrollBarHeight = rel * self.height
         local x = self.width - self.scrollBarWidth
         local y = self.y + self.scrollY
         if self:mouseInsideRect(x, y, self.scrollBarWidth, self.scrollBarHeight) then
