@@ -1,7 +1,7 @@
 -- local imgui = require".src.imgui"
 local InventoryClass = require ".src.comp.inventory"
 local ComponentClass = require ".src.component"
-local ElementClass = require ".src.element"
+local Element = require ".src.element"
 local Button = require ".src.elem-button"
 local Scroll = require ".src.elem-scroll"
 local WindowClass = require ".src.gui-window"
@@ -21,15 +21,17 @@ function StatusWindow:init(parent)
     self.player = self:getComponent(PlayerComponent)
 
     self.state = {
+        selected = 1,
+        info = {
+            selected = 1
+        },
         inventory = {
             category = 1, -- > Any
             sort = 1,
-            selectedButton = nil,
-            selectedItem = nil,
+            selected = 1,
             showItemTabs = 1
         }
     }
-    -- self.windowObject = EntityClass(parent.level, "Status Window", 0, 0)
     local window = WindowClass(self.parent, {
         parent = self.parent,
         width = 274,
@@ -39,6 +41,8 @@ function StatusWindow:init(parent)
         title = "Status"
     })
     self.window = window
+    self.scrollWidth = self.window.width / 2
+    self.scrollHeight = 16 * 6
 
     self:createOptionsBar()
 
@@ -55,135 +59,154 @@ end
 
 function StatusWindow:createOptionsBar()
     local inc = self.window.width / 4
-    self.optionsBar = ElementClass({
-        height = 16,
-        width = self.window.width
-    }, Button("Info", {
+    self.infoButton = Button("Info", {
         x = inc * 0,
         width = inc,
+        disabled = self.state.selected == 1,
         callback = function()
-            self.infoSection.hide = false
-            self.itemSection.hide = true
-            self.equipSection.hide = true
-            self.questSection.hide = true
-            self:regenQuest()
+            self:changeTab(1)
+            self:regenInfo()
         end
-    }), Button("Items", {
+    })
+    self.itemButton = Button("Items", {
         x = inc * 1,
         width = inc,
+        disabled = self.state.selected == 2,
         callback = function()
-            self.infoSection.hide = true
-            self.itemSection.hide = false
-            self.equipSection.hide = true
-            self.questSection.hide = true
+            self:changeTab(2)
             self:regenItems()
 
         end
-    }), Button("Equip", {
+    })
+    self.equipButton = Button("Equip", {
         x = inc * 2,
         width = inc,
+        disabled = self.state.selected == 3,
         callback = function()
-            self.infoSection.hide = true
-            self.itemSection.hide = true
-            self.equipSection.hide = false
-            self.questSection.hide = true
+            self:changeTab(3)
             self:regenEquip()
         end
-    }), Button("Quests", {
+    })
+    self.questButton = Button("Quests", {
         x = inc * 3,
         width = inc,
+        disabled = self.state.selected == 4,
         callback = function()
-            self.infoSection.hide = true
-            self.itemSection.hide = true
-            self.equipSection.hide = true
-            self.questSection.hide = false
+            self:changeTab(4)
             self:regenQuest()
         end
-    }))
+    })
+    self.optionsBar = Element({
+        height = 16,
+        width = self.window.width
+    }, self.infoButton, self.itemButton, self.equipButton, self.questButton)
     self.window:addElement(self.optionsBar)
 
 end
 
-function StatusWindow:createInfoSection()
-    local scrollWidth = self.window.width / 2
-    local scrollHeight = 16 * 6
+function StatusWindow:changeTab(tab)
+    local last = self.optionsBar.elements[self.state.selected]
+    local button = self.optionsBar.elements[tab]
+    if last ~= nil then
+        last.disabled = false
+    end
+    button.disabled = true
+    self.state.selected = tab
+    self.infoSection.hide = true
+    self.itemSection.hide = true
+    self.equipSection.hide = true
+    self.questSection.hide = true
+    if tab == 1 then
+        self.infoSection.hide = false
+    elseif tab == 2 then
+        self.itemSection.hide = false
+    elseif tab == 3 then
+        self.equipSection.hide = false
+    elseif tab == 4 then
+        self.questSection.hide = false
+    end
+end
 
-    self.infoScroll = Scroll({
-        width = scrollWidth,
-        height = scrollHeight,
+function StatusWindow:getScrollConfig()
+    return {
+        width = self.scrollWidth,
+        height = self.scrollHeight,
         y = 16
-    })
+    }
+end
 
-    self.infoSection = ElementClass(self.infoScroll, {
+function StatusWindow:getSectionConfig()
+    return {
         width = self.window.width,
-        height = self.window.height - 32,
-        hide = false
+        height = self.window.height - 32
+    }
+end
+
+function StatusWindow:updateEverything()
+    self:createOptionsBar()
+
+    self:createInfoSection()
+    self:createItemSection()
+    self:createEquipSection()
+    self:createQuestSection()
+
+    self:regenQuest()
+    self:regenEquip()
+    self:regenItems()
+    self:regenInfo()
+end
+
+function StatusWindow:createInfoSection()
+
+    self.infoScroll = Scroll(self:getScrollConfig())
+
+    self.infoSection = Element(self.infoScroll, self:getSectionConfig(), {
+        hide = self.state.selected == 0
     })
     self.window:addElement(self.infoSection)
 end
 
 function StatusWindow:createItemSection()
-    local scrollWidth = self.window.width / 2
-    local scrollHeight = 16 * 6
 
-    self.itemScroll = Scroll({
-        width = scrollWidth,
-        height = scrollHeight,
-        y = 16
-    })
+    self.itemScroll = Scroll(self:getScrollConfig())
 
-    self.itemSection = ElementClass(self.itemScroll, {
-        width = self.window.width,
-        height = self.window.height - 32,
-        hide = true
+    self.itemSection = Element(self.itemScroll, self:getSectionConfig(), {
+        hide = self.state.selected == 1
     })
     self.window:addElement(self.itemSection)
 end
 
 function StatusWindow:createEquipSection()
-    local scrollWidth = self.window.width / 2
-    local scrollHeight = 16 * 6
+    self.equipScroll = Scroll(self:getScrollConfig())
 
-    self.equipScroll = Scroll({
-        width = scrollWidth,
-        height = scrollHeight,
-        y = 16
-    })
-
-    self.equipSection = ElementClass(self.equipScroll, {
-        width = self.window.width,
-        height = self.window.height - 32,
-        hide = true
+    self.equipSection = Element(self.equipScroll, self:getSectionConfig(), {
+        hide = self.state.selected == 2
     })
     self.window:addElement(self.equipSection)
 end
 
 function StatusWindow:createQuestSection()
-    local scrollWidth = self.window.width / 2
-    local scrollHeight = 16 * 6
 
-    self.questScroll = Scroll({
-        width = scrollWidth,
-        height = scrollHeight,
-        y = 16
-    })
+    self.questScroll = Scroll(self:getScrollConfig())
 
-    self.questSection = ElementClass(self.questScroll, {
-        width = self.window.width,
-        height = self.window.height - 32,
-        hide = true
+    self.questSection = Element(self.questScroll, self:getSectionConfig(), {
+        hide = self.state.selected == 3
     })
     self.window:addElement(self.questSection)
 end
 
 function StatusWindow:onPickUp(item)
-    self.state.inventory.selectedItem = item
+    local id = findFirstIndexOf(self.inventory.items, function(v, i)
+        local count, vItem = unpack(v)
+        return vItem == item
+    end)
+    self.state.inventory.selected = id
 end
 
 function StatusWindow:regenItems()
     self.itemScroll.elements = {}
     local width = self.window.width / 2
-    for k, v in ipairs(self.inventory.items) do
+    for i, v in ipairs(self.inventory.items) do
         local count, item = unpack(v)
         local name = item.name
         if count > 1 then
@@ -191,14 +214,13 @@ function StatusWindow:regenItems()
         end
 
         function ItemSelected(button)
-            if self.state.inventory.selectedButton then
-                self.state.inventory.selectedButton.disabled = false
+            local last = self.itemScroll.elements[self.state.inventory.selected]
+            if last ~= nil then
+                last.disabled = false
             end
             button.disabled = true
-            self.state.inventory.selectedItem = button.item
-            self.state.inventory.selectedButton = button
+            self.state.inventory.selected = button.id
         end
-        echo(self.state.inventory.selectedItem == item)
 
         local elem = Button(name, {
             width = width,
@@ -207,7 +229,8 @@ function StatusWindow:regenItems()
             callback = ItemSelected,
             item = item,
             count = count,
-            disabled = self.state.inventory.selectedItem == item
+            id = i,
+            disabled = self.state.inventory.selected == i
         })
         self.itemScroll:addElement(elem)
     end
@@ -215,6 +238,38 @@ end
 
 function StatusWindow:regenInfo()
     self.infoScroll.elements = {}
+    local width = self.window.width / 2
+    local coreButtonConfig = {
+        fontScale = 0.35,
+        width = width,
+        maxWidth = width
+    }
+    function infoCallback(button)
+        local last = self.infoScroll.elements[self.state.info.selected]
+        if last then
+            last.disabled = false
+        end
+        self.state.info.selected = button.id
+        button.disabled = true
+    end
+    self.infoScroll:addElement(Button("Health", coreButtonConfig, {
+        id = 1,
+        disabled = self.state.info.selected == 1,
+        callback = infoCallback
+    }))
+    self.infoScroll:addElement(Button("Stats", coreButtonConfig, {
+        id = 2,
+        disabled = self.state.info.selected == 2,
+        callback = infoCallback
+    }))
+    self.infoScroll:addElement(Button("Log", coreButtonConfig, {
+        id = 3,
+        disabled = self.state.info.selected == 3,
+        callback = infoCallback
+    }))
+    self.healthSection = Element("Health Section")
+    self.statsSection = Element("Stats Section")
+    self.logSection = Element("Log Section")
 end
 
 function StatusWindow:regenEquip()

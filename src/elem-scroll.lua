@@ -3,9 +3,9 @@ local ScrollClass = inheritsFrom(Element)
 
 function ScrollClass:init(...)
     Element.init(self, ...)
-    self.scrollBarWidth = 8
     self.scrollY = 0
-    self.scrollBarHeight = 32
+    self.scrollBarWidth = self.scrollBarWidth or 8
+    self.scrollBarHeight = self.scrollBarHeight or 32
 end
 
 function ScrollClass:addElement(elem)
@@ -14,7 +14,7 @@ function ScrollClass:addElement(elem)
         local last = self.elements[size]
         elem.y = last.y + last.height
     end
-    local width = elem.width - self.scrollBarWidth
+    local width = elem.width - (self.scrollBarWidth or 8)
     elem.width = width
     elem.maxWidth = width
     Element.addElement(self, elem)

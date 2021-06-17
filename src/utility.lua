@@ -231,3 +231,15 @@ function _G.polyPoint(vertices, px, py)
     end
     return collision
 end
+
+function _G.findFirstIndexOf(array, predicate)
+    if not predicate or not array then
+        return -1
+    end
+    for i, v in ipairs(array) do
+        if predicate(v, i, array) then
+            return i
+        end
+    end
+    return 0
+end

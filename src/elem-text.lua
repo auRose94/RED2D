@@ -1,13 +1,12 @@
 local ElementClass = require ".src.element"
 local guiStyle = require ".src.gui-style"
-local Button = inheritsFrom(ElementClass)
+local TextElement = inheritsFrom(ElementClass)
 
 local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
 
-function Button:init(...)
+function TextElement:init(...)
     ElementClass.init(self, ...)
     local text = self.text or ""
-
     self.lineWidth = self.lineWidth or 0.5
     self.textSize = self.textSize or 16
     self.fontScale = self.fontScale or 0.5
@@ -17,21 +16,14 @@ function Button:init(...)
     self.maxWidth = self.maxWidth or 500
     self.maxHeight = self.maxHeight or self.textSize
     self.disabled = self.disabled or false
-
-    self.defaultColor = self.defaultColor or colors.red
-    self.pressColor = self.pressColor or colors.darkPink
-    self.hoverColor = self.hoverColor or colors.orange
-    self.disabledColor = self.disabledColor or colors.pansy
-
     self.defaultTextColor = self.defaultTextColor or colors.white
     self.pressTextColor = self.pressTextColor or colors.black
     self.hoverTextColor = self.hoverTextColor or colors.white
-    self.disabledTextColor = self.disabledTextColor or colors.white
-
+    self.disabledTextColor = self.disabledTextColor or colors.gray
     self:updateText(text)
 end
 
-function Button:updateText(text)
+function TextElement:updateText(text)
     self.text = text
     local font = self.font or buttonFont
     local textSize = font:getLineHeight()
@@ -42,7 +34,7 @@ function Button:updateText(text)
     self.textObj = love.graphics.newText(font, text)
 end
 
-function Button:draw()
+function TextElement:draw()
     if not self.hide then
         local fontScale = self.fontScale
         local x, y = self.x, self.y
@@ -68,35 +60,26 @@ function Button:draw()
         local textX, textY = x + (width - (textWidth * fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
 
         local textColor = self.defaultTextColor
-        local bgColor = self.defaultColor
         if not self.disabled then
             if self:mouseInside() then
                 if mdown then
                     textColor = self.pressTextColor
-                    bgColor = self.pressColor
                     if not self.lastDown and type(self.callback) == "function" then
                         self:callback()
                     end
                 else
                     textColor = self.hoverTextColor
-                    bgColor = self.hoverColor
                 end
             end
             self.lastDown = mdown
         else
-            bgColor = self.disabledColor
             textColor = self.disabledTextColor
         end
 
-        love.graphics.setColor(bgColor)
-        love.graphics.rectangle("fill", x, y, width, height)
-        love.graphics.setColor(colors.white)
-        love.graphics.setLineWidth(self.lineWidth)
-        love.graphics.rectangle("line", x, y, width, height)
         love.graphics.setColor(textColor)
         love.graphics.draw(textObj, textX, textY, 0, self.fontScale, self.fontScale)
 
     end
 end
 
-return Button
+return TextElement

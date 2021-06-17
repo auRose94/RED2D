@@ -74,7 +74,7 @@ function WindowClass:handleUI()
     local mx, my = love.mouse.getPosition()
     local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
     local mdown = love.mouse.isDown(1)
-    if self:mouseInsideRect(self.x, self.y, self.width, self.textSize) then
+    if self:mouseInsideRect(self.x, self.y, self.width, self.textSize * self.fontScale) then
         if mdown and not self.lastDown then
             self.ox = self.x - wmx
             self.oy = self.y - wmy
