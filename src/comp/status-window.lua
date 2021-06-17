@@ -33,7 +33,6 @@ function StatusWindow:init(parent)
         }
     }
     local window = WindowClass(self.parent, {
-        parent = self.parent,
         width = 274,
         height = 125,
         x = -295,
@@ -42,23 +41,23 @@ function StatusWindow:init(parent)
     })
     self.window = window
     self.scrollWidth = self.window.width / 2
-    self.scrollHeight = 16 * 6
+    self.scrollHeight = self.window.height - 24
 
     self:createOptionsBar()
 
     self:createInfoSection()
     self:createItemSection()
-    self:createEquipSection()
     self:createQuestSection()
 
+    self:createItemSelectedSection()
+
     self:regenQuest()
-    self:regenEquip()
     self:regenItems()
     self:regenInfo()
 end
 
 function StatusWindow:createOptionsBar()
-    local inc = self.window.width / 4
+    local inc = self.window.width / 3
     self.infoButton = Button("Info", {
         x = inc * 0,
         width = inc,
@@ -75,24 +74,14 @@ function StatusWindow:createOptionsBar()
         callback = function()
             self:changeTab(2)
             self:regenItems()
-
         end
     })
-    self.equipButton = Button("Equip", {
+    self.questButton = Button("Quests", {
         x = inc * 2,
         width = inc,
         disabled = self.state.selected == 3,
         callback = function()
             self:changeTab(3)
-            self:regenEquip()
-        end
-    })
-    self.questButton = Button("Quests", {
-        x = inc * 3,
-        width = inc,
-        disabled = self.state.selected == 4,
-        callback = function()
-            self:changeTab(4)
             self:regenQuest()
         end
     })
@@ -114,15 +103,12 @@ function StatusWindow:changeTab(tab)
     self.state.selected = tab
     self.infoSection.hide = true
     self.itemSection.hide = true
-    self.equipSection.hide = true
     self.questSection.hide = true
     if tab == 1 then
         self.infoSection.hide = false
     elseif tab == 2 then
         self.itemSection.hide = false
     elseif tab == 3 then
-        self.equipSection.hide = false
-    elseif tab == 4 then
         self.questSection.hide = false
     end
 end
@@ -138,7 +124,7 @@ end
 function StatusWindow:getSectionConfig()
     return {
         width = self.window.width,
-        height = self.window.height - 32
+        height = self.window.height - 24
     }
 end
 
@@ -147,11 +133,11 @@ function StatusWindow:updateEverything()
 
     self:createInfoSection()
     self:createItemSection()
-    self:createEquipSection()
     self:createQuestSection()
 
+    self:createItemSelectedSection()
+
     self:regenQuest()
-    self:regenEquip()
     self:regenItems()
     self:regenInfo()
 end
@@ -176,23 +162,31 @@ function StatusWindow:createItemSection()
     self.window:addElement(self.itemSection)
 end
 
-function StatusWindow:createEquipSection()
-    self.equipScroll = Scroll(self:getScrollConfig())
-
-    self.equipSection = Element(self.equipScroll, self:getSectionConfig(), {
-        hide = self.state.selected == 2
-    })
-    self.window:addElement(self.equipSection)
-end
-
 function StatusWindow:createQuestSection()
 
     self.questScroll = Scroll(self:getScrollConfig())
 
     self.questSection = Element(self.questScroll, self:getSectionConfig(), {
-        hide = self.state.selected == 3
+        hide = self.state.selected == 2
     })
     self.window:addElement(self.questSection)
+end
+
+function StatusWindow:createItemSelectedSection()
+
+    local buttonConfig = {
+        width = self.scrollWidth,
+        x = 0
+    }
+    self.selectScroll = Scroll(self:getScrollConfig(), Button("Equip", buttonConfig), Button("Drop", buttonConfig))
+
+    self.selectSection = Element(self.selectScroll, self:getSectionConfig(), {
+        width = self.scrollWidth,
+        hide = self.state.inventory.selected == 0,
+        x = self.scrollWidth
+    })
+
+    self.itemSection:addElement(self.selectSection)
 end
 
 function StatusWindow:onPickUp(item)
@@ -201,6 +195,7 @@ function StatusWindow:onPickUp(item)
         return vItem == item
     end)
     self.state.inventory.selected = id
+    self:regenItems()
 end
 
 function StatusWindow:regenItems()
@@ -270,10 +265,6 @@ function StatusWindow:regenInfo()
     self.healthSection = Element("Health Section")
     self.statsSection = Element("Stats Section")
     self.logSection = Element("Log Section")
-end
-
-function StatusWindow:regenEquip()
-    self.equipScroll.elements = {}
 end
 
 function StatusWindow:regenQuest()

@@ -92,8 +92,7 @@ function WindowClass:handleUI()
     love.graphics.translate(self.x, self.y + 8)
     local x1, y1 = love.graphics.transformPoint(self.x, self.y)
     local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
-    local width, height = x2 - x1, y2 - y1
-    local sw, sh = love.graphics.getDimensions()
+    local width, height = math.abs(x2 - x1), math.abs(y2 - y1)
 
     for _, elem in ipairs(self.elements) do
         if elem and not elem.hide and type(elem.draw) == "function" then

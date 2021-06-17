@@ -215,17 +215,18 @@ end
 
 function ElementClass:draw()
     if not self.hide then
-        local iw, ih = self:getInnerSize()
         local x1, y1 = love.graphics.transformPoint(self.x, self.y)
         local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
         local width, height = x2 - x1, y2 - y1
-        local sw, sh = love.graphics.getDimensions()
+
+        self.transform = love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx,
+            self.ky)
         love.graphics.setScissor(x1, y1, width, height)
         love.graphics.push()
 
         for _, elem in ipairs(self.elements) do
             if elem and not elem.hide and type(elem.draw) == "function" then
-                love.graphics.applyTransform(self:getTransform())
+                love.graphics.applyTransform(self.transform)
                 elem:draw()
             end
         end
