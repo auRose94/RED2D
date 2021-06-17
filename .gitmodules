@@ -1,9 +1,3 @@
-[submodule "3rdParty/love-imgui"]
-	path = 3rdParty/love-imgui
-	url = git@github.com:CoryNull/love-imgui.git
-[submodule "xml2lua"]
-	path = xml2lua
-	url = https://github.com/manoelcampos/xml2lua.git
 [submodule "3rdParty/xml2lua"]
 	path = 3rdParty/xml2lua
 	url = https://github.com/manoelcampos/xml2lua.git
