@@ -17,8 +17,8 @@ function WindowClass:init(parent, ...)
     self.textSize = self.textSize or 16
     self.fontScale = self.fontScale or 0.5
     self.elements = {}
-    self.ox = 0
-    self.oy = 0
+    self.offx = 0
+    self.offy = 0
     self:updateText(self.title)
 end
 
@@ -76,17 +76,17 @@ function WindowClass:handleUI()
     local mdown = love.mouse.isDown(1)
     if self:mouseInsideRect(self.x, self.y, self.width, self.textSize * self.fontScale) then
         if mdown and not self.lastDown then
-            self.ox = self.x - wmx
-            self.oy = self.y - wmy
+            self.offx = self.x - wmx
+            self.offy = self.y - wmy
         end
     end
     if self.lastDown and not mdown then
-        self.ox = 0
-        self.oy = 0
+        self.offx = 0
+        self.offy = 0
     end
-    if mdown and self.lastDown and (self.ox ~= 0 or self.oy ~= 0) then
-        self.x = self.ox + wmx
-        self.y = self.oy + wmy
+    if mdown and self.lastDown and (self.offx ~= 0 or self.offy ~= 0) then
+        self.x = self.offx + wmx
+        self.y = self.offy + wmy
     end
     self.lastDown = mdown
     love.graphics.translate(self.x, self.y + 8)

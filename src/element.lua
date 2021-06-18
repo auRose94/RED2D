@@ -216,7 +216,7 @@ end
 function ElementClass:draw()
     if not self.hide then
         local x1, y1 = love.graphics.transformPoint(self.x, self.y)
-        local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
+        local x2, y2 = love.graphics.transformPoint(self.x + self.width + 1, self.y + self.height + 1)
         local width, height = x2 - x1, y2 - y1
 
         self.transform = love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx,

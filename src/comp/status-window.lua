@@ -3,6 +3,7 @@ local InventoryClass = require ".src.comp.inventory"
 local ComponentClass = require ".src.component"
 local Element = require ".src.element"
 local Button = require ".src.elem-button"
+local Text = require ".src.elem-text"
 local Scroll = require ".src.elem-scroll"
 local WindowClass = require ".src.gui-window"
 local StatusWindow = inheritsFrom(ComponentClass)
@@ -178,7 +179,13 @@ function StatusWindow:createItemSelectedSection()
         width = self.scrollWidth,
         x = 0
     }
-    self.selectScroll = Scroll(self:getScrollConfig(), Button("Equip", buttonConfig), Button("Drop", buttonConfig))
+
+    self.equipButton = Button("Equip", buttonConfig)
+    self.dropButton = Button("Drop", buttonConfig)
+    self.itemDescription = Text("Item Description", {
+        maxWidth = 262
+    })
+    self.selectScroll = Scroll(self:getScrollConfig(), self.equipButton, self.dropButton, self.itemDescription)
 
     self.selectSection = Element(self.selectScroll, self:getSectionConfig(), {
         width = self.scrollWidth,
@@ -195,11 +202,12 @@ function StatusWindow:onPickUp(item)
         return vItem == item
     end)
     self.state.inventory.selected = id
+    self.itemDescription:updateText(item.description)
     self:regenItems()
 end
 
 function StatusWindow:regenItems()
-    self.itemScroll.elements = {}
+    self.itemScroll:clearElements()
     local width = self.window.width / 2
     for i, v in ipairs(self.inventory.items) do
         local count, item = unpack(v)
@@ -215,6 +223,8 @@ function StatusWindow:regenItems()
             end
             button.disabled = true
             self.state.inventory.selected = button.id
+            self.itemDescription:updateText(button.item.description)
+            self.selectScroll.scrollY = 0
         end
 
         local elem = Button(name, {
@@ -232,7 +242,7 @@ function StatusWindow:regenItems()
 end
 
 function StatusWindow:regenInfo()
-    self.infoScroll.elements = {}
+    self.infoScroll:clearElements()
     local width = self.window.width / 2
     local coreButtonConfig = {
         fontScale = 0.35,
@@ -268,7 +278,7 @@ function StatusWindow:regenInfo()
 end
 
 function StatusWindow:regenQuest()
-    self.questScroll.elements = {}
+    self.questScroll:clearElements()
 end
 
 function StatusWindow:toggleWindow()

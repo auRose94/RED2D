@@ -7,6 +7,7 @@ local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType
 function TextElement:init(...)
     ElementClass.init(self, ...)
     local text = self.text or ""
+
     self.lineWidth = self.lineWidth or 0.5
     self.textSize = self.textSize or 16
     self.fontScale = self.fontScale or 0.5
@@ -16,10 +17,12 @@ function TextElement:init(...)
     self.maxWidth = self.maxWidth or 500
     self.maxHeight = self.maxHeight or self.textSize
     self.disabled = self.disabled or false
+
     self.defaultTextColor = self.defaultTextColor or colors.white
     self.pressTextColor = self.pressTextColor or colors.black
     self.hoverTextColor = self.hoverTextColor or colors.white
-    self.disabledTextColor = self.disabledTextColor or colors.gray
+    self.disabledTextColor = self.disabledTextColor or colors.white
+
     self:updateText(text)
 end
 
@@ -31,7 +34,9 @@ function TextElement:updateText(text)
         font = love.graphics.newFont(guiStyle.fontPath, self.textSize, guiStyle.fontType)
         self.font = font
     end
-    self.textObj = love.graphics.newText(font, text)
+    self.textObj = love.graphics.newText(font)
+    self.textObj:addf(text, self.maxWidth, "left")
+    self.width, self.height = self.textObj:getDimensions()
 end
 
 function TextElement:draw()
@@ -40,15 +45,8 @@ function TextElement:draw()
         local x, y = self.x, self.y
         local textObj = self.textObj
         local width, height = self.width, self.height
-        local tW, tH = textObj:getDimensions()
         local mdown = love.mouse.isDown(1)
 
-        if tW > width then
-            width = tW
-        end
-        if tH > height then
-            height = tH
-        end
         if self.maxWidth < width then
             width = self.maxWidth
         end
@@ -57,14 +55,14 @@ function TextElement:draw()
         end
 
         local textWidth, textHeight = textObj:getDimensions()
-        local textX, textY = x + (width - (textWidth * fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2
+        local textX, textY = x, y
 
         local textColor = self.defaultTextColor
         if not self.disabled then
-            if self:mouseInside() then
+            if type(self.callback) == "function" and self:mouseInside() then
                 if mdown then
                     textColor = self.pressTextColor
-                    if not self.lastDown and type(self.callback) == "function" then
+                    if not self.lastDown then
                         self:callback()
                     end
                 else
