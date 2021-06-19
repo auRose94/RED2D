@@ -206,16 +206,11 @@ function BodyComponent:setHeadMount(x, y)
     self.headEntity:setPosition(self.headMountX, self.headMountY)
 end
 
-function BodyComponent:getAim(invertY, aimOffsetX, aimOffsetY)
-    aimOffsetX = aimOffsetX or 0
-    aimOffsetY = aimOffsetY or 0
+function BodyComponent:getAim(invertY)
     local ax, ay = self.aimX, self.aimY
     if self.getAimNormal then
         ax, ay = self:getAimNormal(invertY)
     end
-    local ux, uy = self:inverseTransformNormal(0, 1)
-    local x, y = self:inverseTransformPoint(-aimOffsetX, -aimOffsetY)
-    local nx, ny = self:inverseTransformNormal(ax, ay)
     local angle = math.angle2(1, 0, ax, ay)
     return angle
 end
