@@ -242,8 +242,8 @@ function EntityClass:removeComponent(compOrTypeOrIndex)
             end
         end
     end
-    if found then
-        value:destroy()
+    if found and value then
+        -- value:destroy()
         value.parent = nil
         table.remove(self.components, found)
         return value
@@ -273,8 +273,8 @@ function EntityClass:removeChild(child)
             break
         end
     end
-    if found then
-        value:destroy()
+    if found and value then
+        -- value:destroy()
         value.parent = nil
         table.remove(self.children, found)
         return value

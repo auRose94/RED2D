@@ -213,8 +213,10 @@ function BodyComponent:getAim(invertY, aimOffsetX, aimOffsetY)
     if self.getAimNormal then
         ax, ay = self:getAimNormal(invertY)
     end
-    local angle = math.angle(aimOffsetX, aimOffsetY, ax, ay)
-
+    local ux, uy = self:inverseTransformNormal(0, 1)
+    local x, y = self:inverseTransformPoint(-aimOffsetX, -aimOffsetY)
+    local nx, ny = self:inverseTransformNormal(ax, ay)
+    local angle = math.angle2(1, 0, ax, ay)
     return angle
 end
 

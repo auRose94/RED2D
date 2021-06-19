@@ -82,7 +82,7 @@ function InventoryClass:drop(item, number)
     local found = self:findIndex(item)
     if found then
         local count = math.max(1, math.min(self.items[found][1], number))
-        local dx, dy = self.entity:getPosition()
+        local dx, dy = self:getPosition()
         local dropEntity = EntityClass(level, item.name, dx, dy)
         local dropped = item:class()(dropEntity, item.typeName)
         dropped.count = number

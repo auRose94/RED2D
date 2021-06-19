@@ -86,24 +86,16 @@ function WeaponClass:isEquipped()
     return self.entity and self.entity.weapons[self.handIndex] == self
 end
 
-function WeaponClass:canInteract()
-    return false
-end
-
-function WeaponClass:canEquip()
-    return not self:isEquipped()
-end
-
 function WeaponClass:getTypeName()
     return self.weaponType.name or "Undefined"
 end
 
 function WeaponClass:primary()
-    assert("You need to override this method")
+    assert(true, "You need to override this method")
 end
 
 function WeaponClass:secondary()
-    assert("You need to override this method")
+    assert(true, "You need to override this method")
 end
 
 function WeaponClass:update(dt)

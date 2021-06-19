@@ -3,9 +3,9 @@ ItemImage:setFilter("linear", "nearest")
 
 local ItemTypes = {
     ammo_9mm = {
+        type = "ammo",
         name = "9mm bullet",
-        description = "" .. "Standard 9mm bullet modified to be safe for use in space... " ..
-            "but definitely not safe for most lifeforms. Used in handguns and " .. "some hunting rifles.",
+        description = "Standard 9mm bullet modified to be safe for use in space... but definitely not safe for most lifeforms. Used in handguns and some hunting rifles.",
         rect = {34, 131, 29, 23},
         image = ItemImage,
         price = 5,
@@ -17,10 +17,9 @@ local ItemTypes = {
         end
     },
     ammo_45mm = {
+        type = "ammo",
         name = "45mm bullet",
-        description = "" .. "The heavy modified 45mm bullet is capable of more knockback with less " ..
-            "damage done to the internal structures of space crafts and while " ..
-            "still being very light. Used in hand guns and most sub machines guns.",
+        description = "The heavy modified 45mm bullet is capable of more knockback with less damage done to the internal structures of space crafts and while still being very light. Used in hand guns and most sub machines guns.",
         rect = {1, 155, 31, 23},
         image = ItemImage,
         price = 7.5,
@@ -32,9 +31,9 @@ local ItemTypes = {
         end
     },
     ammo_556mm = {
+        type = "ammo",
         name = "5.56×45mm bullet",
-        description = "" .. "A rifle bullet designed for penetration and range... " ..
-            "Made slightly less penetrative for use in space.",
+        description = "A rifle bullet designed for penetration and range...  Made slightly less penetrative for use in space.",
         rect = {1, 131, 31, 23},
         image = ItemImage,
         price = 10,
@@ -46,9 +45,9 @@ local ItemTypes = {
         end
     },
     ammo_buck = {
+        type = "ammo",
         name = "Buck shotgun round",
-        description = "" .. "You won't find any long horn buck to shoot in space. " ..
-            "You can still buck someone into a long orbit with this however.",
+        description = "You won't find any long horn buck to shoot in space.  You can still buck someone into a long orbit with this however.",
         rect = {33, 155, 31, 23},
         image = ItemImage,
         price = 6,
@@ -60,10 +59,9 @@ local ItemTypes = {
         end
     },
     ammo_launcher_grenade = {
+        type = "ammo",
         name = "Grenade launcher explosive",
-        description = "" .. "Let's hope the space station can deal with the explosives. " ..
-            "These explosives have enough power to kill most organic life... " ..
-            "More ammo is recommended for synthetics and bioengineered lifeforms.",
+        description = "Let's hope the space station can deal with the explosives. These explosives have enough power to kill most organic life...  More ammo is recommended for synthetics and bioengineered  lifeforms.",
         rect = {66, 131, 31, 19},
         image = ItemImage,
         price = 100,
@@ -75,9 +73,9 @@ local ItemTypes = {
         end
     },
     healthkit = {
+        type = "consumable",
         name = "Healthkit",
-        description = "" .. "It heals only humanoids and some organic life forms." .. "It will not heal a robot... " ..
-            "no matter how much it believes to be human.",
+        description = "It heals only humanoids and some organic life forms. It will not heal a robot...  no matter how much it believes to be human.",
         rect = {66, 90, 34, 39},
         image = ItemImage,
         weight = 10,
@@ -89,9 +87,9 @@ local ItemTypes = {
         end
     },
     full_repairkit = {
+        type = "consumable",
         name = "Repairkit",
-        description = "" .. 'It "heals" only robots to a more refurbished status. ' ..
-            "Intended exclusively for robots." .. "While the kit can do amputations, it's not recommended.",
+        description = "It \"heals\" only robots to a more refurbished status.  Intended exclusively for robots. While the kit can do amputations, it's not recommended.",
         rect = {1, 72, 52, 28},
         image = ItemImage,
         weight = 50,
@@ -103,9 +101,9 @@ local ItemTypes = {
         end
     },
     half_repairkit = {
+        type = "consumable",
         name = "Reduced repairkit",
-        description = "" .. 'It "heals" only robots to a more modest status. ' ..
-            "This kit is missing tools to do a full service.",
+        description = "It \"heals\" only robots to a more modest status. This kit is missing tools to do a full service.",
         rect = {1, 101, 52, 28},
         image = ItemImage,
         weight = 25,
@@ -118,10 +116,9 @@ local ItemTypes = {
     },
     -- Weapons
     ["9mm_handgun"] = {
+        type = "weapon",
         name = "9mm handgun",
-        description = "" .. "This shoots bullets with a 9mm caliber electronically. " ..
-            "The bullet is fired without a firing pin, " .. "instead uses high powered miniature lasers or capacitors " ..
-            "to heat the caps. It can also send tweets and notify next" .. " of kin... or it's just a gun with an LED.",
+        description = "This shoots bullets with a 9mm caliber electronically.   The bullet is fired without a firing pin, instead uses high powered miniature lasers or capacitors to heat the caps. It can also send tweets and notify next of kin... or it's just a gun with an LED.",
         rect = {1, 26, 29, 18},
         frames = {{1, 26, 29, 18}, {1, 46, 29, 18}},
         typeID = "ballistic",

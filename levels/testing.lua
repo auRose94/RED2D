@@ -34,7 +34,7 @@ function level:init()
     self:newItem("ammo_45mm_1", "ammo_45mm", 29, 19)
     self:newItem("ammo_556mm_1", "ammo_556mm", 31, 19)
 
-    self:newItem("9mmHandgun_01", "9mm_handgun", 30, 19)
+    self:newWeapon("9mmHandgun_01", "9mm_handgun", 30, 19)
 
     camera.followTarget = playerEntity
 end

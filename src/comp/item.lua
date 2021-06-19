@@ -1,6 +1,6 @@
 local ComponentClass = require ".src.component"
 local PhysicsComponent = require ".src.comp.physics"
-local LoadedItems = require ".src.defaultItemTypes"
+local LoadedItems = require ".src.defaultItems"
 local guiStyle = require ".src.gui-style"
 -- local imgui = require".src.imgui"
 local ItemClass = inheritsFrom(ComponentClass)
@@ -46,6 +46,7 @@ function ItemClass:init(parent, data, ...)
     assert(data.shape ~= nil)
 
     self.name = data.name or ""
+    self.type = data.type or nil
     self.description = data.description or ""
     self.image = data.image or love.graphics.newImage("assets/Items.png")
     self:setRect(data.rect)
@@ -88,12 +89,24 @@ function ItemClass:drawStats()
 end
 ]]
 
+function ItemClass:isWeapon()
+    return self.type == "weapon"
+end
+
+function ItemClass:isArmor()
+    return self.type == "armor"
+end
+
+function ItemClass:isConsumable()
+    return self.type == "armor"
+end
+
 function ItemClass:canInteract()
-    return type(self.use) == "function"
+    return self:isConsumable()
 end
 
 function ItemClass:canEquip()
-    return type(self.equip) == "function"
+    return self:isWeapon() or self:isArmor()
 end
 
 function ItemClass:canDrop()

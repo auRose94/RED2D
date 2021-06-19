@@ -173,6 +173,22 @@ function StatusWindow:createQuestSection()
     self.window:addElement(self.questSection)
 end
 
+function StatusWindow:selectItem(index)
+    if type(index) == "object" then
+        index = findFirstIndexOf(self.inventory.items, function(v, i)
+            local count, vItem = unpack(v)
+            return vItem == index
+        end)
+    end
+    index = math.min(math.max(1, index), #self.inventory.items + 1)
+    local count, item = unpack(self.inventory.items[index])
+    self.state.inventory.selected = index
+    self.itemDescription:updateText(item.description)
+    self.useButton.disabled = not item:canInteract()
+    self.equipButton.disabled = not item:canEquip()
+    self.dropButton.disabled = not item:canDrop()
+end
+
 function StatusWindow:createItemSelectedSection()
 
     local buttonConfig = {
@@ -180,12 +196,47 @@ function StatusWindow:createItemSelectedSection()
         x = 0
     }
 
-    self.equipButton = Button("Equip", buttonConfig)
-    self.dropButton = Button("Drop", buttonConfig)
+    self.useButton = Button("Use", buttonConfig, {
+        callback = function()
+            local pair = self.inventory.items[self.state.inventory.selected]
+            if (pair) then
+                local count, item = unpack(pair)
+                if item:canInteract() then
+                    item:use(self.player)
+                    self:regenItems()
+                end
+            end
+        end
+    })
+    self.equipButton = Button("Equip", buttonConfig, {
+        callback = function()
+            local pair = self.inventory.items[self.state.inventory.selected]
+            if pair then
+                local count, item = unpack(pair)
+                if item:canEquip() then
+                    item:equip(self.player)
+                end
+            end
+        end
+    })
+    self.dropButton = Button("Drop", buttonConfig, {
+        callback = function()
+            local pair = self.inventory.items[self.state.inventory.selected]
+            if (pair) then
+                local count, item = unpack(pair)
+                if item:canDrop() then
+                    self:selectItem(self.state.inventory.selected - 1)
+                    self.inventory:drop(item, count)
+                    self:regenItems()
+                end
+            end
+        end
+    })
     self.itemDescription = Text("Item Description", {
         maxWidth = 262
     })
-    self.selectScroll = Scroll(self:getScrollConfig(), self.equipButton, self.dropButton, self.itemDescription)
+    self.selectScroll = Scroll(self:getScrollConfig(), self.useButton, self.equipButton, self.dropButton,
+        self.itemDescription)
 
     self.selectSection = Element(self.selectScroll, self:getSectionConfig(), {
         width = self.scrollWidth,
@@ -201,8 +252,7 @@ function StatusWindow:onPickUp(item)
         local count, vItem = unpack(v)
         return vItem == item
     end)
-    self.state.inventory.selected = id
-    self.itemDescription:updateText(item.description)
+    self:selectItem(id)
     self:regenItems()
 end
 
@@ -222,7 +272,7 @@ function StatusWindow:regenItems()
                 last.disabled = false
             end
             button.disabled = true
-            self.state.inventory.selected = button.id
+            self:selectItem(button.id)
             self.itemDescription:updateText(button.item.description)
             self.selectScroll.scrollY = 0
         end

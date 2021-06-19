@@ -1,5 +1,6 @@
 local CameraClass = require ".src.camera"
 local ItemClass = require ".src.comp.item"
+local WeaponClass = require ".src.comp.weapon"
 local EntityClass = require ".src.entity"
 local LevelClass = inheritsFrom(nil)
 
@@ -24,6 +25,13 @@ end
 function LevelClass:newItem(name, type, x, y)
     if self.tilemap then
         return ItemClass(EntityClass(self, name, self.tilemap:getOffset(x, y)), type)
+    end
+    return nil
+end
+
+function LevelClass:newWeapon(name, type, x, y)
+    if self.tilemap then
+        return WeaponClass(EntityClass(self, name, self.tilemap:getOffset(x, y)), type)
     end
     return nil
 end
