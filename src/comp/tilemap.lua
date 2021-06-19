@@ -51,13 +51,22 @@ function TileMapClass:getStarPoint(x, y)
 end
 
 function TileMapClass:calcPath(sx, sy, ex, ey)
-    local dijkstra = ROT.Path.Dijkstra(sx, sy, function(x, y)
-        self:getStarPoint(x, y)
-    end)
+    local dijkstra =
+        ROT.Path.Dijkstra(
+        sx,
+        sy,
+        function(x, y)
+            self:getStarPoint(x, y)
+        end
+    )
     local path = {}
-    dijkstra:compute(ex, ey, function(x, y)
-        table.insert(path, {x, y})
-    end)
+    dijkstra:compute(
+        ex,
+        ey,
+        function(x, y)
+            table.insert(path, {x, y})
+        end
+    )
     return path
 end
 
@@ -249,7 +258,6 @@ function TileMapClass:draw(batch)
             end
         end
     end
-
 end
 
 return TileMapClass

@@ -22,8 +22,16 @@ module.right = {
     faceblushing = NewQuad(0, 60),
     facebroken = NewQuad(17, 60),
     eyes = {
-        rotations = {NewQuad(0, 0, 1), NewQuad(17, 0, 1), NewQuad(34, 0, 1), NewQuad(51, 0, 1), NewQuad(68, 0, 1),
-                     NewQuad(85, 0, 1), NewQuad(102, 0, 1), NewQuad(0, 20, 1)},
+        rotations = {
+            NewQuad(0, 0, 1),
+            NewQuad(17, 0, 1),
+            NewQuad(34, 0, 1),
+            NewQuad(51, 0, 1),
+            NewQuad(68, 0, 1),
+            NewQuad(85, 0, 1),
+            NewQuad(102, 0, 1),
+            NewQuad(0, 20, 1)
+        },
         dead = NewQuad(17, 20, 1),
         happy = NewQuad(34, 20, 1),
         heart = NewQuad(51, 20, 1),
@@ -45,8 +53,16 @@ module.left = {
     faceblushing = NewQuad(0, 70),
     facebroken = NewQuad(17, 70),
     eyes = {
-        rotations = {NewQuad(0, 10, 1), NewQuad(17, 10, 1), NewQuad(34, 10, 1), NewQuad(51, 10, 1), NewQuad(68, 10, 1),
-                     NewQuad(85, 10, 1), NewQuad(102, 10, 1), NewQuad(0, 30, 1)},
+        rotations = {
+            NewQuad(0, 10, 1),
+            NewQuad(17, 10, 1),
+            NewQuad(34, 10, 1),
+            NewQuad(51, 10, 1),
+            NewQuad(68, 10, 1),
+            NewQuad(85, 10, 1),
+            NewQuad(102, 10, 1),
+            NewQuad(0, 30, 1)
+        },
         dead = NewQuad(17, 30, 1),
         happy = NewQuad(34, 30, 1),
         heart = NewQuad(51, 30, 1),

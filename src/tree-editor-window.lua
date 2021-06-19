@@ -131,5 +131,4 @@ function module.draw(level)
 	return state
 end
 ]]
-
 return module

@@ -24,7 +24,6 @@ function Human:init(parent, data, ...)
 end
 
 function Human:draw()
-
 end
 
 return Human

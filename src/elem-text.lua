@@ -76,7 +76,6 @@ function TextElement:draw()
 
         love.graphics.setColor(textColor)
         love.graphics.draw(textObj, textX, textY, 0, self.fontScale, self.fontScale)
-
     end
 end
 

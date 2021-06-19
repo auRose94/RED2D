@@ -95,7 +95,6 @@ function Button:draw()
         love.graphics.rectangle("line", x, y, width, height)
         love.graphics.setColor(textColor)
         love.graphics.draw(textObj, textX, textY, 0, self.fontScale, self.fontScale)
-
     end
 end
 

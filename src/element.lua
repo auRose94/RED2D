@@ -2,7 +2,7 @@ local ElementClass = inheritsFrom(nil)
 
 function ElementClass:init(...)
     self.elements = {}
-    for i = 1, select('#', ...) do
+    for i = 1, select("#", ...) do
         local value = select(i, ...)
         local tValue = type(value)
         if tValue == "table" then
@@ -27,8 +27,8 @@ function ElementClass:init(...)
     self.oy = self.oy or 0
     self.kx = self.kx or 0
     self.ky = self.ky or 0
-    self.transform = love.math
-                         .newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
+    self.transform =
+        love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
     self.width = self.width or 0
     self.height = self.height or 0
     self.hide = self.hide or false
@@ -148,8 +148,8 @@ function ElementClass:getOrigin()
 end
 
 function ElementClass:getTransform()
-    self.transform = love.math
-                         .newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
+    self.transform =
+        love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
     if self.parent then
         return self.parent:getTransform() * self.transform
     end
@@ -219,8 +219,8 @@ function ElementClass:draw()
         local x2, y2 = love.graphics.transformPoint(self.x + self.width + 1, self.y + self.height + 1)
         local width, height = math.abs(x2 - x1), math.abs(y2 - y1)
 
-        self.transform = love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx,
-            self.ky)
+        self.transform =
+            love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
         love.graphics.setScissor(x1, y1, width, height)
         love.graphics.push()
 

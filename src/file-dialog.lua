@@ -141,5 +141,4 @@ function FileDialog:draw()
 	return state
 end
 ]]
-
 return FileDialog

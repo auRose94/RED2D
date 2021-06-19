@@ -2,10 +2,10 @@ local module = {}
 
 function StandardEdgesRect(x, y)
 	return {
-		{ x + -32, y + -32, x + -32, y + 32 },
-		{ x + -32, y + 32, x + 32, y + 32 },
-		{ x + 32, y + 32, x + 32, y + -32 },
-		{ x + 32, y + -32, x + -32, y + -32 }
+		{x + -32, y + -32, x + -32, y + 32},
+		{x + -32, y + 32, x + 32, y + 32},
+		{x + 32, y + 32, x + 32, y + -32},
+		{x + 32, y + -32, x + -32, y + -32}
 	}
 end
 
@@ -37,30 +37,28 @@ end
 
 function SlopedSurfaceEdge(x, y, angle)
 	local transform = love.math.newTransform(x, y, angle, 1, 1)
-	local points = TransformPoints(
+	local points =
+		TransformPoints(
 		transform,
 		{
-			{ 32, 32 }, -- Edge 1
-			{ 32, -32 },
-			{ 32, -32 }, -- Edge 2
-			{ -32, -32 },
-			{ -32, -32 }, -- Edge 3
-			{ 32, 32 }
+			{32, 32}, -- Edge 1
+			{32, -32},
+			{32, -32}, -- Edge 2
+			{-32, -32},
+			{-32, -32}, -- Edge 3
+			{32, 32}
 		}
 	)
 	local edges = {}
 	for i = 1, #points, 4 do
-		table.insert(
-			edges,
-			{ points[i + 0], points[i + 1], points[i + 2], points[i + 3] }
-		)
+		table.insert(edges, {points[i + 0], points[i + 1], points[i + 2], points[i + 3]})
 	end
 	return edges
 end
 
 function SlopedSurfaceShape(x, y, angle)
 	local transform = love.math.newTransform(x, y, angle, 1, 1)
-	local points = TransformPoints(transform, { 32, 32, 32, -32, -32, -32 })
+	local points = TransformPoints(transform, {32, 32, 32, -32, -32, -32})
 	return love.physics.newPolygonShape(unpack(points))
 end
 
@@ -97,47 +95,68 @@ function SlopedSurfaceShape270(x, y)
 end
 
 function module.registerTiles(tileMap)
-	tileMap:registerTile("#FFFFFFFF", {
-		quad = love.graphics.newQuad(64, 1, 64, 64, 520, 520),
-		--edges = StandardEdgesRect,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#FFFFFFFF",
+		{
+			quad = love.graphics.newQuad(64, 1, 64, 64, 520, 520),
+			--edges = StandardEdgesRect,
+			density = 1
+		}
+	)
 
-	tileMap:registerTile("#000000FF", {
-		quad = love.graphics.newQuad(0, 1, 64, 64, 520, 520),
-		edges = StandardEdgesRect,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#000000FF",
+		{
+			quad = love.graphics.newQuad(0, 1, 64, 64, 520, 520),
+			edges = StandardEdgesRect,
+			density = 1
+		}
+	)
 
-	tileMap:registerTile("#202020FF", {
-		quad = love.graphics.newQuad(0, 65, 64, 64, 520, 520),
-		edges = StandardEdgesRect,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#202020FF",
+		{
+			quad = love.graphics.newQuad(0, 65, 64, 64, 520, 520),
+			edges = StandardEdgesRect,
+			density = 1
+		}
+	)
 
-	tileMap:registerTile("#200000FF", {
-		quad = love.graphics.newQuad(0, 196, 64, 64, 520, 520),
-		edges = SlopedSurfaceEdges180,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#200000FF",
+		{
+			quad = love.graphics.newQuad(0, 196, 64, 64, 520, 520),
+			edges = SlopedSurfaceEdges180,
+			density = 1
+		}
+	)
 
-	tileMap:registerTile("#400000FF", {
-		quad = love.graphics.newQuad(0, 131, 64, 64, 520, 520),
-		edges = SlopedSurfaceEdges90,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#400000FF",
+		{
+			quad = love.graphics.newQuad(0, 131, 64, 64, 520, 520),
+			edges = SlopedSurfaceEdges90,
+			density = 1
+		}
+	)
 
-	tileMap:registerTile("#600000FF", {
-		quad = love.graphics.newQuad(0, 326, 64, 64, 520, 520),
-		edges = SlopedSurfaceEdges0,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#600000FF",
+		{
+			quad = love.graphics.newQuad(0, 326, 64, 64, 520, 520),
+			edges = SlopedSurfaceEdges0,
+			density = 1
+		}
+	)
 
-	tileMap:registerTile("#800000FF", {
-		quad = love.graphics.newQuad(0, 261, 64, 64, 520, 520),
-		edges = SlopedSurfaceEdges270,
-		density = 1
-	})
+	tileMap:registerTile(
+		"#800000FF",
+		{
+			quad = love.graphics.newQuad(0, 261, 64, 64, 520, 520),
+			edges = SlopedSurfaceEdges270,
+			density = 1
+		}
+	)
 end
 
 return module

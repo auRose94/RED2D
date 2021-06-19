@@ -80,7 +80,6 @@ function love.draw()
 	if showPixelEditor then
 		showPixelEditor = PixelEditorWindow:draw()
 	end ]]
-
 end
 
 function love.run()
@@ -139,6 +138,5 @@ function love.run()
 
             love.graphics.present()
         end
-
     end
 end

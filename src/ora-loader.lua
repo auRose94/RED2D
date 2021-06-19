@@ -37,10 +37,13 @@ function OraLoader:load(fileName)
         if index == "stack.xml" then
             stack = entry
         elseif string.match(index, "data/") and index ~= "data/" then
-            table.insert(imageFiles, {
-                index = index,
-                entry = entry
-            })
+            table.insert(
+                imageFiles,
+                {
+                    index = index,
+                    entry = entry
+                }
+            )
         end
     end
     assert(stack, "Stack couldn't be found inside")
@@ -78,14 +81,17 @@ function OraLoader:load(fileName)
                     if fileData then
                         local imageData = love.image.newImageData(fileData)
                         if imageData then
-                            table.insert(self.layers, {
-                                name = name,
-                                x = lx,
-                                y = ly,
-                                opacity = opacity,
-                                imageData = imageData,
-                                image = love.graphics.newImage(imageData)
-                            })
+                            table.insert(
+                                self.layers,
+                                {
+                                    name = name,
+                                    x = lx,
+                                    y = ly,
+                                    opacity = opacity,
+                                    imageData = imageData,
+                                    image = love.graphics.newImage(imageData)
+                                }
+                            )
                         end
                     end
                 end

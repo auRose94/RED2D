@@ -89,7 +89,7 @@ local ItemTypes = {
     full_repairkit = {
         type = "consumable",
         name = "Repairkit",
-        description = "It \"heals\" only robots to a more refurbished status.  Intended exclusively for robots. While the kit can do amputations, it's not recommended.",
+        description = 'It "heals" only robots to a more refurbished status.  Intended exclusively for robots. While the kit can do amputations, it\'s not recommended.',
         rect = {1, 72, 52, 28},
         image = ItemImage,
         weight = 50,
@@ -103,7 +103,7 @@ local ItemTypes = {
     half_repairkit = {
         type = "consumable",
         name = "Reduced repairkit",
-        description = "It \"heals\" only robots to a more modest status. This kit is missing tools to do a full service.",
+        description = 'It "heals" only robots to a more modest status. This kit is missing tools to do a full service.',
         rect = {1, 101, 52, 28},
         image = ItemImage,
         weight = 25,
@@ -123,11 +123,12 @@ local ItemTypes = {
         frames = {{1, 26, 29, 18}, {1, 46, 29, 18}},
         typeID = "ballistic",
         crosshairType = 0,
-        crosshairFrames = {{35, 1, 3, 2}, -- Top
-        {39, 4, 2, 3}, -- Right
-        {35, 8, 3, 2}, -- Bottom
-        {32, 4, 2, 3}, -- Left
-        {35, 4, 3, 3} -- Center Hit
+        crosshairFrames = {
+            {35, 1, 3, 2}, -- Top
+            {39, 4, 2, 3}, -- Right
+            {35, 8, 3, 2}, -- Bottom
+            {32, 4, 2, 3}, -- Left
+            {35, 4, 3, 3} -- Center Hit
         },
         image = ItemImage,
         fireRate = 0.4,

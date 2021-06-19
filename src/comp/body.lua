@@ -425,6 +425,7 @@ function BodyComponent:update(dt)
     local walkingFrameStep = now - speedMultiplier
     local legsAnimation = faceTable.legs.animation
     if standing and math.abs(lvx) > 1 and math.abs(lvy) < 10 then
+        -- Walking
         if self.lastWalkingFrameUpdate <= walkingFrameStep then
             self.lastWalkingFrameUpdate = now
             self.walkingFrame = self.walkingFrame + 1
@@ -433,7 +434,6 @@ function BodyComponent:update(dt)
             end
         end
         legsRect = legsAnimation[self.walkingFrame]
-        -- Walking
     elseif standing == false and lvy < 0 then
         -- Jump pending
         legsRect = legsAnimation[5]
@@ -459,9 +459,12 @@ function BodyComponent:update(dt)
     end
     self.order = order
 
-    table.sort(self.order, function(a, b)
-        return a[1] < b[1]
-    end)
+    table.sort(
+        self.order,
+        function(a, b)
+            return a[1] < b[1]
+        end
+    )
 end
 
 function BodyComponent:draw()

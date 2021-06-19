@@ -57,14 +57,13 @@ function ScrollClass:draw()
             local max = (innerHeight - self.height) * rel
             self.scrollY = math.min(math.max((self.offy + wmy), 0), max)
             y = self.y + self.scrollY
-
         end
 
         local x1, y1 = love.graphics.transformPoint(self.x, self.y)
         local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
         local width, height = math.abs(x2 - x1), math.abs(y2 - y1)
-        self.transform = love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx,
-            self.ky)
+        self.transform =
+            love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
 
         love.graphics.setScissor(x1, y1, width, height)
         love.graphics.push()
@@ -84,7 +83,6 @@ function ScrollClass:draw()
         love.graphics.rectangle("fill", x, y, self.scrollBarWidth, self.scrollBarHeight)
 
         love.graphics.setScissor()
-
     end
 end
 

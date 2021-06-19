@@ -81,32 +81,44 @@ function CameraClass:mousePosition()
 end
 
 function CameraClass:newEntityLayer(scale, entities)
-    self:newLayer(scale, function()
-        table.sort(entities, function(a, b)
-            if a.drawOrder < b.drawOrder then
-                return true
+    self:newLayer(
+        scale,
+        function()
+            table.sort(
+                entities,
+                function(a, b)
+                    if a.drawOrder < b.drawOrder then
+                        return true
+                    end
+                end
+            )
+            love.graphics.push()
+            for i = 1, #entities do
+                local entity = entities[i]
+                if entity then
+                    love.graphics.replaceTransform(self:getTransform())
+                    entity:draw()
+                end
             end
-        end)
-        love.graphics.push()
-        for i = 1, #entities do
-            local entity = entities[i]
-            if entity then
-                love.graphics.replaceTransform(self:getTransform())
-                entity:draw()
-            end
+            love.graphics.pop()
         end
-        love.graphics.pop()
-    end)
+    )
 end
 
 function CameraClass:newLayer(scale, func)
-    table.insert(self.layers, {
-        draw = func,
-        scale = scale
-    })
-    table.sort(self.layers, function(a, b)
-        return a.scale < b.scale
-    end)
+    table.insert(
+        self.layers,
+        {
+            draw = func,
+            scale = scale
+        }
+    )
+    table.sort(
+        self.layers,
+        function(a, b)
+            return a.scale < b.scale
+        end
+    )
 end
 
 function CameraClass:dispatch()
@@ -127,9 +139,9 @@ function CameraClass:update(dt)
         if target.parent then
             targetTransform = target.parent:getTransform()
         end
-        targetTransform = targetTransform *
-                              love.math
-                                  .newTransform(target.x, target.y, target.r, target.sx, target.sy, target.ox, target.oy)
+        targetTransform =
+            targetTransform *
+            love.math.newTransform(target.x, target.y, target.r, target.sx, target.sy, target.ox, target.oy)
 
         local tX, tY = targetTransform:transformPoint(0, 0)
         local cx = math.lerp(self.x, tX, self.cameraSpeed * dt)

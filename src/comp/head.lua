@@ -244,9 +244,12 @@ function HeadComponent:update(dt)
     if eyes then
         table.insert(self.order, {eyes[3], eyes, self.eyeColor})
     end
-    table.sort(self.order, function(a, b)
-        return a[1] < b[1]
-    end)
+    table.sort(
+        self.order,
+        function(a, b)
+            return a[1] < b[1]
+        end
+    )
 end
 
 function HeadComponent:draw()

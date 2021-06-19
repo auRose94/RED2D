@@ -5,11 +5,11 @@ local PixelEditorWindow = {}
 PixelEditorWindow.FileDialog = nil
 
 function PixelEditorWindow:loadFile(filePath)
-    echo(filePath)
+	echo(filePath)
 end
 
 function PixelEditorWindow:saveFile(filePath)
-    echo(filePath)
+	echo(filePath)
 end
 
 --[[
@@ -59,5 +59,4 @@ function PixelEditorWindow:draw()
 	return state
 end
 ]]
-
 return PixelEditorWindow

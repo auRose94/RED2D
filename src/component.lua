@@ -118,7 +118,6 @@ function ComponentClass:drawEditor()
 	end
 end\
 ]]
-
 function ComponentClass:getName()
     return "ComponentClass"
 end
@@ -131,7 +130,7 @@ function ComponentClass:init(parent, ...)
     self.parent = parent
     self.children = {}
     parent:addComponent(self)
-    for i = 1, select('#', ...) do
+    for i = 1, select("#", ...) do
         local value = select(i, ...)
         local tValue = type(value)
         if tValue == "table" then

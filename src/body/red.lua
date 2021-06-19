@@ -74,22 +74,44 @@ module.left = {
     arms = {
         left = {
             base = {11, 3},
-            rotations = {NewTopArm(0, 48), NewTopArm(16, 48), NewTopArm(16 * 2, 48), NewTopArm(16 * 3, 48),
-                         NewTopArm(16 * 4, 48), NewTopArm(16 * 5, 48), NewTopArm(16 * 6, 48), NewTopArm(16 * 7, 48)},
+            rotations = {
+                NewTopArm(0, 48),
+                NewTopArm(16, 48),
+                NewTopArm(16 * 2, 48),
+                NewTopArm(16 * 3, 48),
+                NewTopArm(16 * 4, 48),
+                NewTopArm(16 * 5, 48),
+                NewTopArm(16 * 6, 48),
+                NewTopArm(16 * 7, 48)
+            },
             points = {{7, 7}, {7, 3}, {9, 3}, {16, 3}, {16, 7}, {16, 11}, {12, 11}, {8, 10}}
         },
         right = {
             base = {5, 3},
-            rotations = {NewBottomArm(0, 16), NewBottomArm(16, 16), NewBottomArm(16 * 2, 16), NewTopArm(16 * 3, 32),
-                         NewTopArm(16 * 4, 32), NewTopArm(16 * 5, 32), NewBottomArm(16 * 6, 16),
-                         NewBottomArm(16 * 7, 16)},
+            rotations = {
+                NewBottomArm(0, 16),
+                NewBottomArm(16, 16),
+                NewBottomArm(16 * 2, 16),
+                NewTopArm(16 * 3, 32),
+                NewTopArm(16 * 4, 32),
+                NewTopArm(16 * 5, 32),
+                NewBottomArm(16 * 6, 16),
+                NewBottomArm(16 * 7, 16)
+            },
             points = {{1, 7}, {1, 3}, {3, 3}, {8, 3}, {8, 6}, {8, 10}, {5, 11}, {2, 10}}
         }
     },
     legs = {
         standing = NewLeg(0, 16),
-        animation = {NewLeg(16, 16), NewLeg(16 * 2, 16), NewLeg(16 * 3, 16), NewLeg(16 * 4, 16), NewLeg(16 * 5, 16),
-                     NewLeg(16 * 6, 16), NewLeg(16 * 7, 16)}
+        animation = {
+            NewLeg(16, 16),
+            NewLeg(16 * 2, 16),
+            NewLeg(16 * 3, 16),
+            NewLeg(16 * 4, 16),
+            NewLeg(16 * 5, 16),
+            NewLeg(16 * 6, 16),
+            NewLeg(16 * 7, 16)
+        }
     }
 }
 
@@ -108,22 +130,44 @@ module.right = {
     arms = {
         left = {
             base = {11, 3},
-            rotations = {NewTopArm(0, 0), NewTopArm(16, 0), NewTopArm(16 * 2, 0), NewTopArm(16 * 3, 0),
-                         NewTopArm(16 * 4, 0), NewTopArm(16 * 5, 0), NewTopArm(16 * 6, 0), NewTopArm(16 * 7, 0)},
+            rotations = {
+                NewTopArm(0, 0),
+                NewTopArm(16, 0),
+                NewTopArm(16 * 2, 0),
+                NewTopArm(16 * 3, 0),
+                NewTopArm(16 * 4, 0),
+                NewTopArm(16 * 5, 0),
+                NewTopArm(16 * 6, 0),
+                NewTopArm(16 * 7, 0)
+            },
             points = {{1, 7}, {1, 3}, {8, 3}, {10, 3}, {10, 7}, {9, 10}, {6, 11}, {1, 11}}
         },
         right = {
             base = {5, 3},
-            rotations = {NewTopArm(0, 16), NewTopArm(16, 16), NewBottomArm(16 * 2, 0), NewBottomArm(16 * 3, 0),
-                         NewBottomArm(16 * 4, 0), NewBottomArm(16 * 5, 0), NewBottomArm(16 * 6, 0),
-                         NewTopArm(16 * 7, 16)},
+            rotations = {
+                NewTopArm(0, 16),
+                NewTopArm(16, 16),
+                NewBottomArm(16 * 2, 0),
+                NewBottomArm(16 * 3, 0),
+                NewBottomArm(16 * 4, 0),
+                NewBottomArm(16 * 5, 0),
+                NewBottomArm(16 * 6, 0),
+                NewTopArm(16 * 7, 16)
+            },
             points = {{10, 8}, {10, 5}, {14, 3}, {16, 3}, {16, 7}, {15, 10}, {12, 11}, {10, 10}}
         }
     },
     legs = {
         standing = NewLeg(0, 0),
-        animation = {NewLeg(16, 0), NewLeg(16 * 2, 0), NewLeg(16 * 3, 0), NewLeg(16 * 4, 0), NewLeg(16 * 5, 0),
-                     NewLeg(16 * 6, 0), NewLeg(16 * 7, 0)}
+        animation = {
+            NewLeg(16, 0),
+            NewLeg(16 * 2, 0),
+            NewLeg(16 * 3, 0),
+            NewLeg(16 * 4, 0),
+            NewLeg(16 * 5, 0),
+            NewLeg(16 * 6, 0),
+            NewLeg(16 * 7, 0)
+        }
     }
 }
 

@@ -38,7 +38,6 @@ function WeaponClass:drawStats()
 	ItemClass.drawStats(self)
 end
 ]]
-
 function WeaponClass:equip(entity)
     if entity and not self:isEquipped() then
         local hands = entity:getWeaponMounts()

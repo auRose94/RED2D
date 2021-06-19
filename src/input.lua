@@ -405,7 +405,7 @@ end
 function input.handleGUIControls()
     if input.controllerFocusOnGUI then
         if input.isConnected(input.GUIJoystick) then
-            -- imgui.UseGamepad(input.GUIJoystick)
+        -- imgui.UseGamepad(input.GUIJoystick)
         end
     end
 end
@@ -451,7 +451,6 @@ function love.wheelmoved(x, y)
 	imgui.WheelMoved(y)
 end
 ]]
-
 _G.input = input
 
 return input

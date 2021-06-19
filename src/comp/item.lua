@@ -88,7 +88,6 @@ function ItemClass:drawStats()
 	end
 end
 ]]
-
 function ItemClass:isWeapon()
     return self.type == "weapon"
 end
@@ -171,8 +170,8 @@ function ItemClass:setRect(rectOrX, y, w, h)
     end
     if change or not self.quad then
         self.rect = rect
-        self.quad = love.graphics.newQuad(rect[1], rect[2], rect[3], rect[4], self.image:getWidth(),
-            self.image:getHeight())
+        self.quad =
+            love.graphics.newQuad(rect[1], rect[2], rect[3], rect[4], self.image:getWidth(), self.image:getHeight())
     end
 end
 

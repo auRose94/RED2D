@@ -119,7 +119,7 @@ function module.checkIntersect(l1p1, l1p2, l2p1, l2p2)
         return math.sign(((pt2.x - pt1.x) * (pt3.y - pt1.y)) - ((pt3.x - pt1.x) * (pt2.y - pt1.y)))
     end
     return (checkDir(l1p1, l1p2, l2p1) ~= checkDir(l1p1, l1p2, l2p2)) and
-               (checkDir(l2p1, l2p2, l1p1) ~= checkDir(l2p1, l2p2, l1p2))
+        (checkDir(l2p1, l2p2, l1p1) ~= checkDir(l2p1, l2p2, l1p2))
 end
 
 -- Checks if two lines intersect (or line segments if seg is true)
@@ -134,10 +134,14 @@ function module.findIntersect(l1p1x, l1p1y, l1p2x, l1p2y, l2p1x, l2p1y, l2p2x, l
     x, y = (b2 * c1 - b1 * c2) / det, (a1 * c2 - a2 * c1) / det
     if seg1 or seg2 then
         local min, max = math.min, math.max
-        if seg1 and
-            not (min(l1p1x, l1p2x) <= x and x <= max(l1p1x, l1p2x) and min(l1p1y, l1p2y) <= y and y <= max(l1p1y, l1p2y)) or
-            seg2 and
-            not (min(l2p1x, l2p2x) <= x and x <= max(l2p1x, l2p2x) and min(l2p1y, l2p2y) <= y and y <= max(l2p1y, l2p2y)) then
+        if
+            seg1 and
+                not (min(l1p1x, l1p2x) <= x and x <= max(l1p1x, l1p2x) and min(l1p1y, l1p2y) <= y and
+                    y <= max(l1p1y, l1p2y)) or
+                seg2 and
+                    not (min(l2p1x, l2p2x) <= x and x <= max(l2p1x, l2p2x) and min(l2p1y, l2p2y) <= y and
+                        y <= max(l2p1y, l2p2y))
+         then
             return false, "The lines don't intersect."
         end
     end
