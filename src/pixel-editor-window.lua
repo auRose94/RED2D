@@ -1,5 +1,5 @@
--- local imgui = require".src.imgui"
-local FileDialog = require ".src.file-dialog"
+-- local imgui = require"imgui"
+local FileDialog = require "file-dialog"
 local PixelEditorWindow = {}
 
 PixelEditorWindow.FileDialog = nil

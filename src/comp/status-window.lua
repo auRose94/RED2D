@@ -1,11 +1,11 @@
--- local imgui = require".src.imgui"
-local InventoryClass = require ".src.comp.inventory"
-local ComponentClass = require ".src.component"
-local Element = require ".src.element"
-local Button = require ".src.elem-button"
-local Text = require ".src.elem-text"
-local Scroll = require ".src.elem-scroll"
-local WindowClass = require ".src.gui-window"
+-- local imgui = require"imgui"
+local InventoryClass = require "comp.inventory"
+local ComponentClass = require "component"
+local Element = require "element"
+local Button = require "elem-button"
+local Text = require "elem-text"
+local Scroll = require "elem-scroll"
+local WindowClass = require "gui-window"
 local StatusWindow = inheritsFrom(ComponentClass)
 
 local CategoryNames = {"Any", "Weapons", "Accessories", "Aid", "Tool", "Ammunition", "Junk", "Quest"}
@@ -18,7 +18,7 @@ end
 function StatusWindow:init(parent)
     ComponentClass.init(self, parent)
     self.inventory = self:getComponent(InventoryClass)
-    local PlayerComponent = _G.PlayerComponent or require ".src.comp.player"
+    local PlayerComponent = _G.PlayerComponent or require "comp.player"
     self.player = self:getComponent(PlayerComponent)
 
     self.state = {
@@ -208,7 +208,7 @@ function StatusWindow:createQuestSection()
 end
 
 function StatusWindow:selectItem(index)
-    if type(index) == "object" then
+    if type(index) == "table" then
         index =
             findFirstIndexOf(
             self.inventory.items,

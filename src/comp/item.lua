@@ -1,8 +1,8 @@
-local ComponentClass = require ".src.component"
-local PhysicsComponent = require ".src.comp.physics"
-local LoadedItems = require ".src.defaultItems"
-local guiStyle = require ".src.gui-style"
--- local imgui = require".src.imgui"
+local ComponentClass = require "component"
+local PhysicsComponent = require "comp.physics"
+local LoadedItems = require "defaultItems"
+local guiStyle = require "gui-style"
+-- local imgui = require"imgui"
 local ItemClass = inheritsFrom(ComponentClass)
 
 function ItemClass.registerItem(data)

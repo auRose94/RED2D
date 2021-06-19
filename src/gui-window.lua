@@ -1,6 +1,6 @@
-local ComponentClass = require ".src.component"
-local guiStyle = require ".src.gui-style"
-local Element = require ".src.element"
+local ComponentClass = require "component"
+local guiStyle = require "gui-style"
+local Element = require "element"
 local WindowClass = inheritsFrom(ComponentClass)
 
 local windowFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)

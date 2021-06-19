@@ -1,7 +1,7 @@
-local ItemClass = require ".src.comp.item"
-local EntityClass = require ".src.entity"
-local WeaponTypes = require ".src.defaultWeaponTypes"
--- local imgui = require".src.imgui"
+local ItemClass = require "comp.item"
+local EntityClass = require "entity"
+local WeaponTypes = require "defaultWeaponTypes"
+-- local imgui = require"imgui"
 local WeaponClass = inheritsFrom(ItemClass)
 
 function WeaponClass:getName()

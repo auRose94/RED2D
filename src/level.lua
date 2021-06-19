@@ -1,7 +1,7 @@
-local CameraClass = require ".src.camera"
-local ItemClass = require ".src.comp.item"
-local WeaponClass = require ".src.comp.weapon"
-local EntityClass = require ".src.entity"
+local CameraClass = require "camera"
+local ItemClass = require "comp.item"
+local WeaponClass = require "comp.weapon"
+local EntityClass = require "entity"
 local LevelClass = inheritsFrom(nil)
 
 function LevelClass:addParalaxLevel(index, layer)

@@ -1,5 +1,5 @@
-local EntityClass = require ".src.entity"
--- local imgui = require".src.imgui"
+local EntityClass = require "entity"
+-- local imgui = require"imgui"
 
 local ComponentClass = inheritsFrom(nil)
 

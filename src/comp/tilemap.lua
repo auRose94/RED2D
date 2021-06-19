@@ -1,7 +1,7 @@
-local ComponentClass = require ".src.component"
-local defaultTileMap = require ".src.defaultTileMap"
-local PathMap = require ".src.path-map"
-local ROT = require ".3rdParty.rotLove.src.rot"
+local ComponentClass = require "component"
+local defaultTileMap = require "defaultTileMap"
+local PathMap = require "path-map"
+local ROT = require "rot"
 local TileMapClass = inheritsFrom(ComponentClass)
 
 function floatEqual(left, right, precision)

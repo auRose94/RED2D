@@ -1,4 +1,4 @@
--- local imgui = require".src.imgui"
+-- local imgui = require"imgui"
 local input = {}
 
 input.joysticks = {}

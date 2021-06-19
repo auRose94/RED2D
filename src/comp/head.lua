@@ -1,4 +1,4 @@
-local ComponentClass = require ".src.component"
+local ComponentClass = require "component"
 
 local HeadComponent = inheritsFrom(ComponentClass)
 

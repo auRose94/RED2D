@@ -1,6 +1,3 @@
-local zip = require("3rdParty.zip")
-local Archive = require("3rdParty.zip.Archive")
-
 local xml2lua = require("3rdParty.xml2lua.xml2lua")
 local xmlHandlerTree = require("3rdParty.xml2lua.xmlhandler.tree")
 
@@ -15,35 +12,68 @@ function GetLastModified(fileName)
 end
 
 function OraLoader:init(fileName)
-    assert(type(fileName) == "string", "missing fileName! " .. type(fileName) .. " given!")
+    local tFileType = type(fileName)
+    assert(tFileType == "string" or tFileType == "userdata", "missing fileName! " .. type(fileName) .. " given!")
     self.layers = {}
     self:load(fileName)
 end
 
+function OraLoader:loadData(file)
+end
+
 function OraLoader:load(fileName)
-    fileName = fileName or self.fileName
-    if self.lastModified and self.fileName == fileName then
-        local now = GetLastModified(fileName)
-        if now == self.lastModified then
-            return
+    local tFileType = type(fileName)
+    if tFileType == "string" then
+        local fileName = fileName or self.fileName
+        if self.lastModified and self.fileName == fileName then
+            local now = GetLastModified(fileName)
+            if now == self.lastModified then
+                return
+            end
         end
     end
-    local archive = Archive:read(fileName)
-    local disk = archive:GetDisk(0)
-    local entries = disk:GetFolderEntries("")
+
+    local file = nil
+    local mountpoint = nil
+    if tFileType == "string" then
+        mountpoint = fileName:match("^.+[/|\\](.+).ora$")
+        file = love.filesystem.newFile(fileName)
+    elseif tFileType == "userdata" then
+        file = fileName
+        fileName = file:getFilename()
+        mountpoint = fileName:match("^.+[/|\\](.+).ora$")
+    end
+    local saveDir = love.filesystem.getSaveDirectory()
+    file:open("r")
+    local contents, size = file:read("data")
+    local zipPath = mountpoint .. ".zip"
+    file:close()
+    local renameSuccess, message = love.filesystem.write(zipPath, contents, size)
+    assert(renameSuccess, message)
+
+    assert(love.filesystem.mount(zipPath, mountpoint, true), "Couldn't mount path " .. zipPath)
+    --local archive = Archive:read(fileName)
+    --local disk = archive:GetDisk(0)
+    --local entries = disk:GetFolderEntries("")
     local stack = nil
     local imageFiles = {}
-    for index, entry in disk:GetEntryIterator() do
-        if index == "stack.xml" then
-            stack = entry
-        elseif string.match(index, "data/") and index ~= "data/" then
-            table.insert(
-                imageFiles,
-                {
-                    index = index,
-                    entry = entry
-                }
-            )
+    local files = love.filesystem.getDirectoryItems(mountpoint)
+    for _, itemName in ipairs(files) do
+        local index = mountpoint .. "/" .. itemName
+        if love.filesystem.isFile(index) and itemName == "stack.xml" then
+            stack = love.filesystem.newFile(index, "r")
+        elseif love.filesystem.isDirectory(index) and itemName == "data" then
+            local dataFiles = love.filesystem.getDirectoryItems(index)
+            for _, subItemName in ipairs(dataFiles) do
+                local subIndex = mountpoint .. "/" .. itemName .. "/" .. subItemName
+                table.insert(
+                    imageFiles,
+                    {
+                        index = subIndex,
+                        entry = love.filesystem.newFile(subIndex, "r")
+                    }
+                )
+            end
         end
     end
     assert(stack, "Stack couldn't be found inside")
@@ -51,48 +81,47 @@ function OraLoader:load(fileName)
 
     local stackHandler = xmlHandlerTree:new()
     local stackparser = xml2lua.parser(stackHandler)
-    stack:open()
-    stackparser:parse(stack:read("*a"))
+    local stackContent = stack:read()
+    stack:open("r")
+    stackparser:parse(stackContent)
     stack:close()
 
     local image = stackHandler.root.image
     self.width = image._attr.w
     self.height = image._attr.h
-    for i, p in pairs(image.stack) do
-        for ai, ap in pairs(p) do
-            if ap._attr then
-                local compositeOp = ap._attr["composite-op"]
-                local opacity = ap._attr.opacity
-                local src = ap._attr.src
-                local name = ap._attr.name
-                local visible = ap._attr.visibility == "visible"
-                local lx, ly = ap._attr.x, ap._attr.y
-                local imageFile = nil
-                for ii, ie in pairs(imageFiles) do
-                    if ie.index == src then
-                        imageFile = ie.entry
-                        break
-                    end
+    for i, p in pairs(image.stack.layer) do
+        if p._attr then
+            local compositeOp = p._attr["composite-op"]
+            local opacity = p._attr.opacity
+            local src = p._attr.src
+            local name = p._attr.name
+            local visible = p._attr.visibility == "visible"
+            local lx, ly = p._attr.x, p._attr.y
+            local imageFile = nil
+            for ii, ie in pairs(imageFiles) do
+                if ie.index:find(src) then
+                    imageFile = ie.entry
+                    break
                 end
-                if imageFile and visible then
-                    imageFile:open()
-                    local fileData = love.filesystem.newFileData(imageFile:read("*a"), name)
-                    imageFile:close()
-                    if fileData then
-                        local imageData = love.image.newImageData(fileData)
-                        if imageData then
-                            table.insert(
-                                self.layers,
-                                {
-                                    name = name,
-                                    x = lx,
-                                    y = ly,
-                                    opacity = opacity,
-                                    imageData = imageData,
-                                    image = love.graphics.newImage(imageData)
-                                }
-                            )
-                        end
+            end
+            if imageFile and visible then
+                imageFile:open("r")
+                local fileData = imageFile:read("data")
+                imageFile:close()
+                if fileData then
+                    local imageData = love.image.newImageData(fileData)
+                    if imageData then
+                        table.insert(
+                            self.layers,
+                            {
+                                name = name,
+                                x = lx,
+                                y = ly,
+                                opacity = opacity,
+                                imageData = imageData,
+                                image = love.graphics.newImage(imageData)
+                            }
+                        )
                     end
                 end
             end

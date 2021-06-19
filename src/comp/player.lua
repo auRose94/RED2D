@@ -1,12 +1,12 @@
-local ComponentClass = require ".src.component"
-local PhysicsComponent = require ".src.comp.physics"
-local InventoryClass = require ".src.comp.inventory"
-local StatusWindow = require ".src.comp.status-window"
-local HeadComponent = require ".src.comp.head"
-local BodyComponent = require ".src.comp.body"
-local HeadRedData = require ".src.head.red"
-local BodyRedData = require ".src.body.red"
-local input = require ".src.input"
+local ComponentClass = require "component"
+local PhysicsComponent = require "comp.physics"
+local InventoryClass = require "comp.inventory"
+local StatusWindow = require "comp.status-window"
+local HeadComponent = require "comp.head"
+local BodyComponent = require "comp.body"
+local HeadRedData = require "head.red"
+local BodyRedData = require "body.red"
+local input = require "input"
 
 local PlayerComponent = inheritsFrom(BodyComponent)
 

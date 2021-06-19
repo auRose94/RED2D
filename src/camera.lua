@@ -1,4 +1,4 @@
-local EntityModel = require ".src.entity"
+local EntityModel = require "entity"
 local CameraClass = inheritsFrom(EntityModel)
 
 _G.cameras = {}

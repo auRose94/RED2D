@@ -1,4 +1,4 @@
--- local imgui = require".src.imgui"
+-- local imgui = require"imgui"
 local FileDialog = inheritsFrom()
 
 local UnixLikePath = package.config:sub(1, 1) == "/"

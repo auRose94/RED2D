@@ -1,4 +1,4 @@
-local Element = require ".src.element"
+local Element = require "element"
 local ScrollClass = inheritsFrom(Element)
 
 function ScrollClass:init(...)

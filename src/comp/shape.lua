@@ -1,4 +1,4 @@
-local ComponentClass = require ".src.component"
+local ComponentClass = require "component"
 local ShapeComponent = inheritsFrom(ComponentClass)
 
 function ShapeComponent:init(parent)

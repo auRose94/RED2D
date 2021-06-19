@@ -1,5 +1,5 @@
-local ComponentClass = require ".src.component"
-local FixtureComponent = require ".src.comp.fixture"
+local ComponentClass = require "component"
+local FixtureComponent = require "comp.fixture"
 local PhysicsComponent = inheritsFrom(ComponentClass)
 
 function PhysicsComponent:getName()

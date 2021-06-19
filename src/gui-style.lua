@@ -1,6 +1,6 @@
 -- Setup GUI Style
 local module = {}
--- local imgui = require".src.imgui"
+-- local imgui = require"imgui"
 
 local fontPath = "assets/unifont.ttf"
 local fontSize = 32

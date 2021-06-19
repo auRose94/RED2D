@@ -1,4 +1,4 @@
-local BodyComponent = require ".src.body"
+local BodyComponent = require "body"
 local Human = inheritsFrom(BodyComponent)
 
 function Human:init(parent, data, ...)

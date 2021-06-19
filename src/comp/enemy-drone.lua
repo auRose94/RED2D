@@ -1,4 +1,4 @@
-local Component = require ".src.component"
+local Component = require "component"
 local DroneComp = inheritsFrom(Component)
 
 function DroneComp:init()

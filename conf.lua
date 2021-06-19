@@ -4,10 +4,12 @@ require ".src.colors"
 require ".src.utility"
 
 local paths = love.filesystem.getRequirePath()
+paths = paths .. ";src/?.lua"
 paths = paths .. ";3rdParty/xml2lua/?.lua"
 paths = paths .. ";3rdParty/rotLove/src/?.lua"
 paths = paths .. ";lua_modules/share/lua/5.1/?.lua"
 paths = paths .. ";lua_modules/share/lua/5.1/?/init.lua"
+paths = paths .. ";3rdParty/?.lua"
 love.filesystem.setRequirePath(paths)
 local cPath = love.filesystem.getCRequirePath()
 cPath = cPath .. ";3rdParty/build/??"

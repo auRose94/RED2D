@@ -1,9 +1,9 @@
 local module = {}
 
-local CircleShapeComponent = require ".src.comp.shape.circle"
-local RectangleShapeComponent = require ".src.comp.shape.rectangle"
+local CircleShapeComponent = require "comp.shape.circle"
+local RectangleShapeComponent = require "comp.shape.rectangle"
 
-local OraLoader = require ".src.ora-loader"
+local OraLoader = require "ora-loader"
 local bodyRed = OraLoader("assets/body-red.ora")
 
 local topImage = bodyRed:getImage("Top")

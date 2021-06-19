@@ -1,5 +1,5 @@
-local ElementClass = require ".src.element"
-local guiStyle = require ".src.gui-style"
+local ElementClass = require "element"
+local guiStyle = require "gui-style"
 local Button = inheritsFrom(ElementClass)
 
 local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)

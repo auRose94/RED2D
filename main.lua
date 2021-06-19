@@ -1,13 +1,19 @@
 -- local imgui = require"imgui"
-local guiStyle = require ".src.gui-style"
+local guiStyle = require "gui-style"
 love.graphics.setDefaultFilter("linear", "nearest")
 
-local CameraClass = require ".src.camera"
-local LevelClass = require ".src.level"
+local CameraClass = require "camera"
+local LevelClass = require "level"
 local TestingLevel = require ".levels.testing"
-local input = require ".src.input"
-local EditorWindow = require ".src.tree-editor-window"
-local PixelEditorWindow = require ".src.pixel-editor-window"
+local input = require "input"
+local EditorWindow = require "tree-editor-window"
+local PixelEditorWindow = require "pixel-editor-window"
+local EntityClass = require "entity"
+local PlayerClass = require "comp.player"
+local TileMapClass = require "comp.tilemap"
+local ItemClass = require "comp.item"
+local WeaponClass = require "comp.weapon"
+local OraLoader = require "ora-loader"
 
 local level = nil
 local accumulator = 0
@@ -138,5 +144,36 @@ function love.run()
 
             love.graphics.present()
         end
+    end
+end
+
+function love.filedropped(file)
+    local filename = file:getFilename()
+    local ext = filename:match("^.+(%..+)$")
+    echo(filename)
+    if ext == ".lua" then
+        -- lua script - Modded Style
+    elseif ext == ".ora" then
+        LevelClass.init(level) -- clears current level
+        local camera = level.camera
+
+        local oraLoader = OraLoader(file)
+
+        local tilemapObj = EntityClass(level, "Tilemap")
+
+        local backTilemap = TileMapClass(tilemapObj, "assets/Tileset.png", 64)
+        backTilemap:loadDefault()
+        backTilemap:loadLevel(oraLoader:getImageData("background"), false)
+
+        local tilemap = TileMapClass(tilemapObj, "assets/Tileset.png", 64)
+        tilemap:loadDefault()
+        tilemap:loadLevel(oraLoader:getImageData("base"))
+        level.tilemap = tilemap
+
+        local playerEntity = EntityClass(level, "Player", tilemap:getOffset(30, 19))
+        PlayerClass(playerEntity)
+
+        camera:setTransformOffset(tilemap:getOffset(30, 19))
+        camera.followTarget = playerEntity
     end
 end
