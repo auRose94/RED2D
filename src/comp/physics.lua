@@ -1,16 +1,16 @@
-local ComponentClass = require "component"
-local FixtureComponent = require "comp.fixture"
-local PhysicsComponent = inheritsFrom(ComponentClass)
+local Component = require "component"
+local Fixture = require "comp.fixture"
+local PhysicsComponent = inheritsFrom(Component)
 
 function PhysicsComponent:getName()
     return "PhysicsComponent"
 end
 
 function PhysicsComponent:init(parent, type, ...)
-    ComponentClass.init(self, parent, ...)
+    Component.init(self, parent, ...)
     type = type or "dynamic"
-    local ex, ey = ComponentClass.getPosition(self)
-    local er = ComponentClass.getRotation(self)
+    local ex, ey = Component.getPosition(self)
+    local er = Component.getRotation(self)
     self.body = love.physics.newBody(parent.level.world, ex, ey, type)
     assert(self.body ~= nil, "Body is null")
     self.body:setAngle(er)
@@ -76,7 +76,7 @@ end
 
 function PhysicsComponent:setPosition(x, y, z)
     assert(self.body ~= nil, "Body is null")
-    ComponentClass.setPosition(self, x, y, z)
+    Component.setPosition(self, x, y, z)
     self.body:setPosition(x, y)
 end
 
@@ -85,20 +85,20 @@ function PhysicsComponent:getPosition()
     local x, y = self.body:getPosition()
     self.x = x
     self.y = y
-    ComponentClass.setPosition(self, x, y)
+    Component.setPosition(self, x, y)
     return self.x, self.y
 end
 
 function PhysicsComponent:setRotation(r)
     assert(self.body ~= nil, "Body is null")
-    ComponentClass.setRotation(self, r)
+    Component.setRotation(self, r)
     self.body:setAngle(r)
 end
 
 function PhysicsComponent:getRotation()
     assert(self.body ~= nil, "Body is null")
     self.r = self.body:getRotation()
-    ComponentClass.setRotation(self, self.r)
+    Component.setRotation(self, self.r)
     return self.r
 end
 
@@ -113,8 +113,8 @@ function PhysicsComponent:applyLinearImpulse(vx, vy)
 end
 
 function PhysicsComponent:newFixture(shape, density)
-    if shape.isa and shape:isa(ShapeComponent) then
-        return FixtureComponent(self.parent, shape, density)
+    if shape.isa and shape:isa(Shape) then
+        return Fixture(self.parent, shape, density)
     end
     return love.physics.newFixture(self.body, shape, density)
 end

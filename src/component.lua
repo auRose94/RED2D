@@ -1,106 +1,106 @@
-local EntityClass = require "entity"
+local Entity = require "entity"
 -- local imgui = require"imgui"
 
-local ComponentClass = inheritsFrom(nil)
+local Component = inheritsFrom(nil)
 
-function ComponentClass:setPosition(...)
+function Component:setPosition(...)
     assert(self.parent, "No parent")
     self.parent:setPosition(...)
 end
 
-function ComponentClass:getPosition()
+function Component:getPosition()
     assert(self.parent, "No parent")
     return self.parent:getPosition()
 end
 
-function ComponentClass:setRotation(r)
+function Component:setRotation(r)
     assert(self.parent, "No parent")
     self.parent:setRotation(r)
 end
 
-function ComponentClass:getRotation()
+function Component:getRotation()
     assert(self.parent, "No parent")
     return self.parent:getRotation()
 end
 
-function ComponentClass:setScale(...)
+function Component:setScale(...)
     assert(self.parent, "No parent")
     self.parent:setScale(...)
 end
 
-function ComponentClass:getScale()
+function Component:getScale()
     assert(self.parent, "No parent")
     return self.parent:getScale()
 end
 
-function ComponentClass:setSkew(...)
+function Component:setSkew(...)
     assert(self.parent, "No parent")
     self.parent:setSkew(...)
 end
 
-function ComponentClass:getSkew()
+function Component:getSkew()
     assert(self.parent, "No parent")
     return self.parent:getSkew()
 end
 
-function ComponentClass:setOrigin(...)
+function Component:setOrigin(...)
     assert(self.parent, "No parent")
     self.parent:setOrigin(...)
 end
 
-function ComponentClass:getOrigin()
+function Component:getOrigin()
     assert(self.parent, "No parent")
     return self.parent:getOrigin()
 end
 
-function ComponentClass:getTransform()
+function Component:getTransform()
     assert(self.parent, "No parent")
     return self.parent:getTransform()
 end
 
-function ComponentClass:findChild(name)
+function Component:findChild(name)
     assert(self.parent, "No parent")
     return self.parent:findChild(name)
 end
 
-function ComponentClass:getComponent(name)
+function Component:getComponent(name)
     assert(self.parent, "No parent")
     return self.parent:getComponent(name)
 end
 
-function ComponentClass:addComponent(comp)
+function Component:addComponent(comp)
     assert(self.parent, "No parent")
     self.parent:addComponent(comp)
 end
 
-function ComponentClass:removeComponent(comp)
+function Component:removeComponent(comp)
     assert(self.parent, "No parent")
     self.parent:removeComponent(comp)
 end
 
-function ComponentClass:transformPoint(...)
+function Component:transformPoint(...)
     assert(self.parent, "No parent")
     return self.parent:transformPoint(...)
 end
 
-function ComponentClass:inverseTransformPoint(...)
+function Component:inverseTransformPoint(...)
     assert(self.parent, "No parent")
     return self.parent:inverseTransformPoint(...)
 end
 
-function ComponentClass:transformNormal(...)
+function Component:transformNormal(...)
     assert(self.parent, "No parent")
     return self.parent:transformNormal(...)
 end
 
-function ComponentClass:inverseTransformNormal(...)
+function Component:inverseTransformNormal(...)
     assert(self.parent, "No parent")
     return self.parent:inverseTransformNormal(...)
 end
 
 --[[
 	
-function ComponentClass:drawEditor()
+function Component:drawEditor()
 	local keys = sortedKeys(self)
 	for index, name in pairs(keys) do
 		local value = self[name]
@@ -118,15 +118,15 @@ function ComponentClass:drawEditor()
 	end
 end\
 ]]
-function ComponentClass:getName()
-    return "ComponentClass"
+function Component:getName()
+    return "Component"
 end
 
-function ComponentClass:init(parent, ...)
+function Component:init(parent, ...)
     assert(self ~= nil)
     assert(parent ~= nil, "No parent")
-    assert(EntityClass, "EntityClass is not a global")
-    assert(isa(parent, EntityClass), "parent is not an EntityClass")
+    assert(Entity, "Entity is not a global")
+    assert(isa(parent, Entity), "parent is not an Entity")
     self.parent = parent
     self.children = {}
     parent:addComponent(self)
@@ -143,4 +143,4 @@ function ComponentClass:init(parent, ...)
     end
 end
 
-return ComponentClass
+return Component

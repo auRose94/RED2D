@@ -1,7 +1,7 @@
 local module = {}
 
-local CircleShapeComponent = require "comp.shape.circle"
-local RectangleShapeComponent = require "comp.shape.rectangle"
+local CircleShape = require "comp.shape.circle"
+local RectangleShape = require "comp.shape.rectangle"
 
 local OraLoader = require "ora-loader"
 local bodyRed = OraLoader("assets/body-red.ora")
@@ -29,13 +29,13 @@ module.rotSpeed = 40
 
 function module.createPhysics(self)
     local ballYOffset = 2
-    self.bodyShape = RectangleShapeComponent(self.parent, 0, -10, 18, 16)
+    self.bodyShape = RectangleShape(self.parent, 0, -10, 18, 16)
     self.bodyFixture = self.physComp:newFixture(self.bodyShape, 4)
     self.bodyFixture:setRestitution(0.015)
     self.bodyFixture:setCategory(3)
     self.bodyFixture:setMask(2)
 
-    self.bottomShape = CircleShapeComponent(self.parent, 0, ballYOffset, 10)
+    self.bottomShape = CircleShape(self.parent, 0, ballYOffset, 10)
     self.bottomFixture = self.physComp:newFixture(self.bottomShape, 2)
     self.bottomFixture:setRestitution(0.015)
     self.bottomFixture:setFriction(0.25)

@@ -1,41 +1,41 @@
-local ShapeComponent = require "comp.shape"
+local Shape = require "comp.shape"
 
-local EdgeShapeComponent = inheritsFrom(ShapeComponent)
+local EdgeShape = inheritsFrom(Shape)
 
-function EdgeShapeComponent:init(parent, x1, y1, x2, y2)
-    ShapeComponent.init(self, parent)
+function EdgeShape:init(parent, x1, y1, x2, y2)
+    Shape.init(self, parent)
     self.shape = love.physics.newEdgeShape(x1, y1, x2, y2)
 end
 
-function EdgeShapeComponent:getName()
-    return "EdgeShapeComponent"
+function EdgeShape:getName()
+    return "EdgeShape"
 end
 
-function EdgeShapeComponent:getNextVertex()
+function EdgeShape:getNextVertex()
     assert(self.shape)
     return self.shape:getNextVertex()
 end
 
-function EdgeShapeComponent:getPoints()
+function EdgeShape:getPoints()
     assert(self.shape)
     return self.shape:getPoints()
 end
 
-function EdgeShapeComponent:getPreviousVertex()
+function EdgeShape:getPreviousVertex()
     assert(self.shape)
     return self.shape:getPreviousVertex()
 end
 
-function EdgeShapeComponent:setNextVertex(x, y)
+function EdgeShape:setNextVertex(x, y)
     assert(self.shape)
     return self.shape:setNextVertex()
 end
 
-function EdgeShapeComponent:setPreviousVertex(x, y)
+function EdgeShape:setPreviousVertex(x, y)
     assert(self.shape)
     return self.shape:setPreviousVertex(x, y)
 end
 
-_G.EdgeShapeComponent = EdgeShapeComponent
+_G.EdgeShape = EdgeShape
 
-return EdgeShapeComponent
+return EdgeShape

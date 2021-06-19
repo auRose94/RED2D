@@ -1,36 +1,36 @@
-local ShapeComponent = require "comp.shape"
+local Shape = require "comp.shape"
 
-local CircleShapeComponent = inheritsFrom(ShapeComponent)
+local CircleShape = inheritsFrom(Shape)
 
-function CircleShapeComponent:init(parent, x, y, radius)
-    ShapeComponent.init(self, parent)
+function CircleShape:init(parent, x, y, radius)
+    Shape.init(self, parent)
     self.shape = love.physics.newCircleShape(x, y, radius)
 end
 
-function CircleShapeComponent:getName()
-    return "CircleShapeComponent"
+function CircleShape:getName()
+    return "CircleShape"
 end
 
-function CircleShapeComponent:getPoint()
+function CircleShape:getPoint()
     assert(self.shape)
     return self.shape:getPoint()
 end
 
-function CircleShapeComponent:getRadius()
+function CircleShape:getRadius()
     assert(self.shape)
     return self.shape:getRadius()
 end
 
-function CircleShapeComponent:setPoint(x, y)
+function CircleShape:setPoint(x, y)
     assert(self.shape)
     return self.shape:setPoint(x, y)
 end
 
-function CircleShapeComponent:setRadius(r)
+function CircleShape:setRadius(r)
     assert(self.shape)
     return self.shape:setRadius(r)
 end
 
-_G.CircleShapeComponent = CircleShapeComponent
+_G.CircleShape = CircleShape
 
-return CircleShapeComponent
+return CircleShape

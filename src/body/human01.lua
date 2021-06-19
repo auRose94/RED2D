@@ -1,14 +1,14 @@
-local BodyComponent = require "body"
-local Human = inheritsFrom(BodyComponent)
+local Body = require "body"
+local Human = inheritsFrom(Body)
 
 function Human:init(parent, data, ...)
-    BodyComponent.init(self, parent, data, ...)
+    Body.init(self, parent, data, ...)
 
     self.parent.drawOrder = 1
 
     self:setScale(2, 2)
 
-    self.inventory = InventoryClass(parent, self, true)
+    self.inventory = Inventory(parent, self, true)
 
     -- self.headEntity:setPosition(8, 8)
     local headParent = self:findChild("head")

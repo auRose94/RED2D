@@ -1,12 +1,12 @@
-local ElementClass = inheritsFrom(nil)
+local Element = inheritsFrom(nil)
 
-function ElementClass:init(...)
+function Element:init(...)
     self.elements = {}
     for i = 1, select("#", ...) do
         local value = select(i, ...)
         local tValue = type(value)
         if tValue == "table" then
-            if isa(value, ElementClass) then
+            if isa(value, Element) then
                 self:addElement(value)
             else
                 for k, v in pairs(value) do
@@ -34,17 +34,17 @@ function ElementClass:init(...)
     self.hide = self.hide or false
 end
 
-function ElementClass:getName()
-    return "ElementClass"
+function Element:getName()
+    return "Element"
 end
 
-function ElementClass:addElement(elem)
+function Element:addElement(elem)
     assert(type(self.elements) == "table", "Elements is not a table")
     table.insert(self.elements, elem)
     elem.parent = self
 end
 
-function ElementClass:removeElement(elemOrTypeOrIndex)
+function Element:removeElement(elemOrTypeOrIndex)
     local found = false
     local value = nil
     if type(elemOrTypeOrIndex) == "number" then
@@ -67,7 +67,7 @@ function ElementClass:removeElement(elemOrTypeOrIndex)
     end
 end
 
-function ElementClass:setPosition(...)
+function Element:setPosition(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -76,39 +76,39 @@ function ElementClass:setPosition(...)
     self.y = y
 end
 
-function ElementClass:getUp()
+function Element:getUp()
     local transform = self:getTransform()
     return self:transformNormal(0, 1)
 end
 
-function ElementClass:getRight()
+function Element:getRight()
     local transform = self:getTransform()
     return self:transformNormal(1, 0)
 end
 
-function ElementClass:getWorldPosition()
+function Element:getWorldPosition()
     local transform = self:getTransform()
     return transform:transformPoint(0, 0)
 end
 
-function ElementClass:getWorldPoint(x, y)
+function Element:getWorldPoint(x, y)
     local transform = self:getTransform()
     return transform:transformPoint(x, y)
 end
 
-function ElementClass:getPosition()
+function Element:getPosition()
     return self.x, self.y
 end
 
-function ElementClass:setRotation(r)
+function Element:setRotation(r)
     self.r = r
 end
 
-function ElementClass:getRotation()
+function Element:getRotation()
     return self.r
 end
 
-function ElementClass:setScale(...)
+function Element:setScale(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -117,11 +117,11 @@ function ElementClass:setScale(...)
     self.sy = y
 end
 
-function ElementClass:getScale()
+function Element:getScale()
     return self.sx, self.sy
 end
 
-function ElementClass:setSkew(...)
+function Element:setSkew(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -130,11 +130,11 @@ function ElementClass:setSkew(...)
     self.ky = y
 end
 
-function ElementClass:getSkew()
+function Element:getSkew()
     return self.kx, self.ky
 end
 
-function ElementClass:setOrigin(...)
+function Element:setOrigin(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -143,11 +143,11 @@ function ElementClass:setOrigin(...)
     self.oy = y
 end
 
-function ElementClass:getOrigin()
+function Element:getOrigin()
     return self.ox, self.oy
 end
 
-function ElementClass:getTransform()
+function Element:getTransform()
     self.transform =
         love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
     if self.parent then
@@ -156,7 +156,7 @@ function ElementClass:getTransform()
     return self.transform
 end
 
-function ElementClass:getInnerSize()
+function Element:getInnerSize()
     local pWidth, pHeight = self.width, self.height
     local nWidth, nHeight = 0, 0
     for _, elem in ipairs(self.elements) do
@@ -181,7 +181,7 @@ function ElementClass:getInnerSize()
     return pWidth - nWidth, pHeight - nHeight
 end
 
-function ElementClass:mouseInside()
+function Element:mouseInside()
     local width, height = self.width, self.height
     if self.textObj then
         local textObj = self.textObj
@@ -200,10 +200,10 @@ function ElementClass:mouseInside()
         height = self.maxHeight
     end
 
-    return ElementClass:mouseInsideRect(self.x, self.y, width, height)
+    return Element:mouseInsideRect(self.x, self.y, width, height)
 end
 
-function ElementClass:mouseInsideRect(rX, rY, rW, rH)
+function Element:mouseInsideRect(rX, rY, rW, rH)
     local v = {}
     v[1] = {love.graphics.transformPoint(rX, rY)}
     v[2] = {love.graphics.transformPoint(rX + rW, rY)}
@@ -213,7 +213,7 @@ function ElementClass:mouseInsideRect(rX, rY, rW, rH)
     return polyPoint(v, love.mouse.getPosition())
 end
 
-function ElementClass:draw()
+function Element:draw()
     if not self.hide then
         local x1, y1 = love.graphics.transformPoint(self.x, self.y)
         local x2, y2 = love.graphics.transformPoint(self.x + self.width + 1, self.y + self.height + 1)
@@ -235,4 +235,4 @@ function ElementClass:draw()
     end
 end
 
-return ElementClass
+return Element

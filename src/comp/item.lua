@@ -1,17 +1,17 @@
-local ComponentClass = require "component"
+local Component = require "component"
 local PhysicsComponent = require "comp.physics"
 local LoadedItems = require "defaultItems"
 local guiStyle = require "gui-style"
 -- local imgui = require"imgui"
-local ItemClass = inheritsFrom(ComponentClass)
+local Item = inheritsFrom(Component)
 
-function ItemClass.registerItem(data)
+function Item.registerItem(data)
     local key = data.id
     assert(key ~= nil, "Missing id for item instance")
     LoadedItems[key] = data
 end
 
-function ItemClass.findItemById(id)
+function Item.findItemById(id)
     for vid, v in pairs(LoadedItems) do
         if vid == id then
             return v
@@ -20,7 +20,7 @@ function ItemClass.findItemById(id)
     return nil
 end
 
-function ItemClass.findItemByName(name)
+function Item.findItemByName(name)
     for _, v in pairs(LoadedItems) do
         if v.name == name then
             return v
@@ -29,16 +29,16 @@ function ItemClass.findItemByName(name)
     return nil
 end
 
-function ItemClass:getName()
-    return "ItemClass"
+function Item:getName()
+    return "Item"
 end
 
-function ItemClass:init(parent, data, ...)
-    ComponentClass.init(self, parent, ...)
+function Item:init(parent, data, ...)
+    Component.init(self, parent, ...)
     self.parent.drawOrder = 0
     if type(data) == "string" then
         self.typeName = data
-        data = ItemClass.findItemById(data) or ItemClass.findItemByName(data)
+        data = Item.findItemById(data) or Item.findItemByName(data)
     end
     assert(data.name ~= nil)
     assert(data.rect ~= nil)
@@ -73,7 +73,7 @@ function ItemClass:init(parent, data, ...)
 end
 
 --[[
-function ItemClass:drawStats()
+function Item:drawStats()
 	-- Override with imgui calls
 	imgui.Text("Count: ")
 	imgui.SameLine()
@@ -88,44 +88,44 @@ function ItemClass:drawStats()
 	end
 end
 ]]
-function ItemClass:isWeapon()
+function Item:isWeapon()
     return self.type == "weapon"
 end
 
-function ItemClass:isArmor()
+function Item:isArmor()
     return self.type == "armor"
 end
 
-function ItemClass:isConsumable()
+function Item:isConsumable()
     return self.type == "armor"
 end
 
-function ItemClass:canInteract()
+function Item:canInteract()
     return self:isConsumable()
 end
 
-function ItemClass:canEquip()
+function Item:canEquip()
     return self:isWeapon() or self:isArmor()
 end
 
-function ItemClass:canDrop()
+function Item:canDrop()
     return true -- Overide if you want to prevent...
 end
 
-function ItemClass:setActive(boolean)
+function Item:setActive(boolean)
     assert(self.physBody, "No physical body")
     self.physBody:setActive(boolean)
     self.hide = boolean == false
 end
 
-function ItemClass:destroyBody()
+function Item:destroyBody()
     if self.physBody then
         self.physBody:destroy()
         self.physBody = nil
     end
 end
 
-function ItemClass:createBody()
+function Item:createBody()
     assert(self.shapeFunc)
     self.shape = self.shapeFunc() or nil
     self.physBody = PhysicsComponent(self.parent, "dynamic")
@@ -142,14 +142,14 @@ function ItemClass:createBody()
     self.physBody:setMass(self.mass)
 end
 
-function ItemClass:setHighlight(value)
+function Item:setHighlight(value)
     if not self.highlighted and value == true then
         self.timeHighlighted = love.timer.getTime()
     end
     self.highlighted = value
 end
 
-function ItemClass:setRect(rectOrX, y, w, h)
+function Item:setRect(rectOrX, y, w, h)
     local rect = {}
     if type(rectOrX) == "table" and #rectOrX == 4 then
         rect = rectOrX
@@ -175,7 +175,7 @@ function ItemClass:setRect(rectOrX, y, w, h)
     end
 end
 
-function ItemClass:update(dt)
+function Item:update(dt)
     local curText = {colors.white, "⇩", colors.red, self.name, colors.white, "×", colors.red, self.count}
     if not self.text or unpack(curText) ~= unpack(self.text) then
         self.text = curText
@@ -183,7 +183,7 @@ function ItemClass:update(dt)
     end
 end
 
-function ItemClass:draw()
+function Item:draw()
     if self.image and self.quad and not self.hide then
         local v = love.timer.getTime() - self.timeHighlighted
         local opacity = math.max(math.cos(v * 5) + 1, 0.5)
@@ -203,4 +203,4 @@ function ItemClass:draw()
     end
 end
 
-return ItemClass
+return Item

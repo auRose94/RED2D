@@ -1,26 +1,26 @@
-local ComponentClass = require "component"
+local Component = require "component"
 local PhysicsComponent = require "comp.physics"
-local InventoryClass = require "comp.inventory"
+local Inventory = require "comp.inventory"
 local StatusWindow = require "comp.status-window"
 local HeadComponent = require "comp.head"
-local BodyComponent = require "comp.body"
+local Body = require "comp.body"
 local HeadRedData = require "head.red"
 local BodyRedData = require "body.red"
 local input = require "input"
 
-local PlayerComponent = inheritsFrom(BodyComponent)
+local PlayerComponent = inheritsFrom(Body)
 
 function PlayerComponent:getName()
     return "PlayerComponent"
 end
 
 function PlayerComponent:init(parent, playerIndex, joystickIndex, ...)
-    BodyComponent.init(self, parent, BodyRedData, ...)
+    Body.init(self, parent, BodyRedData, ...)
     self.parent.drawOrder = 1
 
     self:setScale(2, 2)
 
-    self.inventory = InventoryClass(parent, self, true)
+    self.inventory = Inventory(parent, self, true)
 
     -- self.headEntity:setPosition(8, 8)
     local headParent = self:findChild("head")
@@ -331,7 +331,7 @@ function PlayerComponent:update(dt)
         end
     end
 
-    BodyComponent.update(self, dt)
+    Body.update(self, dt)
 end
 
 _G.PlayerComponent = PlayerComponent

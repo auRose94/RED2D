@@ -1,14 +1,14 @@
 local Element = require "element"
-local ScrollClass = inheritsFrom(Element)
+local Scroll = inheritsFrom(Element)
 
-function ScrollClass:init(...)
+function Scroll:init(...)
     Element.init(self, ...)
     self.scrollY = 0
     self.scrollBarWidth = self.scrollBarWidth or 8
     self.scrollBarHeight = self.scrollBarHeight or 32
 end
 
-function ScrollClass:addElement(elem)
+function Scroll:addElement(elem)
     local size = #self.elements
     if size >= 1 then
         local last = self.elements[size]
@@ -19,12 +19,12 @@ function ScrollClass:addElement(elem)
     Element.addElement(self, elem)
 end
 
-function ScrollClass:clearElements()
+function Scroll:clearElements()
     self.elements = {}
     self.scrollY = 0
 end
 
-function ScrollClass:draw()
+function Scroll:draw()
     if not self.hide then
         local mx, my = love.mouse.getPosition()
         local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
@@ -86,4 +86,4 @@ function ScrollClass:draw()
     end
 end
 
-return ScrollClass
+return Scroll

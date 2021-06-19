@@ -1,11 +1,11 @@
-local ElementClass = require "element"
+local Element = require "element"
 local guiStyle = require "gui-style"
-local Button = inheritsFrom(ElementClass)
+local Button = inheritsFrom(Element)
 
 local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
 
 function Button:init(...)
-    ElementClass.init(self, ...)
+    Element.init(self, ...)
     local text = self.text or ""
 
     self.lineWidth = self.lineWidth or 0.5

@@ -1,14 +1,14 @@
-local CameraClass = require "camera"
-local ItemClass = require "comp.item"
-local WeaponClass = require "comp.weapon"
-local EntityClass = require "entity"
-local LevelClass = inheritsFrom(nil)
+local Camera = require "camera"
+local Item = require "comp.item"
+local Weapon = require "comp.weapon"
+local Entity = require "entity"
+local Level = inheritsFrom(nil)
 
-function LevelClass:addParalaxLevel(index, layer)
+function Level:addParalaxLevel(index, layer)
     self.camera:newLayer(index, layer)
 end
 
-function LevelClass:removeEntity(entity)
+function Level:removeEntity(entity)
     for i = 1, #self.entities do
         if self.entities[i] == entity then
             table.remove(self.entities, i)
@@ -17,26 +17,26 @@ function LevelClass:removeEntity(entity)
     end
 end
 
-function LevelClass:addEntity(entity)
+function Level:addEntity(entity)
     entity.level = self
     table.insert(self.entities, entity)
 end
 
-function LevelClass:newItem(name, type, x, y)
+function Level:newItem(name, type, x, y)
     if self.tilemap then
-        return ItemClass(EntityClass(self, name, self.tilemap:getOffset(x, y)), type)
+        return Item(Entity(self, name, self.tilemap:getOffset(x, y)), type)
     end
     return nil
 end
 
-function LevelClass:newWeapon(name, type, x, y)
+function Level:newWeapon(name, type, x, y)
     if self.tilemap then
-        return WeaponClass(EntityClass(self, name, self.tilemap:getOffset(x, y)), type)
+        return Weapon(Entity(self, name, self.tilemap:getOffset(x, y)), type)
     end
     return nil
 end
 
-function LevelClass:update(dt)
+function Level:update(dt)
     local step = 1.0 / 60.0
     self.accumulator = self.accumulator + dt
     while self.accumulator >= step do
@@ -51,24 +51,24 @@ function LevelClass:update(dt)
     end
 end
 
-function LevelClass:calcPath(sx, sy, ex, ey)
+function Level:calcPath(sx, sy, ex, ey)
     if self.tilemap then
         return self.tilemap:calcPath(sx, sy, ex, ey)
     end
     return nil
 end
 
-function LevelClass:init()
+function Level:init()
     self.entities = {}
     love.physics.setMeter(64)
     self.world = love.physics.newWorld(0, 0, true)
-    self.camera = CameraClass(self)
+    self.camera = Camera(self)
     self.camera:newEntityLayer(2, self.entities)
     self.accumulator = 0
     self.tilemap = nil
 end
 
-function LevelClass:getRootEntities()
+function Level:getRootEntities()
     local roots = {}
     for i, entity in ipairs(self.entities) do
         if entity.parent == nil then
@@ -78,4 +78,4 @@ function LevelClass:getRootEntities()
     return roots
 end
 
-return LevelClass
+return Level

@@ -1,14 +1,14 @@
-local ComponentClass = require "component"
+local Component = require "component"
 local PhysicsComponent = require "comp.physics"
 local WeaponComponent = require "comp.weapon"
-local BodyComponent = inheritsFrom(ComponentClass)
+local Body = inheritsFrom(Component)
 
-function BodyComponent:getName()
-    return "BodyComponent"
+function Body:getName()
+    return "Body"
 end
 
-function BodyComponent:init(parent, data, ...)
-    ComponentClass.init(self, parent, ...)
+function Body:init(parent, data, ...)
+    Component.init(self, parent, ...)
     self.direction = 1
     self.leftAim = false
     self.rightAim = false
@@ -55,15 +55,15 @@ function BodyComponent:init(parent, data, ...)
     self.bodyColor = {1, 1, 1, 1}
     self.armColor = {1, 1, 1, 1}
 
-    self.leftHand = EntityClass(parent.level, "left hand")
+    self.leftHand = Entity(parent.level, "left hand")
     self.leftHand:setScale(0.25, 0.25)
     self.leftHand:setParent(parent)
 
-    self.rightHand = EntityClass(parent.level, "right hand")
+    self.rightHand = Entity(parent.level, "right hand")
     self.rightHand:setScale(0.25, 0.25)
     self.rightHand:setParent(parent)
 
-    self.headEntity = EntityClass(parent.level, "head")
+    self.headEntity = Entity(parent.level, "head")
     self.headEntity:setScale(0.9, 0.9)
     self.headEntity:setParent(parent)
 
@@ -75,7 +75,7 @@ function BodyComponent:init(parent, data, ...)
     self.weapons = {}
 end
 
-function BodyComponent:getWeaponMounts()
+function Body:getWeaponMounts()
     return {self.leftHand, self.rightHand}
 end
 
@@ -108,7 +108,7 @@ function IsRotationTable(table)
     return true
 end
 
-function BodyComponent:loadBodyData(data)
+function Body:loadBodyData(data)
     self.loadedData = data
     local left = data.left or nil
     local right = data.right or nil
@@ -168,7 +168,7 @@ function BodyComponent:loadBodyData(data)
     data.createPhysics(self)
 end
 
-function BodyComponent:onDownHit(fixture, x, y, xn, yn, fraction)
+function Body:onDownHit(fixture, x, y, xn, yn, fraction)
     if fixture == self.bottomFixture or fixture == self.bodyFixture then
         return -1
     end
@@ -183,21 +183,21 @@ function BodyComponent:onDownHit(fixture, x, y, xn, yn, fraction)
     return 0
 end
 
-function BodyComponent:heal(amount)
+function Body:heal(amount)
     self.health = self.health + amount
     if self.health > self.maxHealth then
         self.health = self.maxHealth
     end
 end
 
-function BodyComponent:hurt(damage)
+function Body:hurt(damage)
     self.health = self.health - damage
     if self.health < 0 then
         self.health = 0
     end
 end
 
-function BodyComponent:setHeadMount(x, y)
+function Body:setHeadMount(x, y)
     if type(x) == "table" then
         self.headMountX, self.headMountY = unpack(x)
     else
@@ -206,7 +206,7 @@ function BodyComponent:setHeadMount(x, y)
     self.headEntity:setPosition(self.headMountX, self.headMountY)
 end
 
-function BodyComponent:getAim(invertY)
+function Body:getAim(invertY)
     local ax, ay = self.aimX, self.aimY
     if self.getAimNormal then
         ax, ay = self:getAimNormal(invertY)
@@ -215,7 +215,7 @@ function BodyComponent:getAim(invertY)
     return angle
 end
 
-function BodyComponent:getLeftWeapon()
+function Body:getLeftWeapon()
     if self.leftHand then
         local weapons = self.leftHand:getComponents(WeaponComponent)
         if #weapons > 0 then
@@ -225,7 +225,7 @@ function BodyComponent:getLeftWeapon()
     return nil
 end
 
-function BodyComponent:getRightWeapon()
+function Body:getRightWeapon()
     if self.rightHand then
         local weapons = self.rightHand:getComponents(WeaponComponent)
         if #weapons > 0 then
@@ -235,7 +235,7 @@ function BodyComponent:getRightWeapon()
     return nil
 end
 
-function BodyComponent:update(dt)
+function Body:update(dt)
     local world = self.parent.level.world
     local physComp = self.physComp
 
@@ -467,7 +467,7 @@ function BodyComponent:update(dt)
     )
 end
 
-function BodyComponent:draw()
+function Body:draw()
     if self.order then
         for _, o in pairs(self.order) do
             local _, pair, color = unpack(o)
@@ -487,4 +487,4 @@ function BodyComponent:draw()
     end
 end
 
-return BodyComponent
+return Body

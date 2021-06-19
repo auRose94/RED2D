@@ -1,15 +1,15 @@
-local ComponentClass = require "component"
-local InventoryClass = inheritsFrom(ComponentClass)
-local ItemClass = require "comp.item"
-local WeaponClass = require "comp.weapon"
+local Component = require "component"
+local Inventory = inheritsFrom(Component)
+local Item = require "comp.item"
+local Weapon = require "comp.weapon"
 local renderBoundingBox = false
 
-function InventoryClass:getName()
-    return "InventoryClass"
+function Inventory:getName()
+    return "Inventory"
 end
 
-function InventoryClass:init(parent, ...)
-    ComponentClass.init(self, parent, ...)
+function Inventory:init(parent, ...)
+    Component.init(self, parent, ...)
     self.items = {}
     self.maxWeight = self.maxWeight or 100
     self.open = false
@@ -20,15 +20,15 @@ function InventoryClass:init(parent, ...)
     self.pickup = false
 end
 
-function InventoryClass:setTargetInventory(inv)
+function Inventory:setTargetInventory(inv)
     self.moveTarget = inv
 end
 
-function InventoryClass:setTradeInventory(inv)
+function Inventory:setTradeInventory(inv)
     self.tradeTarget = inv
 end
 
-function InventoryClass:getWeight()
+function Inventory:getWeight()
     local weight = 0
     for id, v in ipairs(self.items) do
         local count, item = unpack(v)
@@ -37,11 +37,11 @@ function InventoryClass:getWeight()
     return weight
 end
 
-function InventoryClass:isOverweight()
+function Inventory:isOverweight()
     return self.maxWeight >= self:getWeight()
 end
 
-function InventoryClass:getBoundingBox()
+function Inventory:getBoundingBox()
     local cx, cy = self:getPosition()
     local scale = 600
     local tx, ty = cx - scale, cy - scale
@@ -49,7 +49,7 @@ function InventoryClass:getBoundingBox()
     return tx, ty, bx, by
 end
 
-function InventoryClass:findIndex(item)
+function Inventory:findIndex(item)
     for index, v in ipairs(self.items) do
         local itemType = v[2]
         if item.name == itemType.name then
@@ -59,7 +59,7 @@ function InventoryClass:findIndex(item)
     return false
 end
 
-function InventoryClass:subtract(item, number)
+function Inventory:subtract(item, number)
     if number == 0 or item == nil then
         return
     end
@@ -76,14 +76,14 @@ function InventoryClass:subtract(item, number)
     end
 end
 
-function InventoryClass:drop(item, number)
+function Inventory:drop(item, number)
     number = number or 1
     local level = self.parent.level
     local found = self:findIndex(item)
     if found then
         local count = math.max(1, math.min(self.items[found][1], number))
         local dx, dy = self:getPosition()
-        local dropEntity = EntityClass(level, item.name, dx, dy)
+        local dropEntity = Entity(level, item.name, dx, dy)
         local dropped = item:class()(dropEntity, item.typeName)
         dropped.count = number
         local newCount = self.items[found][1] - count
@@ -97,7 +97,7 @@ function InventoryClass:drop(item, number)
     end
 end
 
-function InventoryClass:pickUp(item)
+function Inventory:pickUp(item)
     local added = false
     if item.hide == false then
         item:destroyBody()
@@ -116,7 +116,7 @@ function InventoryClass:pickUp(item)
     end
 end
 
-function InventoryClass:update(dt)
+function Inventory:update(dt)
     local camera = self.parent.level.camera
     local world = self.parent.level.world
     local cx, cy = self.parent.transform:transformPoint(0, 3)
@@ -129,7 +129,7 @@ function InventoryClass:update(dt)
             local parent = body:getUserData()
             local ix, iy = parent:getPosition()
             local dist = math.dist(cx, cy, ix, iy)
-            local item = parent:getComponent(ItemClass)
+            local item = parent:getComponent(Item)
             if item then
                 if dist <= self.pickUpDistance then
                     function R(rayFixture, x, y, xn, yn, fraction)
@@ -158,7 +158,7 @@ function InventoryClass:update(dt)
     world:queryBoundingBox(tx, ty, bx, by, Q)
 end
 
-function InventoryClass:draw()
+function Inventory:draw()
     if renderBoundingBox then
         local tx, ty, bx, by = self:getBoundingBox()
         love.graphics.setColor(0.76, 0.18, 0.05, 0.5)
@@ -166,4 +166,4 @@ function InventoryClass:draw()
     end
 end
 
-return InventoryClass
+return Inventory

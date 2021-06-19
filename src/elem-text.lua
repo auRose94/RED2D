@@ -1,11 +1,11 @@
-local ElementClass = require "element"
+local Element = require "element"
 local guiStyle = require "gui-style"
-local TextElement = inheritsFrom(ElementClass)
+local Text = inheritsFrom(Element)
 
 local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
 
-function TextElement:init(...)
-    ElementClass.init(self, ...)
+function Text:init(...)
+    Element.init(self, ...)
     local text = self.text or ""
 
     self.lineWidth = self.lineWidth or 0.5
@@ -26,7 +26,7 @@ function TextElement:init(...)
     self:updateText(text)
 end
 
-function TextElement:updateText(text)
+function Text:updateText(text)
     self.text = text
     local font = self.font or buttonFont
     local textSize = font:getLineHeight()
@@ -39,7 +39,7 @@ function TextElement:updateText(text)
     self.width, self.height = self.textObj:getDimensions()
 end
 
-function TextElement:draw()
+function Text:draw()
     if not self.hide then
         local fontScale = self.fontScale
         local x, y = self.x, self.y
@@ -79,4 +79,4 @@ function TextElement:draw()
     end
 end
 
-return TextElement
+return Text

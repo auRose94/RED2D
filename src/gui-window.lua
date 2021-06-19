@@ -1,16 +1,16 @@
-local ComponentClass = require "component"
+local Component = require "component"
 local guiStyle = require "gui-style"
 local Element = require "element"
-local WindowClass = inheritsFrom(ComponentClass)
+local Window = inheritsFrom(Component)
 
 local windowFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
 
-function WindowClass:getName()
-    return "WindowClass"
+function Window:getName()
+    return "Window"
 end
 
-function WindowClass:init(parent, ...)
-    ComponentClass.init(self, parent, ...)
+function Window:init(parent, ...)
+    Component.init(self, parent, ...)
     parent.drawOrder = 10
     self.title = self.title or "New Window"
     self.lineWidth = self.lineWidth or 0.25
@@ -22,7 +22,7 @@ function WindowClass:init(parent, ...)
     self:updateText(self.title)
 end
 
-function WindowClass:updateText(text)
+function Window:updateText(text)
     self.title = text
     local font = self.font or windowFont
     local textSize = font:getLineHeight()
@@ -33,11 +33,11 @@ function WindowClass:updateText(text)
     self.titleObj = love.graphics.newText(font, text)
 end
 
-function WindowClass:addElement(element)
+function Window:addElement(element)
     table.insert(self.elements, element)
 end
 
-function WindowClass:removeElement(entity)
+function Window:removeElement(entity)
     for i = 1, #self.elements do
         if self.elements[i] == entity then
             table.remove(self.elements, i)
@@ -46,7 +46,7 @@ function WindowClass:removeElement(entity)
     end
 end
 
-function WindowClass:mouseInside()
+function Window:mouseInside()
     local width, height = self.width, self.height
     local titleObj = self.titleObj
     local tW, tH = titleObj:getDimensions()
@@ -57,10 +57,10 @@ function WindowClass:mouseInside()
         height = tH
     end
 
-    return WindowClass:mouseInsideRect(self.x, self.y, width, height)
+    return Window:mouseInsideRect(self.x, self.y, width, height)
 end
 
-function WindowClass:mouseInsideRect(rX, rY, rW, rH)
+function Window:mouseInsideRect(rX, rY, rW, rH)
     local v = {}
     v[1] = {love.graphics.transformPoint(rX, rY)}
     v[2] = {love.graphics.transformPoint(rX + rW, rY)}
@@ -70,7 +70,7 @@ function WindowClass:mouseInsideRect(rX, rY, rW, rH)
     return polyPoint(v, love.mouse.getPosition())
 end
 
-function WindowClass:handleUI()
+function Window:handleUI()
     local mx, my = love.mouse.getPosition()
     local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
     local mdown = love.mouse.isDown(1)
@@ -105,7 +105,7 @@ function WindowClass:handleUI()
     end
 end
 
-function WindowClass:draw()
+function Window:draw()
     if self.show then
         local width, height = self.width, self.height
         local x, y = self.x, self.y
@@ -121,4 +121,4 @@ function WindowClass:draw()
     end
 end
 
-return WindowClass
+return Window

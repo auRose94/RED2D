@@ -1,15 +1,15 @@
-local ComponentClass = require "component"
-local FixtureComponent = inheritsFrom(ComponentClass)
+local Component = require "component"
+local Fixture = inheritsFrom(Component)
 
-function FixtureComponent:init(parent, shapeComp, density, ...)
-    ComponentClass.init(self, parent, ...)
+function Fixture:init(parent, shapeComp, density, ...)
+    Component.init(self, parent, ...)
     local bodyComp = self:getComponent(require "comp.physics")
     self.fixture = love.physics.newFixture(bodyComp.body, shapeComp.shape, density)
     shapeComp.fixture = self.fixture
     shapeComp.body = bodyComp
 end
 
-function FixtureComponent:destroy()
+function Fixture:destroy()
     assert(self.fixture)
     local response = self.fixture:release()
     if response == true then
@@ -17,138 +17,138 @@ function FixtureComponent:destroy()
     end
 end
 
-function FixtureComponent:getName()
-    return "FixtureComponent"
+function Fixture:getName()
+    return "Fixture"
 end
 
-function FixtureComponent:getBody()
+function Fixture:getBody()
     assert(self.fixture)
     return self.fixture:getBody()
 end
 
-function FixtureComponent:getBoundingBox()
+function Fixture:getBoundingBox()
     assert(self.fixture)
     return self.fixture:getBoundingBox()
 end
 
-function FixtureComponent:getCategory()
+function Fixture:getCategory()
     assert(self.fixture)
     return self.fixture:getCategory()
 end
 
-function FixtureComponent:getDensity()
+function Fixture:getDensity()
     assert(self.fixture)
     return self.fixture:getDensity()
 end
 
-function FixtureComponent:getFilterData()
+function Fixture:getFilterData()
     assert(self.fixture)
     return self.fixture:getFilterData()
 end
 
-function FixtureComponent:getFriction()
+function Fixture:getFriction()
     assert(self.fixture)
     return self.fixture:getFriction()
 end
 
-function FixtureComponent:getGroupIndex()
+function Fixture:getGroupIndex()
     assert(self.fixture)
     return self.fixture:getGroupIndex()
 end
 
-function FixtureComponent:getMask()
+function Fixture:getMask()
     assert(self.fixture)
     return self.fixture:getMask()
 end
 
-function FixtureComponent:getMassData()
+function Fixture:getMassData()
     assert(self.fixture)
     return self.fixture:getMassData()
 end
 
-function FixtureComponent:getRestitution()
+function Fixture:getRestitution()
     assert(self.fixture)
     return self.fixture:getRestitution()
 end
 
-function FixtureComponent:getShape()
+function Fixture:getShape()
     assert(self.fixture)
     return self.fixture:getShape()
 end
 
-function FixtureComponent:getUserData()
+function Fixture:getUserData()
     assert(self.fixture)
     return self.fixture:getUserData()
 end
 
-function FixtureComponent:isDestroyed()
+function Fixture:isDestroyed()
     assert(self.fixture)
     return self.fixture:isDestroyed()
 end
 
-function FixtureComponent:isSensor()
+function Fixture:isSensor()
     assert(self.fixture)
     return self.fixture:isSensor()
 end
 
-function FixtureComponent:rayCast(x1, y1, x2, y2, maxFraction, childIndex)
+function Fixture:rayCast(x1, y1, x2, y2, maxFraction, childIndex)
     assert(self.fixture)
     return self.fixture:rayCast(x1, y1, x2, y2, maxFraction, childIndex)
 end
 
-function FixtureComponent:setCategory(c1, ...)
+function Fixture:setCategory(c1, ...)
     assert(self.fixture)
     assert(type(c1) == "number")
     return self.fixture:setCategory(c1, ...)
 end
 
-function FixtureComponent:setDensity(density)
+function Fixture:setDensity(density)
     assert(self.fixture)
     return self.fixture:setDensity(density)
 end
 
-function FixtureComponent:setFilterData(categories, mask, group)
+function Fixture:setFilterData(categories, mask, group)
     assert(self.fixture)
     return self.fixture:setFilterData(categories, mask, group)
 end
 
-function FixtureComponent:setFriction(friction)
+function Fixture:setFriction(friction)
     assert(self.fixture)
     return self.fixture:setFriction(friction)
 end
 
-function FixtureComponent:setGroupIndex(group)
+function Fixture:setGroupIndex(group)
     assert(self.fixture)
     assert(type(group) == "number")
     return self.fixture:setGroupIndex(group)
 end
 
-function FixtureComponent:setMask(m1, ...)
+function Fixture:setMask(m1, ...)
     assert(self.fixture)
     assert(type(m1) == "number")
     return self.fixture:setMask(m1, ...)
 end
 
-function FixtureComponent:setRestitution(restitution)
+function Fixture:setRestitution(restitution)
     assert(self.fixture)
     return self.fixture:setRestitution(restitution)
 end
 
-function FixtureComponent:setSensor(sensor)
+function Fixture:setSensor(sensor)
     assert(self.fixture)
     return self.fixture:setSensor(sensor)
 end
 
-function FixtureComponent:setUserData(value)
+function Fixture:setUserData(value)
     assert(self.fixture)
     return self.fixture:setUserData(value)
 end
 
-function FixtureComponent:testPoint(x, y)
+function Fixture:testPoint(x, y)
     assert(self.fixture)
     return self.fixture:testPoint(x, y)
 end
 
-_G.FixtureComponent = FixtureComponent
+_G.Fixture = Fixture
 
-return FixtureComponent
+return Fixture

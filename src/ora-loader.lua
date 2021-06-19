@@ -60,9 +60,10 @@ function OraLoader:load(fileName)
     local files = love.filesystem.getDirectoryItems(mountpoint)
     for _, itemName in ipairs(files) do
         local index = mountpoint .. "/" .. itemName
-        if love.filesystem.isFile(index) and itemName == "stack.xml" then
+        local info = love.filesystem.getInfo(index)
+        if info.type == "file" and itemName == "stack.xml" then
             stack = love.filesystem.newFile(index, "r")
-        elseif love.filesystem.isDirectory(index) and itemName == "data" then
+        elseif info.type == "directory" and itemName == "data" then
             local dataFiles = love.filesystem.getDirectoryItems(index)
             for _, subItemName in ipairs(dataFiles) do
                 local subIndex = mountpoint .. "/" .. itemName .. "/" .. subItemName

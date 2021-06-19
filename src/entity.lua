@@ -1,7 +1,7 @@
 -- local imgui = require"imgui"
-local EntityClass = inheritsFrom(nil)
+local Entity = inheritsFrom(nil)
 
-function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
+function Entity:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
     assert(level, "No level given")
     level:addEntity(self)
     self.level = level
@@ -24,11 +24,11 @@ function EntityClass:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
     self.name = name or "New Entity"
 end
 
-function EntityClass:getName()
-    return "EntityClass"
+function Entity:getName()
+    return "Entity"
 end
 
-function EntityClass:callComponentMethods(name, ...)
+function Entity:callComponentMethods(name, ...)
     if name == nil or name == "" then
         return
     end
@@ -42,11 +42,11 @@ function EntityClass:callComponentMethods(name, ...)
     end
 end
 
-function EntityClass:update(dt)
+function Entity:update(dt)
     self:callComponentMethods("update", dt)
 end
 
-function EntityClass:drawEditor()
+function Entity:drawEditor()
     local keys = sortedKeys(self)
     for index, name in pairs(keys) do
         local value = self[name]
@@ -66,7 +66,7 @@ function EntityClass:drawEditor()
     end
 end
 
-function EntityClass:draw()
+function Entity:draw()
     love.graphics.applyTransform(self:getTransform())
     for _, c in pairs(self.components) do
         if type(c) == "table" and c.draw then
@@ -75,7 +75,7 @@ function EntityClass:draw()
     end
 end
 
-function EntityClass:destroy()
+function Entity:destroy()
     self:callComponentMethods("destroy")
     for _, c in pairs(self.components) do
         if type(c) == "table" then
@@ -90,7 +90,7 @@ function EntityClass:destroy()
     self.level:removeEntity(self)
 end
 
-function EntityClass:setPosition(...)
+function Entity:setPosition(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -100,35 +100,35 @@ function EntityClass:setPosition(...)
     self.y = y
 end
 
-function EntityClass:getUp()
+function Entity:getUp()
     local transform = self:getTransform()
     return self:transformNormal(0, 1)
 end
 
-function EntityClass:getRight()
+function Entity:getRight()
     local transform = self:getTransform()
     return self:transformNormal(1, 0)
 end
 
-function EntityClass:getWorldPosition()
+function Entity:getWorldPosition()
     local transform = self:getTransform()
     return transform:transformPoint(0, 0)
 end
 
-function EntityClass:getPosition()
+function Entity:getPosition()
     return self.x, self.y
 end
 
-function EntityClass:setRotation(r)
+function Entity:setRotation(r)
     self.touched = true
     self.r = r
 end
 
-function EntityClass:getRotation()
+function Entity:getRotation()
     return self.r
 end
 
-function EntityClass:setScale(...)
+function Entity:setScale(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -138,11 +138,11 @@ function EntityClass:setScale(...)
     self.touched = true
 end
 
-function EntityClass:getScale()
+function Entity:getScale()
     return self.sx, self.sy
 end
 
-function EntityClass:setSkew(...)
+function Entity:setSkew(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -152,11 +152,11 @@ function EntityClass:setSkew(...)
     self.touched = true
 end
 
-function EntityClass:getSkew()
+function Entity:getSkew()
     return self.kx, self.ky
 end
 
-function EntityClass:setOrigin(...)
+function Entity:setOrigin(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -166,11 +166,11 @@ function EntityClass:setOrigin(...)
     self.touched = true
 end
 
-function EntityClass:getOrigin()
+function Entity:getOrigin()
     return self.ox, self.oy
 end
 
-function EntityClass:getTransform()
+function Entity:getTransform()
     if self.touched or not self.transform then
         self.transform =
             love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
@@ -182,7 +182,7 @@ function EntityClass:getTransform()
     return self.transform
 end
 
-function EntityClass:getComponent(typeOrObject)
+function Entity:getComponent(typeOrObject)
     assert(type(self.components) == "table", "Components is not a table")
     for index, v in pairs(self.components) do
         if typeOrObject == v or v:isa(typeOrObject) then
@@ -192,7 +192,7 @@ function EntityClass:getComponent(typeOrObject)
     return nil
 end
 
-function EntityClass:getComponents(typeClass)
+function Entity:getComponents(typeClass)
     assert(type(self.components) == "table", "Components is not a table")
     local comps = {}
     for index, v in pairs(self.components) do
@@ -209,7 +209,7 @@ function EntityClass:getComponents(typeClass)
     return comps
 end
 
-function EntityClass:getParentComponent(typeClass)
+function Entity:getParentComponent(typeClass)
     -- Recursively goes up from the child to the parent to get a component
     if self.parent then
         local component = self.parent:getComponent(typeClass)
@@ -221,13 +221,13 @@ function EntityClass:getParentComponent(typeClass)
     return nil
 end
 
-function EntityClass:addComponent(comp)
+function Entity:addComponent(comp)
     assert(type(self.components) == "table", "Components is not a table")
     table.insert(self.components, comp)
     comp.parent = self
 end
 
-function EntityClass:removeComponent(compOrTypeOrIndex)
+function Entity:removeComponent(compOrTypeOrIndex)
     local found = false
     local value = nil
     if type(compOrTypeOrIndex) == "number" then
@@ -250,7 +250,7 @@ function EntityClass:removeComponent(compOrTypeOrIndex)
     end
 end
 
-function EntityClass:findChild(name)
+function Entity:findChild(name)
     local value = nil
     local found = nil
     for index, child in ipairs(self.children) do
@@ -263,7 +263,7 @@ function EntityClass:findChild(name)
     return value, found
 end
 
-function EntityClass:removeChild(child)
+function Entity:removeChild(child)
     local found = false
     local value = nil
     for index, child in ipairs(self.children) do
@@ -281,7 +281,7 @@ function EntityClass:removeChild(child)
     end
 end
 
-function EntityClass:setParent(parent)
+function Entity:setParent(parent)
     if parent then
         self.parent = parent
         table.insert(parent.children, self)
@@ -291,7 +291,7 @@ function EntityClass:setParent(parent)
     end
 end
 
-function EntityClass:transformPoint(...)
+function Entity:transformPoint(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -300,7 +300,7 @@ function EntityClass:transformPoint(...)
     return transform:transformPoint(x, y)
 end
 
-function EntityClass:inverseTransformPoint(...)
+function Entity:inverseTransformPoint(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -309,7 +309,7 @@ function EntityClass:inverseTransformPoint(...)
     return transform:inverseTransformPoint(x, y)
 end
 
-function EntityClass:transformNormal(...)
+function Entity:transformNormal(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -321,7 +321,7 @@ function EntityClass:transformNormal(...)
     return math.normalize(wx - x, wy - y)
 end
 
-function EntityClass:inverseTransformNormal(...)
+function Entity:inverseTransformNormal(...)
     local x, y = ...
     if type(x) == "table" then
         x, y = unpack(...)
@@ -333,6 +333,6 @@ function EntityClass:inverseTransformNormal(...)
     return math.normalize(wx - x, wy - y)
 end
 
-_G.EntityClass = EntityClass
+_G.Entity = Entity
 
-return EntityClass
+return Entity

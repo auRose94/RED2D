@@ -1,56 +1,56 @@
-local ShapeComponent = require "comp.shape"
+local Shape = require "comp.shape"
 
-local ChainShapeComponent = inheritsFrom(ShapeComponent)
+local ChainShape = inheritsFrom(Shape)
 
-function ChainShapeComponent:init(parent, loop, ...)
-    ShapeComponent.init(self, parent)
+function ChainShape:init(parent, loop, ...)
+    Shape.init(self, parent)
     self.shape = love.physics.newChainShape(loop, ...)
 end
 
-function ChainShapeComponent:getName()
-    return "ChainShapeComponent"
+function ChainShape:getName()
+    return "ChainShape"
 end
 
-function ChainShapeComponent:getChildEdge(index)
+function ChainShape:getChildEdge(index)
     assert(self.shape)
     return self.shape:getChildEdge(index)
 end
 
-function ChainShapeComponent:getNextVertex()
+function ChainShape:getNextVertex()
     assert(self.shape)
     return self.shape:getNextVertex()
 end
 
-function ChainShapeComponent:getPoint()
+function ChainShape:getPoint()
     assert(self.shape)
     return self.shape:getPoint()
 end
 
-function ChainShapeComponent:getPoints()
+function ChainShape:getPoints()
     assert(self.shape)
     return self.shape:getPoints()
 end
 
-function ChainShapeComponent:getPreviousVertex()
+function ChainShape:getPreviousVertex()
     assert(self.shape)
     return self.shape:getPreviousVertex()
 end
 
-function ChainShapeComponent:getVertexCount()
+function ChainShape:getVertexCount()
     assert(self.shape)
     return self.shape:getVertexCount()
 end
 
-function ChainShapeComponent:setNextVertex(x, y)
+function ChainShape:setNextVertex(x, y)
     assert(self.shape)
     return self.shape:setNextVertex(x, y)
 end
 
-function ChainShapeComponent:setPreviousVertex(x, y)
+function ChainShape:setPreviousVertex(x, y)
     assert(self.shape)
     return self.shape:setPreviousVertex(x, y)
 end
 
-_G.ChainShapeComponent = ChainShapeComponent
+_G.ChainShape = ChainShape
 
-return ChainShapeComponent
+return ChainShape

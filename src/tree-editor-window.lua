@@ -1,6 +1,6 @@
 -- local imgui = require"imgui"
-local EntityClass = require "entity"
-local ComponentClass = require "component"
+local Entity = require "entity"
+local Component = require "component"
 
 local module = {}
 
@@ -54,7 +54,7 @@ function module.drawEntity(entity, depth)
 		table.insert(entityTreeFlags, "ImGuiTreeNodeFlags_Bullet")
 	end
 	local color = RGB(0, 242, 255, 255)
-	if entity:class() ~= EntityClass then
+	if entity:class() ~= Entity then
 		--Nonestandard entity...
 		color = RGB(237, 103, 58)
 	end
@@ -113,7 +113,7 @@ function module.draw(level)
 				}
 			)
 		if inspectorState then
-			if module.selected:isa(EntityClass) then
+			if module.selected:isa(Entity) then
 				local entity = module.selected
 				if type(entity) == "table" and entity ~= nil then
 					entity:drawEditor()

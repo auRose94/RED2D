@@ -1,8 +1,8 @@
-local ComponentClass = require "component"
+local Component = require "component"
 local defaultTileMap = require "defaultTileMap"
 local PathMap = require "path-map"
 local ROT = require "rot"
-local TileMapClass = inheritsFrom(ComponentClass)
+local TileMap = inheritsFrom(Component)
 
 function floatEqual(left, right, precision)
     precision = precision or 0.1
@@ -25,8 +25,8 @@ function UniquePush(t, value)
     end
 end
 
-function TileMapClass:init(parent, location, tileSize, ...)
-    ComponentClass.init(self, parent, ...)
+function TileMap:init(parent, location, tileSize, ...)
+    Component.init(self, parent, ...)
     self.image = love.graphics.newImage(location)
     self.image:setFilter("linear", "nearest")
     self.tileSize = tileSize or self.tileSize or 0
@@ -36,21 +36,21 @@ function TileMapClass:init(parent, location, tileSize, ...)
     self.parent.drawOrder = -1
 end
 
-function TileMapClass:setStarMap(x, y, value)
+function TileMap:setStarMap(x, y, value)
     if type(self.starMap[y]) ~= "table" then
         self.starMap[y] = {}
     end
     self.starMap[y][x] = value
 end
 
-function TileMapClass:getStarPoint(x, y)
+function TileMap:getStarPoint(x, y)
     if type(self.starMap[y]) ~= "table" then
         return 0
     end
     return self.starMap[y][x] or 0
 end
 
-function TileMapClass:calcPath(sx, sy, ex, ey)
+function TileMap:calcPath(sx, sy, ex, ey)
     local dijkstra =
         ROT.Path.Dijkstra(
         sx,
@@ -70,7 +70,7 @@ function TileMapClass:calcPath(sx, sy, ex, ey)
     return path
 end
 
-function TileMapClass:loadLevel(location, usePhysics)
+function TileMap:loadLevel(location, usePhysics)
     usePhysics = usePhysics or true
     local image = nil
     if type(location) == "string" then
@@ -200,11 +200,11 @@ function TileMapClass:loadLevel(location, usePhysics)
     self.height = height
 end
 
-function TileMapClass:getOffset(x, y)
+function TileMap:getOffset(x, y)
     return self.parent.transform:inverseTransformPoint((x * self.tileSize), (y * self.tileSize))
 end
 
-function TileMapClass:registerTile(key, data)
+function TileMap:registerTile(key, data)
     self.tiles[key] = {
         quad = data.quad or nil,
         shape = data.shape or nil,
@@ -217,15 +217,15 @@ function TileMapClass:registerTile(key, data)
     }
 end
 
-function TileMapClass:getTileData(key)
+function TileMap:getTileData(key)
     return self.tiles[key]
 end
 
-function TileMapClass:loadDefault()
+function TileMap:loadDefault()
     defaultTileMap.registerTiles(self)
 end
 
-function TileMapClass:draw(batch)
+function TileMap:draw(batch)
     local spriteBatch = self.spriteBatch
     local shapesMap = self.shapesMap
     local width = self.width
@@ -260,4 +260,4 @@ function TileMapClass:draw(batch)
     end
 end
 
-return TileMapClass
+return TileMap

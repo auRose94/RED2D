@@ -1,12 +1,12 @@
 -- local imgui = require"imgui"
-local InventoryClass = require "comp.inventory"
-local ComponentClass = require "component"
+local Inventory = require "comp.inventory"
+local Component = require "component"
 local Element = require "element"
 local Button = require "elem-button"
 local Text = require "elem-text"
 local Scroll = require "elem-scroll"
-local WindowClass = require "gui-window"
-local StatusWindow = inheritsFrom(ComponentClass)
+local Window = require "gui-window"
+local StatusWindow = inheritsFrom(Component)
 
 local CategoryNames = {"Any", "Weapons", "Accessories", "Aid", "Tool", "Ammunition", "Junk", "Quest"}
 local SortNames = {"Name", "Weight", "Price", "Rarity", "Count"}
@@ -16,8 +16,8 @@ function StatusWindow:getName()
 end
 
 function StatusWindow:init(parent)
-    ComponentClass.init(self, parent)
-    self.inventory = self:getComponent(InventoryClass)
+    Component.init(self, parent)
+    self.inventory = self:getComponent(Inventory)
     local PlayerComponent = _G.PlayerComponent or require "comp.player"
     self.player = self:getComponent(PlayerComponent)
 
@@ -34,7 +34,7 @@ function StatusWindow:init(parent)
         }
     }
     local window =
-        WindowClass(
+        Window(
         self.parent,
         {
             width = 274,

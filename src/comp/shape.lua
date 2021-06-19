@@ -1,14 +1,14 @@
-local ComponentClass = require "component"
-local ShapeComponent = inheritsFrom(ComponentClass)
+local Component = require "component"
+local Shape = inheritsFrom(Component)
 
-function ShapeComponent:init(parent)
-    ComponentClass.init(self, parent)
+function Shape:init(parent)
+    Component.init(self, parent)
     self.shape = nil
     self.body = nil
     self.fixture = nil
 end
 
-function ShapeComponent:destroy()
+function Shape:destroy()
     assert(self.shape)
     local response = self.shape:release()
     if response == true then
@@ -16,45 +16,45 @@ function ShapeComponent:destroy()
     end
 end
 
-function ShapeComponent:getName()
-    return "ShapeComponent"
+function Shape:getName()
+    return "Shape"
 end
 
-function ShapeComponent:computeAABB(tx, ty, tr, childIndex)
+function Shape:computeAABB(tx, ty, tr, childIndex)
     assert(self.shape)
     return self.shape:computeAABB(tx, ty, tr, childIndex)
 end
 
-function ShapeComponent:computeMass(density)
+function Shape:computeMass(density)
     assert(self.shape)
     return self.shape:computeMass(density)
 end
 
-function ShapeComponent:getChildCount()
+function Shape:getChildCount()
     assert(self.shape)
     return self.shape:getChildCount()
 end
 
-function ShapeComponent:getRadius()
+function Shape:getRadius()
     assert(self.shape)
     return self.shape:getRadius()
 end
 
-function ShapeComponent:getType()
+function Shape:getType()
     assert(self.shape)
     return self.shape:getType()
 end
 
-function ShapeComponent:rayCast(x1, y1, x2, y2, maxFraction, tx, ty, tr, childIndex)
+function Shape:rayCast(x1, y1, x2, y2, maxFraction, tx, ty, tr, childIndex)
     assert(self.shape)
     return self.shape:rayCast(x1, y1, x2, y2, maxFraction, tx, ty, tr, childIndex)
 end
 
-function ShapeComponent:testPoint(tx, ty, tr, x, y)
+function Shape:testPoint(tx, ty, tr, x, y)
     assert(self.shape)
     return self.shape:testPoint(tx, ty, tr, x, y)
 end
 
-_G.ShapeComponent = ShapeComponent
+_G.Shape = Shape
 
-return ShapeComponent
+return Shape

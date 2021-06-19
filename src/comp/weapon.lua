@@ -1,17 +1,17 @@
-local ItemClass = require "comp.item"
-local EntityClass = require "entity"
+local Item = require "comp.item"
+local Entity = require "entity"
 local WeaponTypes = require "defaultWeaponTypes"
 -- local imgui = require"imgui"
-local WeaponClass = inheritsFrom(ItemClass)
+local Weapon = inheritsFrom(Item)
 
-function WeaponClass:getName()
-    return "WeaponClass"
+function Weapon:getName()
+    return "Weapon"
 end
 
-function WeaponClass:init(parent, data, ...)
-    ItemClass.init(self, parent, data, ...)
+function Weapon:init(parent, data, ...)
+    Item.init(self, parent, data, ...)
     if type(data) == "string" then
-        data = ItemClass.findItemById(data) or ItemClass.findItemByName(data)
+        data = Item.findItemById(data) or Item.findItemByName(data)
     end
     assert(type(data) == "table")
     self.attackRate = data.attackRate or 1
@@ -25,7 +25,7 @@ function WeaponClass:init(parent, data, ...)
 end
 
 --[[
-function WeaponClass:drawStats()
+function Weapon:drawStats()
 	-- Override with imgui calls
 	imgui.Text("Attack Rate: ")
 	imgui.SameLine()
@@ -35,23 +35,23 @@ function WeaponClass:drawStats()
 		imgui.SameLine()
 		imgui.TextColored(255, 0, 255, 255, tostring(self.altAttackRate))
 	end
-	ItemClass.drawStats(self)
+	Item.drawStats(self)
 end
 ]]
-function WeaponClass:equip(entity)
+function Weapon:equip(entity)
     if entity and not self:isEquipped() then
         local hands = entity:getWeaponMounts()
         local hand = entity.parent
         local handIndex = nil
         for hi, ho in pairs(hands) do
-            if not ho:getComponent(WeaponClass) then
+            if not ho:getComponent(Weapon) then
                 hand = ho
                 handIndex = hi
             end
         end
         local level = hand.level or entity.parent.level
         hand:setOrigin(self.trigger)
-        local weaponEntity = EntityClass(level, self.name .. "(Equipped)")
+        local weaponEntity = Entity(level, self.name .. "(Equipped)")
         weaponEntity:setParent(hand)
         weaponEntity:addComponent(self)
         weaponEntity:setOrigin(math.invert(self.trigger))
@@ -64,7 +64,7 @@ function WeaponClass:equip(entity)
     end
 end
 
-function WeaponClass:unequip()
+function Weapon:unequip()
     local entity = self.entity
     local parent = self.parent
     if entity and self:isEquipped() then
@@ -77,27 +77,27 @@ function WeaponClass:unequip()
     end
 end
 
-function WeaponClass:isPlayer()
+function Weapon:isPlayer()
     return self.entity and isa(self.entity, PlayerComponent)
 end
 
-function WeaponClass:isEquipped()
+function Weapon:isEquipped()
     return self.entity and self.entity.weapons[self.handIndex] == self
 end
 
-function WeaponClass:getTypeName()
+function Weapon:getTypeName()
     return self.weaponType.name or "Undefined"
 end
 
-function WeaponClass:primary()
+function Weapon:primary()
     assert(true, "You need to override this method")
 end
 
-function WeaponClass:secondary()
+function Weapon:secondary()
     assert(true, "You need to override this method")
 end
 
-function WeaponClass:update(dt)
+function Weapon:update(dt)
     local now = love.timer.getTime()
     if self.attackRate ~= nil and self.firing then
         if now - self.lastAttack >= self.attackRate then
@@ -114,9 +114,9 @@ function WeaponClass:update(dt)
     end
 end
 
-function WeaponClass:draw()
+function Weapon:draw()
     self:setRect(self.frames[self.currentFrame])
-    ItemClass.draw(self)
+    Item.draw(self)
 end
 
-return WeaponClass
+return Weapon

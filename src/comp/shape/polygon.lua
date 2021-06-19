@@ -1,28 +1,28 @@
-local ShapeComponent = require "comp.shape"
+local Shape = require "comp.shape"
 
-local PolygonShapeComponent = inheritsFrom(ShapeComponent)
+local PolygonShape = inheritsFrom(Shape)
 
-function PolygonShapeComponent:init(parent, ...)
-    ShapeComponent.init(self, parent)
+function PolygonShape:init(parent, ...)
+    Shape.init(self, parent)
     if select("#", ...) > 0 then
         self.shape = love.physics.newPolygonShape(...)
     end
 end
 
-function PolygonShapeComponent:getPoints()
+function PolygonShape:getPoints()
     assert(self.shape)
     return self.shape:getPoints()
 end
 
-function PolygonShapeComponent:validate()
+function PolygonShape:validate()
     assert(self.shape)
     return self.shape:validate()
 end
 
-function PolygonShapeComponent:getName()
-    return "PolygonShapeComponent"
+function PolygonShape:getName()
+    return "PolygonShape"
 end
 
-_G.PolygonShapeComponent = PolygonShapeComponent
+_G.PolygonShape = PolygonShape
 
-return PolygonShapeComponent
+return PolygonShape

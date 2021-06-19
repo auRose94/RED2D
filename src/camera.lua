@@ -1,9 +1,9 @@
 local EntityModel = require "entity"
-local CameraClass = inheritsFrom(EntityModel)
+local Camera = inheritsFrom(EntityModel)
 
 _G.cameras = {}
 
-function CameraClass:init(level)
+function Camera:init(level)
     EntityModel.init(self, level, "Camera")
     self.layers = {}
     local scale = 1.325
@@ -15,11 +15,11 @@ function CameraClass:init(level)
     table.insert(cameras, self)
 end
 
-function CameraClass:getName()
-    return "CameraClass"
+function Camera:getName()
+    return "Camera"
 end
 
-function CameraClass:destroy()
+function Camera:destroy()
     local found = false
     for index, v in ipairs(cameras) do
         if self == v then
@@ -32,7 +32,7 @@ function CameraClass:destroy()
     end
 end
 
-function CameraClass:getOffset(division)
+function Camera:getOffset(division)
     division = division or 4
     local scale = love.graphics.getDPIScale()
     local w, h = love.graphics.getDimensions()
@@ -40,7 +40,7 @@ function CameraClass:getOffset(division)
     return w * self.sx, h * self.sy
 end
 
-function CameraClass:setTransformOffset(xOrArray, y)
+function Camera:setTransformOffset(xOrArray, y)
     local transform = love.math.newTransform()
     if not self.followTarget then
         transform:rotate(-self.r)
@@ -54,7 +54,7 @@ function CameraClass:setTransformOffset(xOrArray, y)
     end
 end
 
-function CameraClass:getTransform()
+function Camera:getTransform()
     local w, h = love.graphics.getPixelDimensions()
     local trans = love.math.newTransform()
     trans:translate(w / 2, h / 2)
@@ -64,23 +64,23 @@ function CameraClass:getTransform()
     return trans
 end
 
-function CameraClass:getWorldPoint(x, y)
+function Camera:getWorldPoint(x, y)
     return self:getTransform():inverseTransformPoint(x, y)
 end
 
-function CameraClass:getLocalPoint(x, y)
+function Camera:getLocalPoint(x, y)
     return self:getTransform():transformPoint(x, y)
 end
 
-function CameraClass:getCenter()
+function Camera:getCenter()
     return self:getWorldPoint(self:getOffset())
 end
 
-function CameraClass:mousePosition()
+function Camera:mousePosition()
     return self:getWorldPoint(love.mouse.getX(), love.mouse.getY())
 end
 
-function CameraClass:newEntityLayer(scale, entities)
+function Camera:newEntityLayer(scale, entities)
     self:newLayer(
         scale,
         function()
@@ -105,7 +105,7 @@ function CameraClass:newEntityLayer(scale, entities)
     )
 end
 
-function CameraClass:newLayer(scale, func)
+function Camera:newLayer(scale, func)
     table.insert(
         self.layers,
         {
@@ -121,7 +121,7 @@ function CameraClass:newLayer(scale, func)
     )
 end
 
-function CameraClass:dispatch()
+function Camera:dispatch()
     _G.camera = self
     for _, v in ipairs(self.layers) do
         v.draw()
@@ -129,7 +129,7 @@ function CameraClass:dispatch()
     _G.camera = nil
 end
 
-function CameraClass:update(dt)
+function Camera:update(dt)
     EntityModel.update(self, dt)
     if self.followTarget then
         local target = self.followTarget
@@ -161,4 +161,4 @@ function love.resize(width, height)
     end
 end
 
-return CameraClass
+return Camera
