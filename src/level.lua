@@ -2,6 +2,9 @@ local Camera = require "camera"
 local Item = require "comp.item"
 local Weapon = require "comp.weapon"
 local Entity = require "entity"
+local TileMap = require "comp.tilemap"
+local Player = require "comp.player"
+local OraLoader = require "ora-loader"
 local Level = inheritsFrom(nil)
 
 function Level:addParalaxLevel(index, layer)
@@ -76,6 +79,31 @@ function Level:getRootEntities()
         end
     end
     return roots
+end
+
+function Level:load(pathName)
+    Level.init(self)
+    local camera = self.camera
+
+    local oraLoader = OraLoader(pathName)
+
+    local tilemapObj = Entity(self, "Tilemap")
+
+    local backTilemap = TileMap(tilemapObj, "assets/Tileset.png", 64)
+    backTilemap:loadDefault()
+    backTilemap:loadLevel(oraLoader:getImageData("background"), false)
+
+    local tilemap = TileMap(tilemapObj, "assets/Tileset.png", 64)
+    tilemap:loadDefault()
+    tilemap:loadLevel(oraLoader:getImageData("base"))
+    self.tilemap = tilemap
+
+    local playerX, playerY = oraLoader:getOffset("player start")
+    local playerEntity = Entity(self, "Player", tilemap:getOffset(playerX, playerY))
+    Player(playerEntity)
+
+    camera:setTransformOffset(tilemap:getOffset(playerX, playerY))
+    camera.followTarget = playerEntity
 end
 
 return Level

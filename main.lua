@@ -152,7 +152,10 @@ function love.filedropped(file)
     local ext = filename:match("^.+(%..+)$")
     if ext == ".lua" then
         -- lua script - Modded Style
+        local f = assert(loadfile(filename))
+        level = f()()
     elseif ext == ".ora" then
+        level = Level()
         level:load(file)
     end
 end

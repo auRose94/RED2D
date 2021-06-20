@@ -201,6 +201,8 @@ function TileMap:loadLevel(location, usePhysics)
 end
 
 function TileMap:getOffset(x, y)
+    x = x or 0
+    y = y or 0
     return self.parent.transform:inverseTransformPoint((x * self.tileSize), (y * self.tileSize))
 end
 
