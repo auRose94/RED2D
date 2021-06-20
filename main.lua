@@ -153,26 +153,6 @@ function love.filedropped(file)
     if ext == ".lua" then
         -- lua script - Modded Style
     elseif ext == ".ora" then
-        Level.init(level) -- clears current level
-        local camera = level.camera
-
-        local oraLoader = OraLoader(file)
-
-        local tilemapObj = Entity(level, "Tilemap")
-
-        local backTilemap = TileMap(tilemapObj, "assets/Tileset.png", 64)
-        backTilemap:loadDefault()
-        backTilemap:loadLevel(oraLoader:getImageData("background"), false)
-
-        local tilemap = TileMap(tilemapObj, "assets/Tileset.png", 64)
-        tilemap:loadDefault()
-        tilemap:loadLevel(oraLoader:getImageData("base"))
-        level.tilemap = tilemap
-
-        local playerEntity = Entity(level, "Player", tilemap:getOffset(30, 19))
-        Player(playerEntity)
-
-        camera:setTransformOffset(tilemap:getOffset(30, 19))
-        camera.followTarget = playerEntity
+        level:load(file)
     end
 end
