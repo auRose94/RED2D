@@ -112,6 +112,7 @@ function Weapon:update(dt)
             self:secondary()
         end
     end
+    Item.update(self, dt)
 end
 
 function Weapon:draw()

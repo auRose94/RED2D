@@ -186,6 +186,7 @@ end
 function Item:draw()
     if self.image and self.quad and not self.hide then
         local v = love.timer.getTime() - self.timeHighlighted
+        local camera = self.parent.level.camera
         local opacity = math.max(math.cos(v * 5) + 1, 0.5)
         if self.highlighted then
             love.graphics.setColor(1, 1, 1, opacity)
@@ -196,6 +197,7 @@ function Item:draw()
         if self.highlighted and self.textObj then
             love.graphics.setColor(math.cos(v * 5) + 1.5, math.cos(v * 5) + 1.5, math.cos(v * 5) + 1.5)
             love.graphics.push()
+            love.graphics.rotate(camera.r)
             love.graphics.translate(0, -48)
             love.graphics.draw(self.textObj, 0, math.cos(v * 5) * 16)
             love.graphics.pop()

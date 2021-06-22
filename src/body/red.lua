@@ -29,7 +29,9 @@ module.rotSpeed = 40
 
 function module.createPhysics(self)
     local ballYOffset = 2
-    self.bodyShape = RectangleShape(self.parent, 0, -10, 18, 16)
+    local w, h = unpack(module.bodySize)
+    w, h = w * 2, h * 2
+    self.bodyShape = RectangleShape(self.parent, 0, -10, w, h)
     self.bodyFixture = self.physComp:newFixture(self.bodyShape, 4)
     self.bodyFixture:setRestitution(0.015)
     self.bodyFixture:setCategory(3)

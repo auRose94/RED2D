@@ -1,22 +1,20 @@
 local Component = require "component"
 local Body = require "comp.body"
-local SpiderBot = inheritsFrom(Body)
+local Enemy = inheritsFrom()
 
-function SpiderBot:getName()
-    return "SpiderBot"
+function Enemy:getName()
+    return "Enemy"
 end
 
-function SpiderBot:init()
+function Enemy:init()
     Body.init(self, parent, BodyRedData, ...)
     self.parent.drawOrder = 1
-
-    self:setScale(2, 2)
 
     self.inventory = Inventory(parent, self, true)
 end
 
-function SpiderBot:update(dt)
+function Enemy:update(dt)
     Body.update(self, dt)
 end
 
-return SpiderBot
+return Enemy

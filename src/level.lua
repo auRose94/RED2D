@@ -5,6 +5,7 @@ local Entity = require "entity"
 local TileMap = require "comp.tilemap"
 local Player = require "comp.player"
 local OraLoader = require "ora-loader"
+local DefaultItems = require "defaultItems"
 local Level = inheritsFrom(nil)
 
 function Level:addParalaxLevel(index, layer)
@@ -104,6 +105,36 @@ function Level:load(pathName)
 
     camera:setTransformOffset(tilemap:getOffset(playerX, playerY))
     camera.followTarget = playerEntity
+
+    for k, item in pairs(DefaultItems) do
+        local layer = oraLoader:getLayer(k)
+        if layer then
+            local image = layer.imageData
+            local width = image:getWidth()
+            local height = image:getHeight()
+            local i = 0
+            for x = 0, width - 1 do
+                for y = 0, height - 1 do
+                    local index = y * width + x
+                    local r, g, b, a = image:getPixel(x, y)
+                    local tileData = nil
+                    r = math.ceil(r * 255)
+                    g = math.ceil(g * 255)
+                    b = math.ceil(b * 255)
+                    a = math.ceil(a * 255)
+                    if a >= 1 then
+                        i = i + 1
+                        if item.type == "weapon" then
+                            self:newWeapon(item.name .. "#" .. i, k, x, y)
+                        else
+                            self:newItem(item.name .. "#" .. i, k, x, y)
+                        end
+                    end
+                end
+            end
+            echo(layer)
+        end
+    end
 end
 
 return Level
