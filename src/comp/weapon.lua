@@ -1,6 +1,8 @@
 local Item = require "comp.item"
 local Entity = require "entity"
 local WeaponTypes = require "defaultWeaponTypes"
+local Bullet = require ".src.comp.bullet"
+
 -- local imgui = require"imgui"
 local Weapon = inheritsFrom(Item)
 
@@ -14,6 +16,8 @@ function Weapon:init(parent, data, ...)
         data = Item.findItemById(data) or Item.findItemByName(data)
     end
     assert(type(data) == "table")
+    self.typeID = data.typeID or "ballistic"
+    self.ammo = data.ammo or "ammo_9mm"
     self.attackRate = data.attackRate or 1
     self.altAttackRate = data.altAttackRate or nil
     self.frames = data.frames or {}
@@ -90,7 +94,30 @@ function Weapon:getTypeName()
 end
 
 function Weapon:primary()
-    assert(true, "You need to override this method")
+    local entity = self.entity
+    local inventory = entity.inventory
+    if self.typeID == "ballistic" and inventory:hasItem(self.ammo) then
+        local level = self.parent.level
+        local camera = level.camera
+        local trans = self:getTransform()
+
+        local mx, my = camera:mousePosition()
+        local x, y = trans:transformPoint(unpack(self.aimPoint))
+        local dx, dy = math.normalize(mx - x, my - y)
+
+        local offset = 1.0
+        local bulletEnt = Entity(level, "Bullet", x + (dx * offset), y + (dy * offset))
+        local bullet =
+            Bullet(
+            bulletEnt,
+            {
+                dirX = dx,
+                dirY = dy,
+                from = entity
+            }
+        )
+        entity.inventory:subtract(self.ammo, 1)
+    end
 end
 
 function Weapon:secondary()

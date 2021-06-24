@@ -50,6 +50,9 @@ function Inventory:getBoundingBox()
 end
 
 function Inventory:findIndex(item)
+    if type(item) == "string" then
+        item = Item.findItemById(item)
+    end
     for index, v in ipairs(self.items) do
         local itemType = v[2]
         if item.name == itemType.name then
@@ -59,20 +62,23 @@ function Inventory:findIndex(item)
     return false
 end
 
+function Inventory:hasItem(item)
+    local found = self:findIndex(item)
+    return found ~= nil
+end
+
 function Inventory:subtract(item, number)
-    if number == 0 or item == nil then
-        return
-    end
     local found = self:findIndex(item)
     if found then
         local current = self.items[found][1]
-        local count = math.max(current, number)
+        local count = math.min(current, number)
         current = current - count
         if current <= 0 then
-            table.remove(self.item, found)
+            table.remove(self.items, found)
         else
             self.items[found][1] = current
         end
+        self.parent:callComponentMethods("onSubtract", item)
     end
 end
 

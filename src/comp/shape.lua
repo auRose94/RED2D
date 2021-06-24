@@ -14,6 +14,7 @@ function Shape:destroy()
     if response == true then
         self.shape = nil
     end
+    Component.destroy(self)
 end
 
 function Shape:getName()

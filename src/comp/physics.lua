@@ -120,15 +120,17 @@ function PhysicsComponent:newFixture(shape, density)
 end
 
 function PhysicsComponent:update(dt)
-    assert(self.body ~= nil, "Body is null")
-    self.lastX = self.x
-    self.lastY = self.y
-    self.lastR = self.r
-    self.x = self.body:getX()
-    self.y = self.body:getY()
-    self.r = self.body:getAngle()
-    self:setPosition(self.x, self.y, 0)
-    self:setRotation(self.r)
+    --assert(self.body ~= nil, "Body is null")
+    if self.body then
+        self.lastX = self.x
+        self.lastY = self.y
+        self.lastR = self.r
+        self.x = self.body:getX()
+        self.y = self.body:getY()
+        self.r = self.body:getAngle()
+        self:setPosition(self.x, self.y, 0)
+        self:setRotation(self.r)
+    end
 end
 
 function PhysicsComponent:draw()
@@ -168,6 +170,7 @@ function PhysicsComponent:destroy()
         self.body:release()
         self.body = nil
     end
+    Component.destroy(self)
 end
 
 _G.PhysicsComponent = PhysicsComponent

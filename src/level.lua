@@ -12,11 +12,11 @@ function Level:addParalaxLevel(index, layer)
     self.camera:newLayer(index, layer)
 end
 
-function Level:removeEntity(entity)
-    for i = 1, #self.entities do
-        if self.entities[i] == entity then
+function Level:removeEntity(entityA)
+    for i, entityB in ipairs(self.entities) do
+        if entityA == entityB then
             table.remove(self.entities, i)
-            break
+            return nil
         end
     end
 end

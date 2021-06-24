@@ -77,11 +77,6 @@ end
 
 function Entity:destroy()
     self:callComponentMethods("destroy")
-    for _, c in pairs(self.components) do
-        if type(c) == "table" then
-            c.parent = nil
-        end
-    end
     if self.parent then
         self.parent:removeChild(self)
     end

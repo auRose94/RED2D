@@ -15,6 +15,7 @@ function Fixture:destroy()
     if response == true then
         self.fixture = nil
     end
+    Component.destroy(self)
 end
 
 function Fixture:getName()

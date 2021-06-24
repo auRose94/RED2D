@@ -118,6 +118,7 @@ local ItemTypes = {
     ["9mm_handgun"] = {
         type = "weapon",
         name = "9mm handgun",
+        ammo = "ammo_9mm",
         description = "This shoots bullets with a 9mm caliber electronically.   The bullet is fired without a firing pin, instead uses high powered miniature lasers or capacitors to heat the caps. It can also send tweets and notify next of kin... or it's just a gun with an LED.",
         rect = {1, 26, 29, 18},
         frames = {{1, 26, 29, 18}, {1, 46, 29, 18}},

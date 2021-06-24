@@ -78,6 +78,13 @@ function Component:removeComponent(comp)
     self.parent:removeComponent(comp)
 end
 
+function Component:destroy()
+    if self.parent then
+        self.parent:removeComponent(self)
+        self.parent = nil
+    end
+end
+
 function Component:transformPoint(...)
     assert(self.parent, "No parent")
     return self.parent:transformPoint(...)
