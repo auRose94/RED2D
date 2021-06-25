@@ -122,30 +122,30 @@ function Body:loadBodyData(data)
     assert(type(left.base) == "table", "No base for left")
     assert(type(left.center) == "table", "No center for left")
     assert(type(left.base.default) == "table", "No default base for left")
-    assert(type(left.arms) == "table", "No arms for left")
+    --assert(type(left.arms) == "table", "No arms for left")
     assert(type(left.legs) == "table", "No legs for left")
 
-    assert(IsRotationTable(left.arms.left.rotations), "No left arm rotations for left")
-    assert(IsPointTable(left.arms.left.points), "No left arm points for left")
-    assert(type(left.arms.left.base) == "table", "No base for left arm for left")
+    --assert(IsRotationTable(left.arms.left.rotations), "No left arm rotations for left")
+    --assert(IsPointTable(left.arms.left.points), "No left arm points for left")
+    --assert(type(left.arms.left.base) == "table", "No base for left arm for left")
 
-    assert(IsRotationTable(left.arms.right.rotations), "No right arm rotations for left")
-    assert(IsPointTable(left.arms.right.points), "No right arm points for left")
-    assert(type(left.arms.right.base) == "table", "No base for right arm for left")
+    --assert(IsRotationTable(left.arms.right.rotations), "No right arm rotations for left")
+    --assert(IsPointTable(left.arms.right.points), "No right arm points for left")
+    --assert(type(left.arms.right.base) == "table", "No base for right arm for left")
 
     assert(type(right.base) == "table", "No base for right")
     assert(type(right.center) == "table", "No center for right")
     assert(type(right.base.default) == "table", "No default base for right")
-    assert(type(right.arms) == "table", "No arms for right")
+    --assert(type(right.arms) == "table", "No arms for right")
     assert(type(right.legs) == "table", "No legs for right")
 
-    assert(IsRotationTable(right.arms.left.rotations), "No left arm rotations for right")
-    assert(IsPointTable(right.arms.left.points), "No left arm points for right")
-    assert(type(right.arms.left.base) == "table", "No base for left arm for right")
+    --assert(IsRotationTable(right.arms.left.rotations), "No left arm rotations for right")
+    --assert(IsPointTable(right.arms.left.points), "No left arm points for right")
+    --assert(type(right.arms.left.base) == "table", "No base for left arm for right")
 
-    assert(IsRotationTable(right.arms.right.rotations), "No right arm rotations for right")
-    assert(IsPointTable(right.arms.right.points), "No right arm points for right")
-    assert(type(right.arms.right.base) == "table", "No base for right arm for right")
+    --assert(IsRotationTable(right.arms.right.rotations), "No right arm rotations for right")
+    --assert(IsPointTable(right.arms.right.points), "No right arm points for right")
+    --assert(type(right.arms.right.base) == "table", "No base for right arm for right")
 
     -- Properties for body
     self.robot = data.robot or false
@@ -358,67 +358,68 @@ function Body:update(dt)
         faceTable = self.left
     end
 
-    local rotations = #faceTable.arms.left.rotations
-
     local leftArmRect = nil
     local rightArmRect = nil
     local baseRect = faceTable.base[self.baseName or "default"]
     local legsRect = faceTable.legs.standing
+    if faceTable.arms ~= nil then
+        local rotations = #faceTable.arms.left.rotations
 
-    local aimAngle = math.pi / 2
-    if self.aimX ~= 0 and self.aimY ~= 0 then
-        aimAngle = self:getAim()
+        local aimAngle = math.pi / 2
+        if self.aimX ~= 0 and self.aimY ~= 0 then
+            aimAngle = self:getAim()
+        end
+        local rotIndex = math.abs(math.floor(math.deg(aimAngle + math.pi) / (360 / rotations))) + 1
+        local defaultIndex = math.abs(math.floor(math.deg((math.pi / 2) + math.pi) / (360 / rotations))) + 1
+        local leftPoint = faceTable.arms.left.points[defaultIndex]
+        local rightPoint = faceTable.arms.right.points[defaultIndex]
+        leftArmRect = faceTable.arms.left.rotations[rotIndex]
+        rightArmRect = faceTable.arms.right.rotations[rotIndex]
+        local leftAim = aimAngle
+        local rightAim = aimAngle
+
+        if self.leftAim or self.rightAim then
+            aimAngle = self:getAim(false, unpack(faceTable.center))
+            local partSize = 360 / rotations
+            rotIndex = math.abs(math.floor(math.deg(aimAngle + math.pi) / partSize)) + 1
+            if (self.leftAim and self:getLeftWeapon()) and (self.rightAim and self:getRightWeapon()) then
+                leftPoint = faceTable.arms.left.points[rotIndex]
+                rightPoint = faceTable.arms.right.points[rotIndex]
+            elseif (self.leftAim and self:getLeftWeapon()) then
+                leftPoint = faceTable.arms.left.points[rotIndex]
+            elseif (self.rightAim and self:getRightWeapon()) then
+                rightPoint = faceTable.arms.right.points[rotIndex]
+            end
+            if leftPoint then
+                leftAim = self:getAim(false, unpack(leftPoint))
+            end
+            if rightPoint then
+                rightAim = self:getAim(false, unpack(rightPoint))
+            end
+            if self:getLeftWeapon() then
+                leftArmRect = faceTable.arms.left.rotations[rotIndex]
+            end
+            if self:getRightWeapon() then
+                rightArmRect = faceTable.arms.right.rotations[rotIndex]
+            end
+        end
+
+        local rightHandScaleX, rightHandScaleY = self.rightHand:getScale()
+        local leftHandScaleX, leftHandScaleY = self.leftHand:getScale()
+        if self.direction > 0 then
+            self.leftHand:setScale(leftHandScaleX, math.abs(leftHandScaleY))
+            self.rightHand:setScale(rightHandScaleX, math.abs(rightHandScaleY))
+        elseif self.direction < 0 then
+            self.leftHand:setScale(leftHandScaleX, -math.abs(leftHandScaleY))
+            self.rightHand:setScale(rightHandScaleX, -math.abs(rightHandScaleY))
+        end
+
+        self.leftHand:setRotation(leftAim)
+        self.leftHand:setPosition(leftPoint)
+
+        self.rightHand:setRotation(rightAim)
+        self.rightHand:setPosition(rightPoint)
     end
-    local rotIndex = math.abs(math.floor(math.deg(aimAngle + math.pi) / (360 / rotations))) + 1
-    local defaultIndex = math.abs(math.floor(math.deg((math.pi / 2) + math.pi) / (360 / rotations))) + 1
-    local leftPoint = faceTable.arms.left.points[defaultIndex]
-    local rightPoint = faceTable.arms.right.points[defaultIndex]
-    leftArmRect = faceTable.arms.left.rotations[rotIndex]
-    rightArmRect = faceTable.arms.right.rotations[rotIndex]
-    local leftAim = aimAngle
-    local rightAim = aimAngle
-
-    if self.leftAim or self.rightAim then
-        aimAngle = self:getAim(false, unpack(faceTable.center))
-        local partSize = 360 / rotations
-        rotIndex = math.abs(math.floor(math.deg(aimAngle + math.pi) / partSize)) + 1
-        if (self.leftAim and self:getLeftWeapon()) and (self.rightAim and self:getRightWeapon()) then
-            leftPoint = faceTable.arms.left.points[rotIndex]
-            rightPoint = faceTable.arms.right.points[rotIndex]
-        elseif (self.leftAim and self:getLeftWeapon()) then
-            leftPoint = faceTable.arms.left.points[rotIndex]
-        elseif (self.rightAim and self:getRightWeapon()) then
-            rightPoint = faceTable.arms.right.points[rotIndex]
-        end
-        if leftPoint then
-            leftAim = self:getAim(false, unpack(leftPoint))
-        end
-        if rightPoint then
-            rightAim = self:getAim(false, unpack(rightPoint))
-        end
-        if self:getLeftWeapon() then
-            leftArmRect = faceTable.arms.left.rotations[rotIndex]
-        end
-        if self:getRightWeapon() then
-            rightArmRect = faceTable.arms.right.rotations[rotIndex]
-        end
-    end
-
-    local rightHandScaleX, rightHandScaleY = self.rightHand:getScale()
-    local leftHandScaleX, leftHandScaleY = self.leftHand:getScale()
-    if self.direction > 0 then
-        self.leftHand:setScale(leftHandScaleX, math.abs(leftHandScaleY))
-        self.rightHand:setScale(rightHandScaleX, math.abs(rightHandScaleY))
-    elseif self.direction < 0 then
-        self.leftHand:setScale(leftHandScaleX, -math.abs(leftHandScaleY))
-        self.rightHand:setScale(rightHandScaleX, -math.abs(rightHandScaleY))
-    end
-
-    self.leftHand:setRotation(leftAim)
-    self.leftHand:setPosition(leftPoint)
-
-    self.rightHand:setRotation(rightAim)
-    self.rightHand:setPosition(rightPoint)
 
     local fromTop = self.topSpeed - speed
     local speedMultiplier = ((fromTop / self.topSpeed) / self.walkingFrameSpeed)

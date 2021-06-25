@@ -87,6 +87,7 @@ function Level:load(pathName)
     local camera = self.camera
 
     local oraLoader = OraLoader(pathName)
+    self.oraLoader = oraLoader
 
     local tilemapObj = Entity(self, "Tilemap")
 

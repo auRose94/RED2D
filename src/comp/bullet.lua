@@ -8,15 +8,15 @@ function Bullet:init(parent, ...)
     Component.init(self, parent, ...)
     self.dirX = self.dirX or 0
     self.dirY = self.dirY or 0
-    self.force = self.force or 2000
+    self.force = self.force or 25
     self.radius = self.radius or 3.0
-    self.density = self.density or 1
+    self.density = self.density or 0.4
     self.ricochet = self.ricochet or 4
-    self.friction = self.friction or 1
+    self.friction = self.friction or 0.4
     self.category = self.category or {4}
     self.mask = self.mask or {3}
     self.restitution = self.restitution or 1
-    self.mass = self.mass or 1
+    self.mass = self.mass or 0.0125
     self.physBody = PhysicsComponent(parent, "dynamic")
     self.physBody:useCCD(true)
     self.shape = love.physics.newCircleShape(self.radius)
