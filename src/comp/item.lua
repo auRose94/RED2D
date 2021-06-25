@@ -176,7 +176,7 @@ function Item:setRect(rectOrX, y, w, h)
 end
 
 function Item:update(dt)
-    local curText = {colors.white, "⇩", colors.red, self.name, colors.white, "×", colors.red, self.count}
+    local curText = {colors.red, self.name, colors.white, "×", colors.red, self.count}
     if not self.text or unpack(curText) ~= unpack(self.text) then
         self.text = curText
         self.textObj = love.graphics.newText(guiStyle.font, curText)
@@ -196,10 +196,14 @@ function Item:draw()
         love.graphics.draw(self.image, self.quad)
         if self.highlighted and self.textObj then
             love.graphics.setColor(math.cos(v * 5) + 1.5, math.cos(v * 5) + 1.5, math.cos(v * 5) + 1.5)
+            local x, y = love.graphics.transformPoint(0, 0)
+
             love.graphics.push()
-            love.graphics.rotate(camera.r)
-            love.graphics.translate(0, -48)
-            love.graphics.draw(self.textObj, 0, math.cos(v * 5) * 16)
+            love.graphics.origin()
+            love.graphics.translate(x, y)
+            local s = math.abs(0.5 + math.cos(v * 5) * 0.125)
+            love.graphics.scale(s, s)
+            love.graphics.draw(self.textObj, 0, 0, 0, 1, 1, self.textObj:getWidth() / 2, self.textObj:getHeight() / 2)
             love.graphics.pop()
         end
     end

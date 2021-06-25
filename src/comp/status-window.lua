@@ -308,6 +308,10 @@ function StatusWindow:createItemSelectedSection()
     self.itemSection:addElement(self.selectSection)
 end
 
+function StatusWindow:onSubtract(item)
+    self:regenItems()
+end
+
 function StatusWindow:onPickUp(item)
     local id =
         findFirstIndexOf(

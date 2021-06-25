@@ -132,7 +132,6 @@ function Level:load(pathName)
                     end
                 end
             end
-            echo(layer)
         end
     end
 end
