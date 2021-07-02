@@ -1,5 +1,5 @@
 local Component = require "component"
-local PhysicsComponent = require "comp.physics"
+local PhysicsComp = require "comp.physics"
 local LoadedItems = require "defaultItems"
 local guiStyle = require "gui-style"
 -- local imgui = require"imgui"
@@ -128,7 +128,7 @@ end
 function Item:createBody()
     assert(self.shapeFunc)
     self.shape = self.shapeFunc() or nil
-    self.physBody = PhysicsComponent(self.parent, "dynamic")
+    self.physBody = PhysicsComp(self.parent, "dynamic")
 
     self.fixture = self.physBody:newFixture(self.shape, self.density)
     if #self.category > 0 then
@@ -139,6 +139,7 @@ function Item:createBody()
     end
     self.fixture:setFriction(self.friction)
     self.fixture:setRestitution(self.restitution)
+    self.fixture:setUserData(self)
     self.physBody:setMass(self.mass)
 end
 

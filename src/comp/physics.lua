@@ -1,12 +1,12 @@
 local Component = require "component"
 local Fixture = require "comp.fixture"
-local PhysicsComponent = inheritsFrom(Component)
+local PhysicsComp = inheritsFrom(Component)
 
-function PhysicsComponent:getName()
-    return "PhysicsComponent"
+function PhysicsComp:getName()
+    return "PhysicsComp"
 end
 
-function PhysicsComponent:init(parent, type, ...)
+function PhysicsComp:init(parent, type, ...)
     Component.init(self, parent, ...)
     type = type or "dynamic"
     local ex, ey = Component.getPosition(self)
@@ -23,64 +23,64 @@ function PhysicsComponent:init(parent, type, ...)
     self.r = er
 end
 
-function PhysicsComponent:setFixedRotation(v)
+function PhysicsComp:setFixedRotation(v)
     assert(self.body ~= nil, "Body is null")
     return self.body:setFixedRotation(v)
 end
 
-function PhysicsComponent:setActive(v)
+function PhysicsComp:setActive(v)
     assert(self.body ~= nil, "Body is null")
     return self.body:setActive(v)
 end
 
-function PhysicsComponent:setMass(v)
+function PhysicsComp:setMass(v)
     assert(self.body ~= nil, "Body is null")
     self.mass = v or 0
     self.body:setMass(v or 0)
 end
 
-function PhysicsComponent:useCCD(v)
+function PhysicsComp:useCCD(v)
     assert(self.body ~= nil, "Body is null")
     return self.body:setBullet(v)
 end
 
-function PhysicsComponent:getLinearVelocity()
+function PhysicsComp:getLinearVelocity()
     assert(self.body ~= nil, "Body is null")
     return self.body:getLinearVelocity()
 end
 
-function PhysicsComponent:getLocalVector(worldX, worldY)
+function PhysicsComp:getLocalVector(worldX, worldY)
     assert(self.body ~= nil, "Body is null")
     return self.body:getLocalVector(worldX, worldY)
 end
 
-function PhysicsComponent:getLocalPoint(worldX, worldY)
+function PhysicsComp:getLocalPoint(worldX, worldY)
     assert(self.body ~= nil, "Body is null")
     return self.body:getLocalPoint(worldX, worldY)
 end
 
-function PhysicsComponent:getWorldPoint(localX, localY)
+function PhysicsComp:getWorldPoint(localX, localY)
     assert(self.body ~= nil, "Body is null")
     return self.body:getWorldPoint(localX, localY)
 end
 
-function PhysicsComponent:getWorldVector(localX, localY)
+function PhysicsComp:getWorldVector(localX, localY)
     assert(self.body ~= nil, "Body is null")
     return self.body:getWorldVector(localX, localY)
 end
 
-function PhysicsComponent:getContacts()
+function PhysicsComp:getContacts()
     assert(self.body ~= nil, "Body is null")
     return self.body:getContacts()
 end
 
-function PhysicsComponent:setPosition(x, y, z)
+function PhysicsComp:setPosition(x, y, z)
     assert(self.body ~= nil, "Body is null")
     Component.setPosition(self, x, y, z)
     self.body:setPosition(x, y)
 end
 
-function PhysicsComponent:getPosition()
+function PhysicsComp:getPosition()
     assert(self.body ~= nil, "Body is null")
     local x, y = self.body:getPosition()
     self.x = x
@@ -89,37 +89,37 @@ function PhysicsComponent:getPosition()
     return self.x, self.y
 end
 
-function PhysicsComponent:setRotation(r)
+function PhysicsComp:setRotation(r)
     assert(self.body ~= nil, "Body is null")
     Component.setRotation(self, r)
     self.body:setAngle(r)
 end
 
-function PhysicsComponent:getRotation()
+function PhysicsComp:getRotation()
     assert(self.body ~= nil, "Body is null")
     self.r = self.body:getRotation()
     Component.setRotation(self, self.r)
     return self.r
 end
 
-function PhysicsComponent:setAngularVelocity(v)
+function PhysicsComp:setAngularVelocity(v)
     assert(self.body ~= nil, "Body is null")
     self.body:setAngularVelocity(v)
 end
 
-function PhysicsComponent:applyLinearImpulse(vx, vy)
+function PhysicsComp:applyLinearImpulse(vx, vy)
     assert(self.body ~= nil, "Body is null")
     self.body:applyLinearImpulse(vx, vy)
 end
 
-function PhysicsComponent:newFixture(shape, density)
+function PhysicsComp:newFixture(shape, density)
     if shape.isa and shape:isa(Shape) then
         return Fixture(self.parent, shape, density)
     end
     return love.physics.newFixture(self.body, shape, density)
 end
 
-function PhysicsComponent:update(dt)
+function PhysicsComp:update(dt)
     --assert(self.body ~= nil, "Body is null")
     if self.body then
         self.lastX = self.x
@@ -133,7 +133,7 @@ function PhysicsComponent:update(dt)
     end
 end
 
-function PhysicsComponent:draw()
+function PhysicsComp:draw()
     local camera = self.parent.level.camera
     assert(self.body ~= nil, "Body is null")
     if _G.debugDrawPhysics then
@@ -165,7 +165,7 @@ function PhysicsComponent:draw()
     end
 end
 
-function PhysicsComponent:destroy()
+function PhysicsComp:destroy()
     if self.body then
         self.body:release()
         self.body = nil
@@ -173,6 +173,6 @@ function PhysicsComponent:destroy()
     Component.destroy(self)
 end
 
-_G.PhysicsComponent = PhysicsComponent
+_G.PhysicsComp = PhysicsComp
 
-return PhysicsComponent
+return PhysicsComp

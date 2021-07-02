@@ -1,5 +1,5 @@
 local Component = require "component"
-local PhysicsComponent = require "comp.physics"
+local PhysicsComp = require "comp.physics"
 
 -- local imgui = require"imgui"
 local Bullet = inheritsFrom(Component)
@@ -17,7 +17,7 @@ function Bullet:init(parent, ...)
     self.mask = self.mask or {3}
     self.restitution = self.restitution or 1
     self.mass = self.mass or 0.0125
-    self.physBody = PhysicsComponent(parent, "dynamic")
+    self.physBody = PhysicsComp(parent, "dynamic")
     self.physBody:useCCD(true)
     self.shape = love.physics.newCircleShape(self.radius)
 
@@ -27,6 +27,7 @@ function Bullet:init(parent, ...)
     self.fixture:setRestitution(self.restitution)
     self.fixture:setCategory(self.category)
     self.fixture:setMask(self.mask)
+    self.fixture:setUserData(self)
     self.physBody:setMass(self.mass)
     local vx, vy = self.dirX * self.force, self.dirY * self.force
     self.physBody:applyLinearImpulse(vx, vy)

@@ -1,5 +1,5 @@
 local Component = require "component"
-local PhysicsComponent = require "comp.physics"
+local PhysicsComp = require "comp.physics"
 local Inventory = require "comp.inventory"
 local StatusWindow = require "comp.status-window"
 local HeadComponent = require "comp.head"

@@ -1,5 +1,5 @@
 local Component = require "component"
-local PhysicsComponent = require "comp.physics"
+local PhysicsComp = require "comp.physics"
 local WeaponComponent = require "comp.weapon"
 local Body = inheritsFrom(Component)
 
@@ -39,7 +39,7 @@ function Body:init(parent, data, ...)
     self.currentNormalY = -1
     self.baseName = "default"
 
-    self.physComp = parent:getComponent(PhysicsComponent) or PhysicsComponent(parent, "dynamic")
+    self.physComp = parent:getComponent(PhysicsComp) or PhysicsComp(parent, "dynamic")
 
     self.physComp:setFixedRotation(true)
     -- self.physComp:useCCD(true)

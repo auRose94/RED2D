@@ -34,6 +34,7 @@ function module.createPhysics(self)
     self.bodyFixture:setRestitution(0.015)
     self.bodyFixture:setCategory(6)
     self.bodyFixture:setMask(2, 3, 6)
+    self.bodyFixture:setUserData(self)
 
     self.bottomShape = CircleShape(self.parent, 0, ballYOffset, 10)
     self.bottomFixture = self.physComp:newFixture(self.bottomShape, 2)
@@ -41,6 +42,7 @@ function module.createPhysics(self)
     self.bottomFixture:setFriction(0.25)
     self.bottomFixture:setCategory(6)
     self.bottomFixture:setMask(2, 3, 6)
+    self.bottomFixture:setUserData(self)
 end
 
 function NewBase(x, y)

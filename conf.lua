@@ -15,7 +15,7 @@ local cPath = love.filesystem.getCRequirePath()
 cPath = cPath .. ";3rdParty/build/??"
 love.filesystem.setCRequirePath(cPath)
 
-_G.debugDrawPhysics = false
+_G.debugDrawPhysics = true
 _G.showTreeEditor = false
 _G.showDebugTools = false
 _G.showGUIDemo = false

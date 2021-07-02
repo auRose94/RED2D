@@ -123,6 +123,7 @@ function TileMap:loadLevel(location, usePhysics)
                             local fixture = love.physics.newFixture(self.body, shape, tileData.density)
                             fixture:setFriction(tileData.friction)
                             fixture:setRestitution(tileData.restitution)
+                            fixture:setUserData(self)
                             if #tileData.category > 0 then
                                 fixture:setCategory(unpack(tileData.category))
                             end
@@ -190,6 +191,7 @@ function TileMap:loadLevel(location, usePhysics)
             if #tileData.mask > 0 then
                 fixture:setMask(unpack(tileData.mask))
             end
+            fixture:setUserData(self)
 
             table.insert(self.shapesMap, shape)
             table.insert(self.fixturesMap, fixture)

@@ -8,6 +8,11 @@ function Component:setPosition(...)
     self.parent:setPosition(...)
 end
 
+function Component:getWorldPosition()
+    assert(self.parent, "No parent")
+    return self.parent:getWorldPosition()
+end
+
 function Component:getPosition()
     assert(self.parent, "No parent")
     return self.parent:getPosition()
