@@ -82,7 +82,7 @@ function Weapon:unequip()
 end
 
 function Weapon:isPlayer()
-    return self.entity and isa(self.entity, PlayerComponent)
+    return self.entity and isa(self.entity, Player)
 end
 
 function Weapon:isEquipped()

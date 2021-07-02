@@ -28,20 +28,41 @@ function EnemyDrone:init(parent, playerIndex, joystickIndex, ...)
     assert(headParent, "No head point found")
     --local headComp = HeadComponent(headParent, HeadDroneData)
     --self.headComp = headComp
+end
 
-    local width = 1000
-    local ext = 500
-    local leftVerts = {0.0, 0.0, width, ext, width, -ext}
-    self.viewLeftShape = love.physics.newPolygonShape(leftVerts)
-    self.viewLeftFixture = love.physics.newFixture(self.physComp.body, self.viewLeftShape, 0)
-    self.viewLeftFixture:setSensor(true)
-    self.viewLeftFixture:setUserData(self)
+function EnemyDrone:headPoint()
+    return self:transformPoint(8, -3)
+end
 
-    local rightVerts = {0.0, 0.0, -width, ext, -width, -ext}
-    self.viewRightShape = love.physics.newPolygonShape(rightVerts)
-    self.viewRightFixture = love.physics.newFixture(self.physComp.body, self.viewRightShape, 0)
-    self.viewRightFixture:setSensor(true)
-    self.viewRightFixture:setUserData(self)
+function EnemyDrone:scan(angle)
+    local world = self.parent.level.world
+    local sx, sy = self:headPoint()
+    local ext = 400
+    local px, py = self:transformPoint(math.cos(angle) * ext, math.sin(angle) * ext)
+    --echo(sx, sy, px, py)
+
+    local hitList = {}
+    function callback(fixture, x, y, xn, yn, fraction)
+        local hit = {
+            fixture = fixture,
+            x = x,
+            y = y,
+            xn = xn,
+            yn = yn,
+            fraction = fraction,
+            distance = math.dist(x, y, sx, sy)
+        }
+        table.insert(hitList, #hitList, hit)
+        return 1
+    end
+    world:rayCast(sx, sy, px, py, callback)
+    table.sort(
+        hitList,
+        function(left, right)
+            return left.fraction < right.fraction
+        end
+    )
+    return hitList
 end
 
 function EnemyDrone:update(dt)
@@ -49,72 +70,45 @@ function EnemyDrone:update(dt)
     local world = self.parent.level.world
 
     local playerFound = nil
-    local contacts = self.physComp.body:getContacts()
-    for i, contact in ipairs(contacts) do
-        local fixtureA, fixtureB = contact:getFixtures()
-        function onContact(fixture, otherFixture)
-            local entity = otherFixture:getUserData()
-            if entity and contact:isTouching() then
-                local className = entity:getName()
-                if className == "PlayerComponent" then
-                    playerFound = entity
-                end
+    self.hitLists = {}
+    for i = -180, 180, 2 do
+        local hitList = self:scan(math.rad(i))
+        for hi, hit in ipairs(hitList) do
+            local entity = hit.fixture:getUserData()
+            if entity:getName() == "Player" and hi == 1 then
+                playerFound = entity
+                table.insert(self.hitLists, hitList)
             end
         end
-        if fixtureA == self.viewLeftFixture then
-            onContact(fixtureA, fixtureB)
-        end
-        if fixtureA == self.viewRightFixture then
-            onContact(fixtureA, fixtureB)
-        end
-        if fixtureB == self.viewLeftFixture then
-            onContact(fixtureB, fixtureA)
-        end
-        if fixtureB == self.viewRightFixture then
-            onContact(fixtureB, fixtureA)
-        end
     end
-    self.hitList = {}
-    if playerFound then
-        local sx, sy = self:getPosition()
-        local px, py = playerFound:getPosition()
-        if sx ~= px and sy ~= py then
-            function callback(fixture, x, y, xn, yn, fraction)
-                local hit = {}
-                hit.fixture = fixture
-                hit.x, hit.y = x, y
-                hit.xn, hit.yn = xn, yn
-                hit.fraction = fraction
-
-                table.insert(self.hitList, hit)
-                return 1
-            end
-            world:rayCast(sx, sy, px, py, callback)
-        end
-    end
-    if #self.hitList >= 1 then
-        local last = self.hitList[#self.hitList]
-        if last.fixture:getUserData() ~= playerFound then
-            self.hitList = {}
-        end
-    end
+    echo(playerFound ~= nil)
     --self.headComp.direction = self.direction
 
     Body.update(self, dt)
 end
 
 function EnemyDrone:draw()
-    love.graphics.push()
-    love.graphics.origin()
-    echo(self.hitList)
-    for i, hit in ipairs(self.hitList) do
-        love.graphics.setColor(255, 0, 0)
-        love.graphics.print(i, hit.x, hit.y) -- Prints the hit order besides the point.
-        love.graphics.circle("line", hit.x, hit.y, 3)
-        love.graphics.setColor(0, 255, 0)
-        love.graphics.line(hit.x, hit.y, hit.x + hit.xn * 25, hit.y + hit.yn * 25)
+    if _G.debugDrawNPCView then
+        local camera = self.parent.level.camera
+        local x, y = self:headPoint()
+        love.graphics.push()
+        love.graphics.origin()
+        love.graphics.applyTransform(camera:getTransform())
+        if self.hitLists then
+            for hi, hits in ipairs(self.hitLists) do
+                for i, hit in ipairs(hits) do
+                    love.graphics.setColor(0, 0, 255, 255)
+                    love.graphics.line(x, y, hit.x, hit.y)
+                    love.graphics.setColor(255, 0, 0, 255)
+                    love.graphics.print(i, hit.x, hit.y) -- Prints the hit order besides the point.
+                    love.graphics.circle("line", hit.x, hit.y, 1)
+                    love.graphics.setColor(0, 255, 0, 255)
+                    love.graphics.line(hit.x, hit.y, hit.x + hit.xn * 25, hit.y + hit.yn * 25)
+                end
+            end
+        end
+        love.graphics.pop()
     end
-    love.graphics.pop()
 
     Body.draw(self)
 end

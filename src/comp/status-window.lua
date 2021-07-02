@@ -18,8 +18,8 @@ end
 function StatusWindow:init(parent)
     Component.init(self, parent)
     self.inventory = self:getComponent(Inventory)
-    local PlayerComponent = _G.PlayerComponent or require "comp.player"
-    self.player = self:getComponent(PlayerComponent)
+    local Player = _G.Player or require "comp.player"
+    self.player = self:getComponent(Player)
 
     self.state = {
         selected = 1,

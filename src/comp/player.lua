@@ -8,13 +8,13 @@ local HeadRedData = require "head.red"
 local BodyRedData = require "body.red"
 local input = require "input"
 
-local PlayerComponent = inheritsFrom(Body)
+local Player = inheritsFrom(Body)
 
-function PlayerComponent:getName()
-    return "PlayerComponent"
+function Player:getName()
+    return "Player"
 end
 
-function PlayerComponent:init(parent, playerIndex, joystickIndex, ...)
+function Player:init(parent, playerIndex, joystickIndex, ...)
     Body.init(self, parent, BodyRedData, ...)
     self.parent.drawOrder = 1
 
@@ -35,7 +35,7 @@ function PlayerComponent:init(parent, playerIndex, joystickIndex, ...)
     self.statusWindow = StatusWindow(parent)
 end
 
-function PlayerComponent:registerControls()
+function Player:registerControls()
     local playerIndex, joystickIndex = self.playerIndex, self.joystickIndex
     self.leftControl =
         input.createInput(
@@ -253,7 +253,7 @@ function PlayerComponent:registerControls()
     )
 end
 
-function PlayerComponent:getAimNormal(invertY)
+function Player:getAimNormal(invertY)
     local aim = self.aimDirControl
     local nx, ny = 0, 0
     if aim:held() then
@@ -272,7 +272,7 @@ function PlayerComponent:getAimNormal(invertY)
     return math.normalize(nx, ny)
 end
 
-function PlayerComponent:update(dt)
+function Player:update(dt)
     local inventory = self.inventory
 
     self.headComp.direction = self.direction
@@ -334,6 +334,6 @@ function PlayerComponent:update(dt)
     Body.update(self, dt)
 end
 
-_G.PlayerComponent = PlayerComponent
+_G.Player = Player
 
-return PlayerComponent
+return Player
