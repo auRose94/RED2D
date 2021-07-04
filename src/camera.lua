@@ -6,6 +6,7 @@ _G.cameras = {}
 function Camera:init(level)
     EntityModel.init(self, level, "Camera")
     self.layers = {}
+    self.drawOrder = 1
     local scale = 1.325
     self.sx = scale -- 1.125
 
@@ -77,13 +78,15 @@ function Camera:getCenter()
 end
 
 function Camera:mousePosition()
-    return self:getWorldPoint(love.mouse.getX(), love.mouse.getY())
+    return self:getWorldPoint(love.mouse.getPosition())
 end
 
 function Camera:newEntityLayer(scale, entities)
     self:newLayer(
         scale,
         function()
+            love.graphics.push()
+            love.graphics.replaceTransform(self:getTransform())
             table.sort(
                 entities,
                 function(a, b)
@@ -92,13 +95,10 @@ function Camera:newEntityLayer(scale, entities)
                     end
                 end
             )
-            love.graphics.push()
-            for i = 1, #entities do
-                local entity = entities[i]
-                if entity then
-                    love.graphics.replaceTransform(self:getTransform())
-                    entity:draw()
-                end
+            for i, entity in ipairs(entities) do
+                love.graphics.push()
+                entity:draw()
+                love.graphics.pop()
             end
             love.graphics.pop()
         end

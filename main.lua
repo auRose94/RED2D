@@ -7,7 +7,6 @@ local Level = require "level"
 local TestingLevel = require ".levels.testing"
 local input = require "input"
 local EditorWindow = require "tree-editor-window"
-local PixelEditorWindow = require "pixel-editor-window"
 local Entity = require "entity"
 local Player = require "comp.player"
 local TileMap = require "comp.tilemap"
@@ -15,13 +14,18 @@ local Item = require "comp.item"
 local Weapon = require "comp.weapon"
 local OraLoader = require "ora-loader"
 
+local DebugTools = require "debug-tools"
+local debugTools = nil
+
 local level = nil
 local accumulator = 0
+local lastDebugDown = false
 
 function love.load()
     -- imgui.Init()
     guiStyle.load()
     level = TestingLevel()
+    debugTools = DebugTools(level)
 end
 
 function love.quit()
@@ -30,6 +34,11 @@ end
 
 function love.update(dt)
     input.handleGUIControls()
+    local debugDown = love.keyboard.isDown("f12")
+    if debugDown and not lastDebugDown then
+        _G.showDebugTools = not _G.showDebugTools
+    end
+    lastDebugDown = debugDown
     -- imgui.NewFrame()
     level:update(dt)
     input.update(dt)
@@ -37,13 +46,17 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.origin()
     local w, h = love.graphics.getPixelDimensions()
     love.graphics.setBackgroundColor(colors.black)
     level.camera:dispatch()
+    if showDebugTools then
+        debugTools:draw()
+    end
 
     if showFPS then
-        local rFPS = 1 / love.timer.getDelta()
-        local fps = love.timer.getFPS()
+        local rFPS = 1 / love.timer.getDelta() -- real
+        local fps = love.timer.getFPS() -- calculated
         local string = "CFPS: " .. fps .. "    AFPS: " .. string.format("%.3f", rFPS)
         local scale = 0.5
         love.graphics.setColor(colors.white)
@@ -154,8 +167,10 @@ function love.filedropped(file)
         -- lua script - Modded Style
         local f = assert(loadfile(filename))
         level = f()()
+        debugTools = DebugTools(level)
     elseif ext == ".ora" then
         level = Level()
         level:load(file)
+        debugTools = DebugTools(level)
     end
 end

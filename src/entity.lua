@@ -3,7 +3,9 @@ local Entity = inheritsFrom(nil)
 
 function Entity:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
     assert(level, "No level given")
-    level:addEntity(self)
+    if self ~= level then
+        level:addEntity(self)
+    end
     self.level = level
     self.x = x
     self.y = y
@@ -171,7 +173,7 @@ function Entity:getTransform()
             love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
         self.touched = false
     end
-    if self.parent then
+    if self.parent and self.transform then
         return self.parent:getTransform() * self.transform
     end
     return self.transform
@@ -278,7 +280,11 @@ end
 
 function Entity:setParent(parent)
     if parent then
+        if self.parent then
+            self.parent:removeChild(self)
+        end
         self.parent = parent
+        self.level = parent.level
         table.insert(parent.children, self)
     else
         self.parent:removeChild(self)

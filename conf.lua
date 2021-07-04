@@ -15,13 +15,11 @@ local cPath = love.filesystem.getCRequirePath()
 cPath = cPath .. ";3rdParty/build/??"
 love.filesystem.setCRequirePath(cPath)
 
+_G.showDebugTools = true
 _G.debugDrawPhysics = false
 _G.debugDrawNPCView = false
 _G.showTreeEditor = false
-_G.showDebugTools = false
-_G.showGUIDemo = false
 _G.showFPS = true
-_G.showPixelEditor = false
 _G.maxFrameRate = 60
 
 function love.conf(t)
@@ -44,7 +42,7 @@ function love.conf(t)
     t.window.fullscreen = false -- Enable fullscreen (boolean)
     t.window.fullscreentype = "desktop" -- Choose between "desktop" fullscreen or "exclusive" fullscreen mode (string)
     t.window.vsync = 1 -- Vertical sync mode (number)
-    t.window.msaa = 8 -- The number of samples to use with multi-sampled antialiasing (number)
+    t.window.msaa = 16 -- The number of samples to use with multi-sampled antialiasing (number)
     t.window.depth = 8 -- The number of bits per sample in the depth buffer
     t.window.stencil = 8 -- The number of bits per sample in the stencil buffer
     t.window.display = 1 -- Index of the monitor to show the window in (number)

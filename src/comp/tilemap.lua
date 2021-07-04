@@ -108,7 +108,8 @@ function TileMap:loadLevel(location, usePhysics)
                     local shapes = {}
                     local fixtures = {}
                     if tileData.quad then
-                        self.indexMap[index] = self.spriteBatch:add(tileData.quad, (x * size), (y * size), 0, 1)
+                        self.indexMap[index] =
+                            self.spriteBatch:add(tileData.quad, (x * size), (y * size), 0, 1.025, 1.025)
                     end
                     if usePhysics then
                         if tileData.edges then

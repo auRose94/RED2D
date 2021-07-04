@@ -81,7 +81,8 @@ function EnemyDrone:update(dt)
             end
         end
     end
-    echo(playerFound ~= nil)
+
+    --echo(playerFound ~= nil)
     --self.headComp.direction = self.direction
 
     Body.update(self, dt)

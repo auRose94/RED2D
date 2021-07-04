@@ -19,6 +19,8 @@ function Window:init(parent, ...)
     self.elements = {}
     self.offx = 0
     self.offy = 0
+    self.rex = 0
+    self.rey = 0
     self:updateText(self.title)
 end
 
@@ -70,54 +72,81 @@ function Window:mouseInsideRect(rX, rY, rW, rH)
     return polyPoint(v, love.mouse.getPosition())
 end
 
-function Window:handleUI()
-    local mx, my = love.mouse.getPosition()
-    local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
-    local mdown = love.mouse.isDown(1)
-    if self:mouseInsideRect(self.x, self.y, self.width, self.textSize * self.fontScale) then
-        if mdown and not self.lastDown then
-            self.offx = self.x - wmx
-            self.offy = self.y - wmy
-        end
-    end
-    if self.lastDown and not mdown then
-        self.offx = 0
-        self.offy = 0
-    end
-    if mdown and self.lastDown and (self.offx ~= 0 or self.offy ~= 0) then
-        self.x = self.offx + wmx
-        self.y = self.offy + wmy
-    end
-    self.lastDown = mdown
-    love.graphics.translate(self.x, self.y + 8)
-    local x1, y1 = love.graphics.transformPoint(self.x, self.y)
-    local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
-    local width, height = math.abs(x2 - x1), math.abs(y2 - y1)
-
-    for _, elem in ipairs(self.elements) do
-        if elem and not elem.hide and type(elem.draw) == "function" then
-            love.graphics.setScissor(x1, y1, width, height)
-            love.graphics.push()
-            elem:draw()
-            love.graphics.pop()
-            love.graphics.setScissor()
-        end
-    end
-end
-
 function Window:draw()
     if self.show then
         local width, height = self.width, self.height
-        local x, y = self.x, self.y
-        local textX, textY = x + 3, y
+        local mx, my = love.mouse.getPosition()
+        local wmx, wmy = love.graphics.inverseTransformPoint(mx, my)
+        local mdown = love.mouse.isDown(1)
+        local crSize = 8
+        if self:mouseInsideRect(self.x, self.y, self.width, self.textSize * self.fontScale) then
+            if mdown and not self.lastDown then
+                self.offx = self.x - wmx
+                self.offy = self.y - wmy
+            end
+        end
+
+        local coColor = colors.darkPink
+        if self:mouseInsideRect(self.x + self.width - crSize, self.y + self.height - crSize, crSize, crSize) then
+            if mdown and not self.lastDown then
+                self.rex = self.x + self.width - wmx
+                self.rey = self.y + self.height - wmy
+            end
+        end
+        if self.lastDown and not mdown then
+            self.offx = 0
+            self.offy = 0
+            self.rex = 0
+            self.rey = 0
+        end
+        if mdown and self.lastDown then
+            if self.offx ~= 0 or self.offy ~= 0 then
+                self.x = self.offx + wmx
+                self.y = self.offy + wmy
+            end
+            if self.rex ~= 0 or self.rey ~= 0 then
+                coColor = colors.orange
+                self.width = self.rex - self.x + wmx
+                self.height = self.rey - self.y + wmy
+            end
+        end
+
+        love.graphics.push()
+
+        if self.parent == self.parent.level.camera then
+            love.graphics.origin()
+        end
 
         love.graphics.setColor(colors.red)
-        love.graphics.rectangle("fill", x, y, width, height)
+        love.graphics.rectangle("fill", self.x, self.y, width, height)
         love.graphics.setColor(colors.white)
         love.graphics.setLineWidth(self.lineWidth)
-        love.graphics.rectangle("line", x, y, width, height)
-        love.graphics.draw(self.titleObj, textX, textY, 0, self.fontScale, self.fontScale)
-        self:handleUI()
+        love.graphics.rectangle("line", self.x, self.y, width, height)
+        love.graphics.setColor(coColor)
+        love.graphics.rectangle("fill", self.x + self.width - crSize, self.y + self.height - crSize, crSize, crSize)
+        love.graphics.setColor(colors.white)
+        love.graphics.draw(self.titleObj, self.x + 3, self.y, 0, self.fontScale, self.fontScale)
+
+        self.lastDown = mdown
+
+        self.transform =
+            love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
+        local x1, y1 = love.graphics.transformPoint(self.x, self.y)
+        local x2, y2 = love.graphics.transformPoint(self.x + self.width, self.y + self.height)
+        local width, height = math.abs(x2 - x1), math.abs(y2 - y1)
+        love.graphics.applyTransform(self.transform)
+        love.graphics.translate(0, 8)
+
+        for _, elem in ipairs(self.elements) do
+            if elem and not elem.hide and type(elem.draw) == "function" then
+                love.graphics.setScissor(x1, y1, width, height)
+                love.graphics.push()
+                elem:draw()
+                love.graphics.pop()
+                love.graphics.setScissor()
+            end
+        end
+        love.graphics.pop()
     end
 end
 

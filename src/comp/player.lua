@@ -259,8 +259,6 @@ function Player:getAimNormal(invertY)
     if aim:held() then
         -- Joystick
         nx, ny = unpack(aim.value)
-        local width, height = love.graphics.getPixelDimensions()
-        nx, ny = nx * (width / 4), ny * (height / 4)
     else
         -- Mouse
         local camera = self.parent.level.camera

@@ -10,9 +10,9 @@ function Button:init(...)
 
     self.lineWidth = self.lineWidth or 0.5
     self.textSize = self.textSize or 16
-    self.fontScale = self.fontScale or 0.5
+    self.fontScale = self.fontScale or 0.65
     self.width = self.width or 75
-    self.height = self.height or 8
+    self.height = self.height or 12
     self.callback = self.callback or nil
     self.maxWidth = self.maxWidth or 500
     self.maxHeight = self.maxHeight or self.textSize
@@ -42,27 +42,45 @@ function Button:updateText(text)
     self.textObj = love.graphics.newText(font, text)
 end
 
+function Button:getRight()
+    return self.x + self:getWidth()
+end
+
+function Button:getBottom()
+    return self.y + self:getHeight()
+end
+
+function Button:getWidth()
+    local width = self.width
+    local tW = self.textObj:getWidth()
+    if tW > width then
+        width = tW
+    end
+    if self.maxWidth < width then
+        width = self.maxWidth
+    end
+    return width
+end
+
+function Button:getHeight()
+    local height = self.height
+    local tH = self.textObj:getHeight()
+    if tH > height then
+        height = tH
+    end
+    if self.maxHeight < height then
+        height = self.maxHeight
+    end
+    return height
+end
+
 function Button:draw()
     if not self.hide then
         local fontScale = self.fontScale
         local x, y = self.x, self.y
         local textObj = self.textObj
-        local width, height = self.width, self.height
-        local tW, tH = textObj:getDimensions()
+        local width, height = self:getWidth(), self:getHeight()
         local mdown = love.mouse.isDown(1)
-
-        if tW > width then
-            width = tW
-        end
-        if tH > height then
-            height = tH
-        end
-        if self.maxWidth < width then
-            width = self.maxWidth
-        end
-        if self.maxHeight < height then
-            height = self.maxHeight
-        end
 
         local textWidth, textHeight = textObj:getDimensions()
         local textX, textY = x + (width - (textWidth * fontScale)) / 2, y + (height - (textHeight * fontScale)) / 2

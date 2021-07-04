@@ -12,6 +12,7 @@ end
 
 function Weapon:init(parent, data, ...)
     Item.init(self, parent, data, ...)
+    self.parent.drawOrder = 2
     if type(data) == "string" then
         data = Item.findItemById(data) or Item.findItemByName(data)
     end
@@ -100,13 +101,14 @@ function Weapon:primary()
         local level = self.parent.level
         local camera = level.camera
         local trans = self:getTransform()
+        local x, y = trans:transformPoint(0, 0)
+        local fx, fy = trans:transformPoint(1, 0)
 
-        local mx, my = camera:mousePosition()
-        local x, y = trans:transformPoint(unpack(self.aimPoint))
-        local dx, dy = math.normalize(mx - x, my - y)
+        local sx, sy = trans:transformPoint(unpack(self.aimPoint))
+        local dx, dy = math.normalize((fx - x), (fy - y))
 
         local offset = 1.0
-        local bulletEnt = Entity(level, "Bullet", x + (dx * offset), y + (dy * offset))
+        local bulletEnt = Entity(level, "Bullet", sx + (dx * offset), sy + (dy * offset))
         local bullet =
             Bullet(
             bulletEnt,
