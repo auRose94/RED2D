@@ -1,9 +1,11 @@
-local DebugTools = inheritsFrom(nil)
+local EditorWindow = require "tree-editor-window"
 local Window = require "gui-window"
 local Button = require "elem-button"
 local Entity = require "entity"
+local DebugTools = inheritsFrom(Entity)
 
-function DebugTools:init(level)
+function DebugTools:init()
+    Entity.init(self, _G.level)
     self.debugDrawPhysics =
         Button(
         "Debug Physics",
@@ -53,24 +55,15 @@ function DebugTools:init(level)
             end
         }
     )
+    self.treeEditor = EditorWindow(self)
     self.elements = {
         self.debugDrawPhysics,
         self.debugDrawNPCView,
         self.showTreeEditor,
         self.showFPS,
-        self.showDebugTools
+        self.showDebugTools,
+        self.treeEditor
     }
-end
-
-function DebugTools:draw()
-    love.graphics.push()
-    love.graphics.origin()
-    for i, comp in ipairs(self.elements) do
-        love.graphics.push()
-        comp:draw()
-        love.graphics.pop()
-    end
-    love.graphics.pop()
 end
 
 return DebugTools

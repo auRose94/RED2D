@@ -6,7 +6,6 @@ _G.cameras = {}
 function Camera:init(level)
     EntityModel.init(self, level, "Camera")
     self.layers = {}
-    self.drawOrder = 1
     local scale = 1.325
     self.sx = scale -- 1.125
 
@@ -81,35 +80,29 @@ function Camera:mousePosition()
     return self:getWorldPoint(love.mouse.getPosition())
 end
 
-function Camera:newEntityLayer(scale, entities)
-    self:newLayer(
-        scale,
-        function()
-            love.graphics.push()
-            love.graphics.replaceTransform(self:getTransform())
-            table.sort(
-                entities,
-                function(a, b)
-                    if a.drawOrder < b.drawOrder then
-                        return true
-                    end
-                end
-            )
-            for i, entity in ipairs(entities) do
-                love.graphics.push()
-                entity:draw()
-                love.graphics.pop()
-            end
-            love.graphics.pop()
+function Camera:layerDraw(children)
+    love.graphics.push()
+    love.graphics.applyTransform(self:getTransform())
+
+    table.sort(
+        children,
+        function(a, b)
+            return a.drawOrder < b.drawOrder
         end
     )
+    for _, c in pairs(children) do
+        love.graphics.push()
+        c:draw()
+        love.graphics.pop()
+    end
+    love.graphics.pop()
 end
 
-function Camera:newLayer(scale, func)
+function Camera:newEntityLayer(scale, children)
     table.insert(
         self.layers,
         {
-            draw = func,
+            children = children,
             scale = scale
         }
     )
@@ -124,7 +117,17 @@ end
 function Camera:dispatch()
     _G.camera = self
     for _, v in ipairs(self.layers) do
-        v.draw()
+        local items = {}
+        for _, e in pairs(v.children) do
+            table.insert(items, e)
+            e:dumpAllEntities(
+                function(entity)
+                    table.insert(items, entity)
+                end
+            )
+        end
+        print(#items)
+        self:layerDraw(items)
     end
     _G.camera = nil
 end

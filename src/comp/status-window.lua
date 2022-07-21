@@ -61,6 +61,20 @@ function StatusWindow:init(parent)
     self:regenInfo()
 end
 
+function StatusWindow:onResize()
+    self:createOptionsBar()
+
+    self:createInfoSection()
+    self:createItemSection()
+    self:createQuestSection()
+
+    self:createItemSelectedSection()
+
+    self:regenQuest()
+    self:regenItems()
+    self:regenInfo()
+end
+
 function StatusWindow:createOptionsBar()
     local inc = self.window.width / 3
     self.infoButton =
@@ -413,9 +427,24 @@ function StatusWindow:regenInfo()
             }
         )
     )
-    self.healthSection = Element("Health Section")
+    self.healthSection =
+        Element(
+        "Health Section",
+        self:getSectionConfig(),
+        {
+            width = self.scrollWidth,
+            hide = self.state.inventory.selected == 0,
+            x = self.scrollWidth
+        },
+        Scroll(self:getScrollConfig(), Button("Health " .. tostring(self.player.health, coreButtonConfig)))
+    )
+
     self.statsSection = Element("Stats Section")
     self.logSection = Element("Log Section")
+
+    self.infoSection:addElement(self.healthSection)
+    self.infoSection:addElement(self.statsSection)
+    self.infoSection:addElement(self.logSection)
 end
 
 function StatusWindow:regenQuest()

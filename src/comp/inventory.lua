@@ -90,6 +90,7 @@ function Inventory:drop(item, number)
         local count = math.max(1, math.min(self.items[found][1], number))
         local dx, dy = self:getPosition()
         local dropEntity = Entity(level, item.name, dx, dy)
+        dropEntity.drawOrder = 0.01
         local dropped = item:class()(dropEntity, item.typeName)
         dropped.count = number
         local newCount = self.items[found][1] - count

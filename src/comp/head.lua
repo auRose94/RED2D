@@ -8,6 +8,7 @@ end
 
 function HeadComponent:init(parent, data, ...)
     Component.init(self, parent, ...)
+    parent.drawOrder = 0.01
     self.direction = 1 -- 0 or more equals right, 0 or less equals left
     self.blinking = true
     self.talking = false
@@ -24,6 +25,7 @@ function HeadComponent:init(parent, data, ...)
     self.eyeColor = {1, 1, 1, 1}
     self.mouthColor = {1, 1, 1, 1}
     self.faceColor = {1, 1, 1, 1}
+    self.order = {}
 
     if data then
         self:loadFaceData(data)

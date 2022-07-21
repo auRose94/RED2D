@@ -17,10 +17,10 @@ function Window:init(parent, ...)
     self.textSize = self.textSize or 16
     self.fontScale = self.fontScale or 0.5
     self.elements = {}
-    self.offx = 0
-    self.offy = 0
-    self.rex = 0
-    self.rey = 0
+    self.offsetX = 0
+    self.offsetY = 0
+    self.resizeX = 0
+    self.resizeY = 0
     self:updateText(self.title)
 end
 
@@ -81,33 +81,33 @@ function Window:draw()
         local crSize = 8
         if self:mouseInsideRect(self.x, self.y, self.width, self.textSize * self.fontScale) then
             if mdown and not self.lastDown then
-                self.offx = self.x - wmx
-                self.offy = self.y - wmy
+                self.offsetX = self.x - wmx
+                self.offsetY = self.y - wmy
             end
         end
 
         local coColor = colors.darkPink
         if self:mouseInsideRect(self.x + self.width - crSize, self.y + self.height - crSize, crSize, crSize) then
             if mdown and not self.lastDown then
-                self.rex = self.x + self.width - wmx
-                self.rey = self.y + self.height - wmy
+                self.resizeX = self.x + self.width - wmx
+                self.resizeY = self.y + self.height - wmy
             end
         end
         if self.lastDown and not mdown then
-            self.offx = 0
-            self.offy = 0
-            self.rex = 0
-            self.rey = 0
+            self.offsetX = 0
+            self.offsetY = 0
+            self.resizeX = 0
+            self.resizeY = 0
         end
         if mdown and self.lastDown then
-            if self.offx ~= 0 or self.offy ~= 0 then
-                self.x = self.offx + wmx
-                self.y = self.offy + wmy
+            if self.offsetX ~= 0 or self.offsetY ~= 0 then
+                self.x = self.offsetX + wmx
+                self.y = self.offsetY + wmy
             end
-            if self.rex ~= 0 or self.rey ~= 0 then
+            if self.resizeX ~= 0 or self.resizeY ~= 0 then
                 coColor = colors.orange
-                self.width = self.rex - self.x + wmx
-                self.height = self.rey - self.y + wmy
+                self.width = self.resizeX - self.x + wmx
+                self.height = self.resizeY - self.y + wmy
             end
         end
 

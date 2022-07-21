@@ -55,11 +55,15 @@ function Body:init(parent, data, ...)
     self.bodyColor = {1, 1, 1, 1}
     self.armColor = {1, 1, 1, 1}
 
+    local order = 0.01
+
     self.leftHand = Entity(parent.level, "left hand")
+    self.leftHand.drawOrder = order
     self.leftHand:setScale(0.25, 0.25)
     self.leftHand:setParent(parent)
 
     self.rightHand = Entity(parent.level, "right hand")
+    self.rightHand.drawOrder = order
     self.rightHand:setScale(0.25, 0.25)
     self.rightHand:setParent(parent)
 

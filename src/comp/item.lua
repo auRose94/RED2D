@@ -35,7 +35,7 @@ end
 
 function Item:init(parent, data, ...)
     Component.init(self, parent, ...)
-    self.parent.drawOrder = 0
+    self.parent.drawOrder = 0.01
     if type(data) == "string" then
         self.typeName = data
         data = Item.findItemById(data) or Item.findItemByName(data)

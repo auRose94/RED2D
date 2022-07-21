@@ -2,13 +2,13 @@
 local Entity = inheritsFrom(nil)
 
 function Entity:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
-    assert(level, "No level given")
-    if self ~= level then
-        level:addEntity(self)
+    if level == nil then
+        level = _G.level
     end
+    assert(level, "No level given")
     self.level = level
-    self.x = x
-    self.y = y
+    self.x = x or 0
+    self.y = y or 0
     self.z = z or 0
     self.r = r or 0
     self.sx = sx or 1
@@ -21,9 +21,11 @@ function Entity:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
     self.touched = false
     self.components = {}
     self.children = {}
+    self.parent = nil
     self.transform =
         love.math.newTransform(self.x, self.y, self.r, self.sx, self.sy, self.ox, self.oy, self.kx, self.ky)
     self.name = name or "New Entity"
+    level:addEntity(self)
 end
 
 function Entity:getName()
@@ -33,6 +35,11 @@ end
 function Entity:callComponentMethods(name, ...)
     if name == nil or name == "" then
         return
+    end
+    for _, e in pairs(self.children) do
+        if type(e) == "table" then
+            e:callComponentMethods(name, ...)
+        end
     end
     for _, c in pairs(self.components) do
         if type(c) == "table" then
@@ -69,17 +76,32 @@ function Entity:drawEditor()
 end
 
 function Entity:draw()
+    love.graphics.push()
     love.graphics.applyTransform(self:getTransform())
     for _, c in pairs(self.components) do
+        love.graphics.push()
         if type(c) == "table" and c.draw then
             c:draw()
         end
+        love.graphics.pop()
+    end
+    love.graphics.pop()
+end
+
+function Entity:drawGUI()
+    love.graphics.applyTransform(self:getTransform())
+    for _, c in pairs(self.components) do
+        love.graphics.push()
+        if type(c) == "table" and c.drawGUI then
+            c:drawGUI()
+        end
+        love.graphics.pop()
     end
 end
 
 function Entity:destroy()
     self:callComponentMethods("destroy")
-    if self.parent then
+    if self.parent ~= nil then
         self.parent:removeChild(self)
     end
     self.components = {}
@@ -208,7 +230,7 @@ end
 
 function Entity:getParentComponent(typeClass)
     -- Recursively goes up from the child to the parent to get a component
-    if self.parent then
+    if self.parent ~= nil then
         local component = self.parent:getComponent(typeClass)
         if not component then
             return self.parent:getParentComponent(typeClass)
@@ -260,12 +282,12 @@ function Entity:findChild(name)
     return value, found
 end
 
-function Entity:removeChild(child)
+function Entity:removeChild(childA)
     local found = false
     local value = nil
-    for index, child in ipairs(self.children) do
-        if child == child then
-            value = child
+    for index, childB in ipairs(self.children) do
+        if childA == childB then
+            value = childB
             found = index
             break
         end
@@ -280,14 +302,19 @@ end
 
 function Entity:setParent(parent)
     if parent then
-        if self.parent then
+        if self.parent ~= nil then
             self.parent:removeChild(self)
+        else
+            self.level:removeEntity(self)
         end
         self.parent = parent
         self.level = parent.level
         table.insert(parent.children, self)
     else
-        self.parent:removeChild(self)
+        if self.parent ~= nil then
+            self.parent:removeChild(self)
+        end
+        self.level:addEntity(self)
         self.parent = nil
     end
 end
@@ -332,6 +359,15 @@ function Entity:inverseTransformNormal(...)
     local wx, wy = transform:inverseTransformPoint(0, 0)
     x, y = transform:inverseTransformPoint(x, y)
     return math.normalize(wx - x, wy - y)
+end
+
+function Entity:dumpAllEntities(onEntity)
+    if type(onEntity) == "function" then
+        for _, child in pairs(self.children) do
+            onEntity(child)
+            child:dumpAllEntities(onEntity)
+        end
+    end
 end
 
 _G.Entity = Entity

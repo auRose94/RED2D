@@ -4,7 +4,7 @@ local Human = inheritsFrom(Body)
 function Human:init(parent, data, ...)
     Body.init(self, parent, data, ...)
 
-    self.parent.drawOrder = 1
+    self.parent.drawOrder = 0.01
 
     self:setScale(2, 2)
 

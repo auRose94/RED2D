@@ -16,7 +16,7 @@ end
 
 function Player:init(parent, playerIndex, joystickIndex, ...)
     Body.init(self, parent, BodyRedData, ...)
-    self.parent.drawOrder = 1
+    self.parent.drawOrder = 0.01
 
     self:setScale(2, 2)
 

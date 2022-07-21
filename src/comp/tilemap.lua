@@ -33,7 +33,7 @@ function TileMap:init(parent, location, tileSize, ...)
     self.tiles = self.tiles or {}
     self.data = self.data or {}
     self.body = nil
-    self.parent.drawOrder = -1
+    self.parent.drawOrder = -0.01
 end
 
 function TileMap:setStarMap(x, y, value)

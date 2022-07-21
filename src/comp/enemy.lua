@@ -8,7 +8,7 @@ end
 
 function Enemy:init()
     Body.init(self, parent, BodyRedData, ...)
-    self.parent.drawOrder = 1
+    self.parent.drawOrder = 0.01
 
     self.inventory = Inventory(parent, self, true)
 end

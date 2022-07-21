@@ -12,7 +12,7 @@ end
 
 function Weapon:init(parent, data, ...)
     Item.init(self, parent, data, ...)
-    self.parent.drawOrder = 2
+    self.parent.drawOrder = 0.01
     if type(data) == "string" then
         data = Item.findItemById(data) or Item.findItemByName(data)
     end
@@ -57,6 +57,7 @@ function Weapon:equip(entity)
         local level = hand.level or entity.parent.level
         hand:setOrigin(self.trigger)
         local weaponEntity = Entity(level, self.name .. "(Equipped)")
+        weaponEntity.drawOrder = 0.01
         weaponEntity:setParent(hand)
         weaponEntity:addComponent(self)
         weaponEntity:setOrigin(math.invert(self.trigger))
@@ -109,6 +110,7 @@ function Weapon:primary()
 
         local offset = 1.0
         local bulletEnt = Entity(level, "Bullet", sx + (dx * offset), sy + (dy * offset))
+        bulletEnt.drawOrder = 0.02
         local bullet =
             Bullet(
             bulletEnt,

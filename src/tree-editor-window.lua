@@ -1,12 +1,21 @@
 -- local imgui = require"imgui"
 local Entity = require "entity"
 local Component = require "component"
+local GUIWindow = require "gui-window"
 
-local module = {}
+local module = inheritsFrom(GUIWindow)
 
 module.selected = nil
-module.containerWidth = 300
-module.containerHeight = 300
+
+function module:init(parent)
+	self.window = GUIWindow(parent)
+end
+
+function module:drawGUI()
+	if _G.showTreeEditor then
+		self.window:draw()
+	end
+end
 
 --[[
 function module.drawComponent(entity, component)

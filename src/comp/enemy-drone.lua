@@ -17,7 +17,7 @@ end
 
 function EnemyDrone:init(parent, playerIndex, joystickIndex, ...)
     Body.init(self, parent, BodyDroneData, ...)
-    self.parent.drawOrder = 1
+    self.parent.drawOrder = 0.01
 
     self:setScale(2, 2)
 
