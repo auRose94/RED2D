@@ -18,6 +18,7 @@ function Entity:init(level, name, x, y, z, r, sx, sy, ox, oy, kx, ky)
     self.kx = kx or 0
     self.ky = ky or 0
     self.drawOrder = 0
+    self.areaSize = 1.0
     self.touched = false
     self.components = {}
     self.children = {}

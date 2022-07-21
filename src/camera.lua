@@ -84,13 +84,25 @@ function Camera:layerDraw(children)
     love.graphics.push()
     love.graphics.applyTransform(self:getTransform())
 
+    local toRender = {}
+    local ox, oy = self:getOffset()
+    local cX1, cY1 = self:getWorldPoint(ox * 3.14, oy * 3.14)
+    local cX2, cY2 = self.x, self.y
+    local cSize = math.dist(cX1, cY1, cX2, cY2)
+    for _, e in pairs(children) do
+        local ex, ey = e:getPosition()
+        local eDis = math.dist(cX2, cY2, ex, ey)
+        if eDis - e.areaSize < cSize then
+            table.insert(toRender, e)
+        end
+    end
     table.sort(
-        children,
+        toRender,
         function(a, b)
             return a.drawOrder < b.drawOrder
         end
     )
-    for _, c in pairs(children) do
+    for _, c in pairs(toRender) do
         love.graphics.push()
         c:draw()
         love.graphics.pop()
@@ -126,7 +138,6 @@ function Camera:dispatch()
                 end
             )
         end
-        print(#items)
         self:layerDraw(items)
     end
     _G.camera = nil

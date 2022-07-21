@@ -92,6 +92,8 @@ function TileMap:loadLevel(location, usePhysics)
     self.starMap = {}
     local size = self.tileSize
 
+    self.parent.areaSize = width * height * 64
+
     for x = 0, width - 1 do
         for y = 0, height - 1 do
             local index = y * width + x
