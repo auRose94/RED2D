@@ -90,7 +90,7 @@ function Camera:layerDraw(children)
     local cX2, cY2 = self.x, self.y
     local cSize = math.dist(cX1, cY1, cX2, cY2)
     for _, e in pairs(children) do
-        local ex, ey = e:getPosition()
+        local ex, ey = e:getWorldPosition()
         local eDis = math.dist(cX2, cY2, ex, ey)
         if eDis - e.areaSize < cSize then
             table.insert(toRender, e)
