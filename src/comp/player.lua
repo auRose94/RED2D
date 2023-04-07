@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local PhysicsComp = require "comp.physics"
 local Inventory = require "comp.inventory"
 local StatusWindow = require "comp.status-window"
@@ -6,7 +6,7 @@ local HeadComponent = require "comp.head"
 local Body = require "comp.body"
 local HeadRedData = require "head.red"
 local BodyRedData = require "body.red"
-local input = require "input"
+local input = require "engine.input"
 
 local Player = inheritsFrom(Body)
 

@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local Fixture = inheritsFrom(Component)
 
 function Fixture:init(parent, shapeComp, density, ...)

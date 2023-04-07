@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local Inventory = inheritsFrom(Component)
 local Item = require "comp.item"
 local Weapon = require "comp.weapon"

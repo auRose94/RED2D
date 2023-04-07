@@ -3,7 +3,7 @@ local module = {}
 local CircleShape = require "comp.shape.circle"
 local RectangleShape = require "comp.shape.rectangle"
 
-local OraLoader = require "ora-loader"
+local OraLoader = require "engine.ora-loader"
 local bodyDrone = OraLoader("assets/body-drone2.ora")
 
 local legsImage = bodyDrone:getImage("Legs")

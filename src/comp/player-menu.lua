@@ -1,11 +1,11 @@
 -- local imgui = require"imgui"
 local Inventory = require "comp.inventory"
-local Component = require "component"
-local Element = require "element"
-local Button = require "elem-button"
-local Text = require "elem-text"
-local Scroll = require "elem-scroll"
-local Window = require "gui-window"
+local Component = require "engine.component"
+local Element = require "gui.element"
+local Button = require "gui.elem-button"
+local Text = require "gui.elem-text"
+local Scroll = require "gui.elem-scroll"
+local Window = require "gui.gui-window"
 local PlayerMenu = inheritsFrom(Component)
 
 local CategoryNames = {"Any", "Weapons", "Accessories", "Aid", "Tool", "Ammunition", "Junk", "Quest"}

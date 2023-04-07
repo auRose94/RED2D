@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local Fixture = require "comp.fixture"
 local PhysicsComp = inheritsFrom(Component)
 

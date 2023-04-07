@@ -1,6 +1,6 @@
 local module = {}
 
-local OraLoader = require "ora-loader"
+local OraLoader = require "engine.ora-loader"
 local texture = OraLoader("assets/head-red.ora")
 
 local image = texture:getImage("Primary")

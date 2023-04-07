@@ -1,10 +1,10 @@
-local Camera = require "camera"
+local Camera = require "engine.camera"
 local Item = require "comp.item"
 local Weapon = require "comp.weapon"
-local Entity = require "entity"
+local Entity = require "engine.entity"
 local TileMap = require "comp.tilemap"
 local Player = require "comp.player"
-local OraLoader = require "ora-loader"
+local OraLoader = require "engine.ora-loader"
 local DefaultItems = require "defaultItems"
 local Level = inheritsFrom(nil)
 

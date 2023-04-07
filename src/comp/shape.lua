@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local Shape = inheritsFrom(Component)
 
 function Shape:init(parent)

@@ -1,7 +1,7 @@
 -- local imgui = require"imgui"
-local Entity = require "entity"
-local Component = require "component"
-local GUIWindow = require "gui-window"
+local Entity = require "engine.entity"
+local Component = require "engine.component"
+local GUIWindow = require "gui.gui-window"
 
 local module = inheritsFrom(GUIWindow)
 

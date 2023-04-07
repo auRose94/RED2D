@@ -23,9 +23,10 @@ _G.showFPS = true
 _G.maxFrameRate = 60
 
 function love.conf(t)
+    t.excluderenderers = {"opengl"}
     t.identity = "RED2D" -- The name of the save directory (string)
     t.appendidentity = true -- Search files in source directory before save directory (boolean)
-    t.version = "11.3" -- The LÖVE version this game was made for (string)
+    t.version = "12.0" -- The LÖVE version this game was made for (string)
     t.console = false -- Attach a console (boolean, Windows only)
     t.accelerometerjoystick = true -- Enable the accelerometer on iOS and Android by exposing it as a Joystick (boolean)
     t.externalstorage = true -- True to save files (and read from the save directory) in external storage on Android (boolean)
@@ -45,8 +46,8 @@ function love.conf(t)
     t.window.msaa = 16 -- The number of samples to use with multi-sampled antialiasing (number)
     t.window.depth = 8 -- The number of bits per sample in the depth buffer
     t.window.stencil = 8 -- The number of bits per sample in the stencil buffer
-    t.window.display = 1 -- Index of the monitor to show the window in (number)
-    t.window.highdpi = true -- Enable high-dpi mode for the window on a Retina display (boolean)
+    t.displayindex = 1 -- Index of the monitor to show the window in (number)
+    t.highdpi = true -- Enable high-dpi mode for the window on a Retina display (boolean)
     t.window.x = nil -- The x-coordinate of the window's position in the specified display (number)
     t.window.y = nil -- The y-coordinate of the window's position in the specified display (number)
     t.modules.audio = true -- Enable the audio module (boolean)

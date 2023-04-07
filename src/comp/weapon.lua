@@ -1,5 +1,5 @@
 local Item = require "comp.item"
-local Entity = require "entity"
+local Entity = require "engine.entity"
 local WeaponTypes = require "defaultWeaponTypes"
 local Bullet = require ".src.comp.bullet"
 

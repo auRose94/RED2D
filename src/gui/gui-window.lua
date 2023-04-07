@@ -1,6 +1,6 @@
-local Component = require "component"
-local guiStyle = require "gui-style"
-local Element = require "element"
+local Component = require "engine.component"
+local guiStyle = require "gui.gui-style"
+local Element = require "gui.element"
 local Window = inheritsFrom(Component)
 
 local windowFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
@@ -32,7 +32,7 @@ function Window:updateText(text)
         font = love.graphics.newFont(guiStyle.fontPath, self.textSize, guiStyle.fontType)
         self.font = font
     end
-    self.titleObj = love.graphics.newText(font, text)
+    self.titleObj = love.graphics.newTextBatch(font, text)
 end
 
 function Window:addElement(element)

@@ -1,4 +1,4 @@
-local Element = require "element"
+local Element = require "gui.element"
 local Scroll = inheritsFrom(Element)
 
 function Scroll:init(...)

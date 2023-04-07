@@ -1,5 +1,5 @@
-local Element = require "element"
-local guiStyle = require "gui-style"
+local Element = require "gui.element"
+local guiStyle = require "gui.gui-style"
 local Button = inheritsFrom(Element)
 
 local buttonFont = love.graphics.newFont(guiStyle.fontPath, 9, guiStyle.fontType)
@@ -39,7 +39,7 @@ function Button:updateText(text)
         font = love.graphics.newFont(guiStyle.fontPath, self.textSize, guiStyle.fontType)
         self.font = font
     end
-    self.textObj = love.graphics.newText(font, text)
+    self.textObj = love.graphics.newTextBatch(font, text)
 end
 
 function Button:getRight()

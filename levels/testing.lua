@@ -1,11 +1,11 @@
-local Level = require "level"
-local Entity = require "entity"
+local Level = require "engine.level"
+local Entity = require "engine.entity"
 local Player = require "comp.player"
 local EnemyDrone = require "comp.enemy-drone"
 local TileMap = require "comp.tilemap"
 local Item = require "comp.item"
 local Weapon = require "comp.weapon"
-local OraLoader = require "ora-loader"
+local OraLoader = require "engine.ora-loader"
 
 local level = inheritsFrom(Level)
 

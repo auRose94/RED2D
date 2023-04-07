@@ -1,6 +1,6 @@
-local Component = require "component"
+local Component = require "engine.component"
 local defaultPaternGenerator = require "defaultPaternGenerator"
-local PathMap = require "path-map"
+local PathMap = require "engine.path-map"
 local ROT = require "rot"
 local PaternGenerator = inheritsFrom(Component)
 

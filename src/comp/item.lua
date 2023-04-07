@@ -1,7 +1,7 @@
-local Component = require "component"
+local Component = require "engine.component"
 local PhysicsComp = require "comp.physics"
 local LoadedItems = require "defaultItems"
-local guiStyle = require "gui-style"
+local guiStyle = require "gui.gui-style"
 -- local imgui = require"imgui"
 local Item = inheritsFrom(Component)
 
@@ -180,7 +180,7 @@ function Item:update(dt)
     local curText = {colors.red, self.name, colors.white, "×", colors.red, self.count}
     if not self.text or unpack(curText) ~= unpack(self.text) then
         self.text = curText
-        self.textObj = love.graphics.newText(guiStyle.font, curText)
+        self.textObj = love.graphics.newTextBatch(guiStyle.font, curText)
     end
 end
 

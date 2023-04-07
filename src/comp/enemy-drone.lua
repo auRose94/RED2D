@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local PhysicsComp = require "comp.physics"
 local PolyShape = require "comp.shape.polygon"
 local Inventory = require "comp.inventory"
@@ -7,7 +7,7 @@ local HeadComponent = require "comp.head"
 local Body = require "comp.body"
 local HeadDroneData = require "head.red"
 local BodyDroneData = require "body.drone"
-local input = require "input"
+local input = require "engine.input"
 
 local EnemyDrone = inheritsFrom(Body)
 

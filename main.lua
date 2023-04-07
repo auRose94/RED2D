@@ -1,24 +1,26 @@
 -- local imgui = require"imgui"
-local guiStyle = require "gui-style"
+local guiStyle = require "gui.gui-style"
 love.graphics.setDefaultFilter("linear", "nearest")
 
-local Camera = require "camera"
-local Level = require "level"
+local Camera = require "engine.camera"
+local Level = require "engine.level"
 local TestingLevel = require ".levels.testing"
-local input = require "input"
-local Entity = require "entity"
+local input = require "engine.input"
+local Entity = require "engine.entity"
 local Player = require "comp.player"
 local TileMap = require "comp.tilemap"
 local Item = require "comp.item"
 local Weapon = require "comp.weapon"
-local OraLoader = require "ora-loader"
+local OraLoader = require "engine.ora-loader"
 
-local DebugTools = require "debug-tools"
+local DebugTools = require "engine.debug-tools"
 local debugTools = nil
 
 local level = nil
 local accumulator = 0
 local lastDebugDown = false
+
+print(love.graphics.getRendererInfo())
 
 function love.load()
     -- imgui.Init()

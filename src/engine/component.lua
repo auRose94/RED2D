@@ -1,4 +1,4 @@
-local Entity = require "entity"
+local Entity = require "engine.entity"
 -- local imgui = require"imgui"
 
 local Component = inheritsFrom(nil)

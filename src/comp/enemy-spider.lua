@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local Body = require "comp.body"
 local SpiderBot = inheritsFrom(Body)
 

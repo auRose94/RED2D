@@ -37,7 +37,7 @@ function OraLoader:load(fileName)
     local mountpoint = nil
     if tFileType == "string" then
         mountpoint = fileName:match("^.+[/|\\](.+).ora$")
-        file = love.filesystem.newFile(fileName)
+        file = love.filesystem.openFile(fileName, "c")
     elseif tFileType == "userdata" then
         file = fileName
         fileName = file:getFilename()
@@ -62,7 +62,7 @@ function OraLoader:load(fileName)
         local index = mountpoint .. "/" .. itemName
         local info = love.filesystem.getInfo(index)
         if info.type == "file" and itemName == "stack.xml" then
-            stack = love.filesystem.newFile(index, "r")
+            stack = love.filesystem.openFile(index, "r")
         elseif info.type == "directory" and itemName == "data" then
             local dataFiles = love.filesystem.getDirectoryItems(index)
             for _, subItemName in ipairs(dataFiles) do
@@ -71,7 +71,7 @@ function OraLoader:load(fileName)
                     imageFiles,
                     {
                         index = subIndex,
-                        entry = love.filesystem.newFile(subIndex, "r")
+                        entry = love.filesystem.openFile(subIndex, "r")
                     }
                 )
             end

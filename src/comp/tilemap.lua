@@ -1,6 +1,6 @@
-local Component = require "component"
+local Component = require "engine.component"
 local defaultTileMap = require "defaultTileMap"
-local PathMap = require "path-map"
+local PathMap = require "engine.path-map"
 local ROT = require "rot"
 local TileMap = inheritsFrom(Component)
 

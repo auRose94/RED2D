@@ -1,4 +1,4 @@
-local Component = require "component"
+local Component = require "engine.component"
 local PhysicsComp = require "comp.physics"
 
 -- local imgui = require"imgui"
