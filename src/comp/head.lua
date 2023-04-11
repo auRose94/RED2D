@@ -8,7 +8,7 @@ end
 
 function HeadComponent:init(parent, data, ...)
     Component.init(self, parent, ...)
-    parent.drawOrder = 0.01
+    parent.drawOrder = 1
     self.direction = 1 -- 0 or more equals right, 0 or less equals left
     self.blinking = true
     self.talking = false

@@ -89,7 +89,7 @@ function Level:init()
     self.tilemap = nil
     self.children = {}
     self.camera = Camera(self)
-    self.camera:newEntityLayer(1, self.children)
+    self.camera:newEntityLayer(self.children)
 end
 
 function Level:load(pathName)
@@ -100,7 +100,7 @@ function Level:load(pathName)
     self.oraLoader = oraLoader
 
     local tilemapObj = Entity(self, "Tilemap")
-    tilemapObj.drawOrder = -0.01
+    tilemapObj.drawOrder = -1
 
     local backTilemap = TileMap(tilemapObj, "assets/Tileset.png", 64)
     backTilemap:loadDefault()
@@ -113,7 +113,7 @@ function Level:load(pathName)
 
     local playerX, playerY = oraLoader:getOffset("player start")
     local playerEntity = Entity(self, "Player", tilemap:getOffset(playerX, playerY))
-    playerEntity.drawOrder = 0.01
+    playerEntity.drawOrder = 1
     Player(playerEntity)
 
     camera:setTransformOffset(tilemap:getOffset(playerX, playerY))

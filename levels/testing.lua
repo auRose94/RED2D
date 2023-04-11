@@ -14,8 +14,8 @@ function level:init()
 
     local enemyX, enemyY = self.oraLoader:getOffset("player start")
     local enemyEntity = Entity(self, "Drone#1", self.tilemap:getOffset(enemyX, enemyY))
-    enemyEntity.drawOrder = 0.01
     EnemyDrone(enemyEntity)
+    enemyEntity.drawOrder = 2
 end
 
 return level

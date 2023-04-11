@@ -5,13 +5,16 @@ _G.cameras = {}
 
 function Camera:init(level)
     EntityModel.init(self, level, "Camera")
-    self.layers = {}
+    self.entities = {}
     local scale = 1.325
     self.sx = scale -- 1.125
 
     self.sy = scale
     self.cameraSpeed = 4
     self.rotSpeed = 4
+    self.filter = {"nearest", "nearest", 16}
+    self.canvas = love.graphics.newCanvas(width, height)
+    self.canvas:setFilter(unpack(self.filter))
     table.insert(cameras, self)
 end
 
@@ -80,8 +83,18 @@ function Camera:mousePosition()
     return self:getWorldPoint(love.mouse.getPosition())
 end
 
-function Camera:layerDraw(children)
+function Camera:layerDraw()
+    local items = {}
+    for _, e in pairs(self.entities) do
+        table.insert(items, e)
+        e:dumpAllEntities(
+            function(entity)
+                table.insert(items, entity)
+            end
+        )
+    end
     love.graphics.push()
+    love.graphics.origin()
     love.graphics.applyTransform(self:getTransform())
 
     local toRender = {}
@@ -89,7 +102,7 @@ function Camera:layerDraw(children)
     local cX1, cY1 = self:getWorldPoint(ox * 3.14, oy * 3.14)
     local cX2, cY2 = self.x, self.y
     local cSize = math.dist(cX1, cY1, cX2, cY2)
-    for _, e in pairs(children) do
+    for _, e in pairs(items) do
         local ex, ey = e:getWorldPosition()
         local eDis = math.dist(cX2, cY2, ex, ey)
         if eDis - e.areaSize < cSize then
@@ -110,36 +123,23 @@ function Camera:layerDraw(children)
     love.graphics.pop()
 end
 
-function Camera:newEntityLayer(scale, children)
-    table.insert(
-        self.layers,
-        {
-            children = children,
-            scale = scale
-        }
-    )
-    table.sort(
-        self.layers,
-        function(a, b)
-            return a.scale < b.scale
-        end
-    )
+function Camera:newEntityLayer(entities)
+    self.entities = entities
 end
 
 function Camera:dispatch()
     _G.camera = self
-    for _, v in ipairs(self.layers) do
-        local items = {}
-        for _, e in pairs(v.children) do
-            table.insert(items, e)
-            e:dumpAllEntities(
-                function(entity)
-                    table.insert(items, entity)
-                end
-            )
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.clear(0, 0, 0, 0)
+    self.canvas:renderTo(
+        function()
+            self:layerDraw()
         end
-        self:layerDraw(items)
-    end
+    )
+    love.graphics.origin()
+    love.graphics.setCanvas()
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.draw(self.canvas, 0, 0, 0, 1, 1)
     _G.camera = nil
 end
 
@@ -147,7 +147,6 @@ function Camera:update(dt)
     EntityModel.update(self, dt)
     if self.followTarget then
         local target = self.followTarget
-        local ox, oy = self:getOffset()
 
         local targetTransform = love.math.newTransform()
         if target.parent then
@@ -172,6 +171,8 @@ function love.resize(width, height)
             local target = camera.followTarget
             camera:setTransformOffset(target:getWorldPosition())
         end
+        camera.canvas = love.graphics.newCanvas(width, height)
+        camera.canvas:setFilter(unpack(camera.filter))
     end
 end
 

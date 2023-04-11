@@ -17,7 +17,7 @@ end
 
 function EnemyDrone:init(parent, playerIndex, joystickIndex, ...)
     Body.init(self, parent, BodyDroneData, ...)
-    self.parent.drawOrder = 0.01
+    self.parent.drawOrder = 1
 
     self:setScale(2, 2)
 
@@ -25,7 +25,7 @@ function EnemyDrone:init(parent, playerIndex, joystickIndex, ...)
 
     -- self.headEntity:setPosition(8, 8)
     local headParent = self:findChild("head")
-    assert(headParent, "No head point found")
+    --assert(headParent, "No head point found")
     --local headComp = HeadComponent(headParent, HeadDroneData)
     --self.headComp = headComp
 end

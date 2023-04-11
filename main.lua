@@ -1,30 +1,26 @@
--- local imgui = require"imgui"
-local guiStyle = require "gui.gui-style"
+
 love.graphics.setDefaultFilter("linear", "nearest")
 
-local Camera = require "engine.camera"
+require "engine.camera"
 local Level = require "engine.level"
 local TestingLevel = require ".levels.testing"
 local input = require "engine.input"
-local Entity = require "engine.entity"
-local Player = require "comp.player"
-local TileMap = require "comp.tilemap"
-local Item = require "comp.item"
-local Weapon = require "comp.weapon"
-local OraLoader = require "engine.ora-loader"
+require "engine.entity"
+require "comp.player"
+require "comp.tilemap"
+require "comp.item"
+require "comp.weapon"
+require "engine.ora-loader"
 
 local DebugTools = require "engine.debug-tools"
 local debugTools = nil
 
 local level = nil
-local accumulator = 0
 local lastDebugDown = false
 
 print(love.graphics.getRendererInfo())
 
 function love.load()
-    -- imgui.Init()
-    guiStyle.load()
     level = TestingLevel()
     _G.level = level
     debugTools = DebugTools(level)
@@ -60,11 +56,11 @@ function love.draw()
         local rFPS = 1 / love.timer.getDelta() -- real
         local fps = love.timer.getFPS() -- calculated
         local string = "CFPS: " .. fps .. "    AFPS: " .. string.format("%.3f", rFPS)
-        local scale = 0.5
+        local scale = 1
         love.graphics.setColor(colors.white)
-        love.graphics.print(string, 2, h - (32 * scale) - 2, 0, scale)
+        love.graphics.print(string, 2, h - (16 * scale) - 2, 0, scale)
         love.graphics.setColor(colors.black)
-        love.graphics.print(string, 3, h - (32 * scale) - 3, 0, scale)
+        love.graphics.print(string, 3, h - (16 * scale) - 3, 0, scale)
     end
 end
 

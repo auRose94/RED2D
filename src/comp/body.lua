@@ -55,7 +55,7 @@ function Body:init(parent, data, ...)
     self.bodyColor = {1, 1, 1, 1}
     self.armColor = {1, 1, 1, 1}
 
-    local order = 0.01
+    local order = 1
 
     self.leftHand = Entity(parent.level, "left hand")
     self.leftHand.drawOrder = order
@@ -70,6 +70,7 @@ function Body:init(parent, data, ...)
     self.headEntity = Entity(parent.level, "head")
     self.headEntity:setScale(0.9, 0.9)
     self.headEntity:setParent(parent)
+    self.headEntity.drawOrder = 2
 
     self.loadedData = nil
     if data then
@@ -216,6 +217,9 @@ function Body:getAim(invertY)
         ax, ay = self:getAimNormal(invertY)
     end
     local angle = math.angle2(1, 0, ax, ay)
+    if angle == math.pi then
+        return -angle
+    end
     return angle
 end
 

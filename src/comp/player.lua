@@ -16,7 +16,7 @@ end
 
 function Player:init(parent, playerIndex, joystickIndex, ...)
     Body.init(self, parent, BodyRedData, ...)
-    self.parent.drawOrder = 0.01
+    self.parent.drawOrder = 1
 
     self:setScale(2, 2)
 
@@ -43,8 +43,7 @@ function Player:registerControls()
         {
             name = "Move Left",
             keyboard = {
-                key = "a",
-                altKey = "left"
+                key = "a"
             },
             joystick = {
                 button = "dpleft",
@@ -61,8 +60,7 @@ function Player:registerControls()
         {
             name = "Move Right",
             keyboard = {
-                key = "d",
-                altKey = "right"
+                key = "d"
             },
             joystick = {
                 button = "dpright",
@@ -80,7 +78,7 @@ function Player:registerControls()
             name = "Move Up",
             keyboard = {
                 key = "w",
-                altKey = {"up", "space"}
+                altKey = {"space"}
             },
             joystick = {
                 button = {"y", "dpup"},
@@ -97,8 +95,7 @@ function Player:registerControls()
         {
             name = "Move Down",
             keyboard = {
-                key = "s",
-                altKey = "down"
+                key = "s"
             },
             joystick = {
                 button = "dpdown",
@@ -115,8 +112,7 @@ function Player:registerControls()
         {
             name = "Inventory",
             keyboard = {
-                key = "tab",
-                altKey = "rctrl"
+                key = "tab"
             },
             joystick = {
                 button = "back"
@@ -130,8 +126,7 @@ function Player:registerControls()
         {
             name = "Interact",
             keyboard = {
-                key = "e",
-                altKey = "kp0"
+                key = "e"
             },
             joystick = {
                 button = "a"
@@ -216,6 +211,10 @@ function Player:registerControls()
         playerIndex,
         {
             name = "Primary Fire",
+            keyboard = {
+                key = "rshift",
+                altKey = "kpenter"
+            },
             mouse = {
                 button = 1
             },
@@ -230,6 +229,10 @@ function Player:registerControls()
         playerIndex,
         {
             name = "Secondary Fire",
+            keyboard = {
+                key = "rctrl",
+                altKey = "kp0"
+            },
             mouse = {
                 button = 3
             },
@@ -239,13 +242,33 @@ function Player:registerControls()
         },
         joystickIndex
     )
-    self.aimDirControl =
+    self.aimDirX =
         input.createInput(
         playerIndex,
         {
-            name = "Aim Direction",
+            name = "Aim Dir X",
+            keyboard = {
+                key = {"right", "left"},
+                altKey = {"kp6", "kp4"}
+            },
             joystick = {
-                axis = {"rightx", "righty"},
+                axis = "rightx",
+                axisMin = 0.15
+            }
+        },
+        joystickIndex
+    )
+    self.aimDirY =
+        input.createInput(
+        playerIndex,
+        {
+            name = "Aim Dir Y",
+            keyboard = {
+                key = {"down", "up"},
+                altKey = {"kp5", "kp8"}
+            },
+            joystick = {
+                axis = "righty",
                 axisMin = 0.15
             }
         },
@@ -254,11 +277,12 @@ function Player:registerControls()
 end
 
 function Player:getAimNormal(invertY)
-    local aim = self.aimDirControl
+    local aimX = self.aimDirX
+    local aimY = self.aimDirY
     local nx, ny = 0, 0
-    if aim:held() then
+    if aimX:held() or aimY:held() then
         -- Joystick
-        nx, ny = unpack(aim.value)
+        nx, ny = aimX.value, aimY.value
     else
         -- Mouse
         local camera = self.parent.level.camera
@@ -289,7 +313,8 @@ function Player:update(dt)
         local down = self.downControl
         local interact = self.interactControl
         local aim = self.aimControl
-        local aimDir = self.aimDirControl
+        local aimDirX = self.aimDirX
+        local aimDirY = self.aimDirY
         local fire1 = self.fire1Control
         local fire2 = self.fire2Control
 
@@ -300,7 +325,7 @@ function Player:update(dt)
         self.moveUp = up:held()
         self.moveDown = down:held()
 
-        if aim:held() or aimDir:held() then
+        if aim:held() or (aimDirX:held() or aimDirY:held()) then
             self.leftAim = true
             self.rightAim = true
             self.headComp:lookAt({self:getAimNormal()})

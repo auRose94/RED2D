@@ -39,6 +39,7 @@ function InputController:setUpKeyboard(data)
     keyboard.scancode = data.scancode or nil
     keyboard.altKey = data.altKey or nil
     keyboard.altScancode = data.altScancode or nil
+    keyboard.axis = data.axis or nil
 end
 
 function InputController:setUpMouse(data)
@@ -145,7 +146,27 @@ function InputController:getKeyboardValue()
             elseif type(altScancode) == "string" then
                 alts = {altScancode}
             end
-            value = love.keyboard.isScancodeDown(scancode, unpack(alts))
+
+            if type(scancode) == "table" then
+                for ai, av in ipairs(scancode) do
+                    local lv = 0
+
+                    if type(alts[ai]) == "string" then
+                        lv = lv + (love.keyboard.isScancodeDown(av, alts[ai]) and 1 or 0)
+                    else
+                        lv = lv + (love.keyboard.isScancodeDown(av) and 1 or 0)
+                    end
+                    local dir = 0
+                    if ai == 0 then
+                        dir = lv * 1
+                    else
+                        dir = lv * -1
+                    end
+                    value = value + dir
+                end
+            elseif type(scancode) == "string" then
+                value = love.keyboard.isScancodeDown(scancode, unpack(alts))
+            end
         elseif keyboard.key then
             local key = keyboard.key
             local altKey = keyboard.altKey
@@ -154,7 +175,26 @@ function InputController:getKeyboardValue()
             elseif type(altKey) == "string" then
                 alts = {altKey}
             end
-            value = love.keyboard.isDown(key, unpack(alts))
+            if type(key) == "table" then
+                for ai, av in ipairs(key) do
+                    local lv = 0
+                    if type(alts[ai]) == "string" then
+                        lv = lv + (love.keyboard.isDown(av, alts[ai]) and 1 or 0)
+                    else
+                        lv = lv + (love.keyboard.isDown(av) and 1 or 0)
+                    end
+
+                    local dir = 0
+                    if ai == 1 then
+                        dir = lv * 1
+                    else
+                        dir = lv * -1
+                    end
+                    value = value + dir
+                end
+            elseif type(key) == "string" then
+                value = love.keyboard.isDown(key, unpack(alts))
+            end
         end
     end
     value = InputController.convert(value)
@@ -275,11 +315,12 @@ function InputController:update(dt)
 end
 
 function InputController.convert(value)
-    if value == true or value == 1 then
+    if value == true then
         return 1
-    elseif value == false or value == 0 then
+    elseif value == false then
         return 0
     end
+    return value
 end
 
 function InputController:boolean()
